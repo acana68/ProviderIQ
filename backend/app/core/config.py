@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     environment: Literal["dev", "test", "prod"] = "dev"
     api_prefix: str = "/api/v1"
 
+    database_url: str
+    # Only the test suite reads this; it must point at a separate database.
+    test_database_url: str | None = None
+
 
 @lru_cache
 def get_settings() -> Settings:

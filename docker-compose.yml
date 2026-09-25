@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:17
+    container_name: provideriq-db
+    # Reads POSTGRES_USER / POSTGRES_PASSWORD / POSTGRES_DB. These only take effect when the
+    # data volume is first initialised; after changing them, recreate it with `docker compose down -v`.
+    env_file: .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - provideriq-pgdata:/var/lib/postgresql/data
+      # *.sql files here run once, on first init only (e.g. creating the test database).
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # $$ defers expansion to the container's shell, where env_file has set these.
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  provideriq-pgdata:
+    # Fixed name so Compose doesn't prefix it with the project name.
+    name: provideriq-pgdata
