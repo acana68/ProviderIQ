@@ -22,8 +22,8 @@ Every error has the same shape:
 }
 ```
 
-Validation errors also include `details`, one entry per invalid field. The submitted value
-is never echoed back.
+Errors about specific request fields also include `details`, one entry per field. The
+submitted value is never echoed back.
 
 ```json
 {
@@ -44,7 +44,9 @@ is never echoed back.
 | `NOT_FOUND` | 404 | Unknown route, provider id, or specialty slug |
 | `METHOD_NOT_ALLOWED` | 405 | Wrong HTTP method for the route (see the `Allow` header) |
 | `PAYLOAD_TOO_LARGE` | 413 | Request body over `MAX_REQUEST_BODY_BYTES` (default 64 KiB) |
-| `VALIDATION_ERROR` | 422 | Invalid query or path parameter |
+| `VALIDATION_ERROR` | 422 | Malformed request: invalid parameter or body field, unknown body field |
+| `INVALID_SEARCH` | 422 | Well-formed criteria that can't be used: an unknown specialty or condition slug, or `priority`/`sort` of `distance` without a location |
+| `LOCATION_NOT_FOUND` | 422 | City/state not in `GET /cities` |
 | `RATE_LIMITED` | 429 | Over `RATE_LIMIT_PER_MINUTE` (default 120). Wait `Retry-After` seconds |
 | `INTERNAL_ERROR` | 500 | Unexpected server error. Details go to the server log only |
 
@@ -119,6 +121,20 @@ Conditions, ordered by name.
 [
   { "id": 4, "slug": "atrial-fibrillation", "name": "Atrial Fibrillation" },
   { "id": 3, "slug": "coronary-artery-disease", "name": "Coronary Artery Disease" }
+]
+```
+
+## `GET /cities`
+
+The locations a search can use, ordered by state, then name. Each item has exactly the
+shape of the search body's `location`, so it can be sent back unchanged. Location lookups
+match the city name case-insensitively.
+
+```json
+[
+  { "city": "Phoenix", "state": "AZ" },
+  { "city": "Los Angeles", "state": "CA" },
+  { "city": "San Diego", "state": "CA" }
 ]
 ```
 
@@ -212,3 +228,178 @@ Missing → `404`, invalid → `422`.
 
 `patient_volume` is annual patients. `complication_rate` and `readmission_rate` are
 fractions (`0.0464` = 4.64%).
+
+### Scored detail
+
+Pass `priority` to also get the score and explanation that a search with the same settings
+would give. The numbers are identical to that provider's `POST /search` result, so a detail
+page opened from the results can show the same breakdown.
+
+| Param | Type | Notes |
+|---|---|---|
+| `priority` | `balanced` \| `quality` \| `cost` \| `experience` \| `distance`, optional | Adds `score`, `explanation`, and `distance_miles` to the response. `distance` without `city` + `state` → `422 INVALID_SEARCH` |
+| `city`, `state` | string + 2 letters, optional | Must be given together (`422` otherwise). Unknown city → `422 LOCATION_NOT_FOUND`, even without `priority` |
+| `radius_miles` | number 1–100, optional | Default `25`, as in search. Requires `city` and `state` |
+
+Without `priority` the response is exactly the plain detail above, with no score fields.
+Without a location, `distance_miles` is `null` and the score has no distance component.
+
+`GET /providers/620?priority=quality&city=New York&state=NY` (detail fields trimmed):
+
+```json
+{
+  "id": 620,
+  "display_name": "Dr. Kevin Hill, MD",
+  "distance_miles": 14.4,
+  "score": {
+    "overall": 80.5,
+    "components": [
+      { "name": "quality", "raw": 79.8, "normalized": 0.798, "weight": 0.55, "contribution": 43.9 },
+      { "name": "experience", "raw": 29.0, "normalized": 0.99, "weight": 0.2, "contribution": 19.8 },
+      { "name": "cost", "raw": 0.91, "normalized": 0.59, "weight": 0.05, "contribution": 2.9 },
+      { "name": "volume", "raw": 0.963, "normalized": 0.963, "weight": 0.1, "contribution": 9.6 },
+      { "name": "distance", "raw": 14.372, "normalized": 0.425, "weight": 0.1, "contribution": 4.3 }
+    ]
+  },
+  "explanation": "Stands out for high patient volume within the specialty (busier than 96% of cardiologists). 29 years of experience, 14.4 miles away, cost 9% below average."
+}
+```
+
+## `POST /search`
+
+Ranked search with structured criteria. See [ranking.md](ranking.md) for how scores are
+computed. The body never contains free text, and unknown fields are rejected.
+
+| Field | Type | Notes |
+|---|---|---|
+| `specialty` | slug, optional | Unknown → `422 INVALID_SEARCH` |
+| `condition` | slug, optional | Providers who treat it. Unknown → `422 INVALID_SEARCH` |
+| `location` | `{ "city", "state" }`, optional | From `GET /cities`; city is case-insensitive. Unknown → `422 LOCATION_NOT_FOUND` |
+| `radius_miles` | number 1–100 | Default `25`. Sending it without `location` → `422` |
+| `min_quality_score` | number 0–100, optional | |
+| `min_years_experience` | int 0–70, optional | |
+| `accepting_new_patients` | bool, optional | |
+| `priority` | `balanced` \| `quality` \| `cost` \| `experience` \| `distance` | Default `balanced`. Picks the weight profile, so it changes the scores. `distance` requires `location` |
+| `sort` | `match` \| `quality` \| `experience` \| `distance` \| `cost` | Default `match`. Only picks the ordering column. `distance` requires `location` |
+| `page` | int ≥ 1 | Default `1` |
+| `page_size` | int 1–50 | Default `20` |
+| `source` | `manual` \| `nl` | Default `manual`. Whether the criteria came from the form or the AI parser |
+
+Sort orders: `match` by overall score, `quality` and `experience` highest first, `cost`
+cheapest first, `distance` nearest first. Ties always fall back to overall score, then
+quality, then provider id.
+
+`priority` or `sort` set to `distance` without a `location` is rejected rather than
+silently ignored. Every problem with the criteria is reported at once:
+
+```json
+{
+  "error": {
+    "code": "INVALID_SEARCH",
+    "message": "Invalid search criteria; see details",
+    "request_id": "…",
+    "details": [
+      { "field": "sort", "message": "sort=distance requires a location" },
+      { "field": "specialty", "message": "Unknown specialty" }
+    ]
+  }
+}
+```
+
+With a location, only providers within `radius_miles` (great-circle distance from the
+city center) are returned.
+
+Request:
+
+```json
+{
+  "specialty": "cardiology",
+  "condition": "heart-failure",
+  "location": { "city": "New York", "state": "NY" },
+  "radius_miles": 25,
+  "priority": "quality",
+  "page_size": 2
+}
+```
+
+Response (first item only):
+
+```json
+{
+  "items": [
+    {
+      "provider": {
+        "id": 620,
+        "display_name": "Dr. Kevin Hill, MD",
+        "specialty": { "slug": "cardiology", "name": "Cardiology" },
+        "subspecialty": "Echocardiography",
+        "city": "New York",
+        "state": "NY",
+        "years_experience": 29,
+        "quality_score": 79.8,
+        "cost_index": 0.91,
+        "accepting_new_patients": true
+      },
+      "distance_miles": 14.4,
+      "score": {
+        "overall": 80.5,
+        "components": [
+          { "name": "quality", "raw": 79.8, "normalized": 0.798, "weight": 0.55, "contribution": 43.9 },
+          { "name": "experience", "raw": 29.0, "normalized": 0.99, "weight": 0.2, "contribution": 19.8 },
+          { "name": "cost", "raw": 0.91, "normalized": 0.59, "weight": 0.05, "contribution": 2.9 },
+          { "name": "volume", "raw": 0.963, "normalized": 0.963, "weight": 0.1, "contribution": 9.6 },
+          { "name": "distance", "raw": 14.372, "normalized": 0.425, "weight": 0.1, "contribution": 4.3 }
+        ]
+      },
+      "explanation": "Stands out for high patient volume within the specialty (busier than 96% of cardiologists). 29 years of experience, 14.4 miles away, cost 9% below average."
+    }
+  ],
+  "page": 1,
+  "page_size": 2,
+  "total": 15,
+  "total_pages": 8,
+  "priority": "quality",
+  "sort": "match",
+  "weights_used": { "quality": 0.55, "experience": 0.2, "cost": 0.05, "volume": 0.1, "distance": 0.1 }
+}
+```
+
+- `score.overall` and `contribution` are rounded to 0.1, `normalized`, `weight` and `raw`
+  to 0.001, and `distance_miles` to 0.1. Because of the rounding, the contributions can
+  add up to 0.1 more or less than `overall`.
+- `raw` is the provider's own value for that component: quality score, years, cost
+  index, volume percentile within the specialty, or miles.
+- The explanation leads with the provider's standout: the factor where they rank highest
+  among all providers in their specialty, if they beat at least 80% of them (see
+  [ranking.md](ranking.md#explanations)). These peer ranks only shape the wording; they
+  never change scores or order.
+- `weights_used` are the weights actually applied. Without a location there is no
+  distance weight, and the rest are rescaled to sum to 1. For example, `{"priority": "cost"}`
+  gives `{ "quality": 0.294, "experience": 0.118, "cost": 0.529, "volume": 0.059 }`.
+
+Every successful search writes a `search_logs` row with the source, specialty, state,
+priority, result count, and latency. It never stores the condition, city, or any text.
+
+Errors:
+
+```json
+{
+  "error": {
+    "code": "LOCATION_NOT_FOUND",
+    "message": "Location not found; choose a city from GET /cities",
+    "request_id": "6a747a02-27ab-45f1-ab57-3aebc07729a5",
+    "details": [{ "field": "location", "message": "Unknown city" }]
+  }
+}
+```
+
+```json
+{
+  "error": {
+    "code": "INVALID_SEARCH",
+    "message": "Invalid search criteria; see details",
+    "request_id": "f57c1acb-efab-4d0c-84d1-78603d9c5e9e",
+    "details": [{ "field": "specialty", "message": "Unknown specialty" }]
+  }
+}
+```

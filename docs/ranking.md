@@ -103,10 +103,11 @@ percentile of 0.7. They are 6 miles away in a 20-mile search, and the priority i
 | Distance | 1 − 6/20 = 0.700 | .10 | 7.000 |
 | **Overall** | | 1.00 | **81.548** |
 
-The explanation is:
+Suppose the provider is a cardiologist whose quality score beats 92% of other
+cardiologists, and who doesn't rank that high on anything else. The explanation is then:
 
-> Ranked mainly on quality (48.4 of 81.5 points). 15 years of experience, 6.0 miles away,
-> cost 10% below average.
+> Stands out for a high quality score (88/100; higher than 92% of cardiologists).
+> 15 years of experience, 6.0 miles away, cost 10% below average.
 
 **The same provider with no location.** Distance is dropped. The remaining weights sum to
 0.90, so each is divided by 0.90: .611, .222, .056, .111. The overall score becomes
@@ -114,12 +115,77 @@ The explanation is:
 
 ## Explanations
 
-`services/explanation.py` builds a sentence from templates, using only the score breakdown
-and the provider's own numbers. It never uses an LLM, so it can't claim anything the score
-doesn't reflect.
+`services/explanation.py` builds a sentence from templates, using only the score breakdown,
+the provider's own numbers, and where they rank among their specialty peers. It never uses
+an LLM, so it can't claim anything the data doesn't support.
 
-- It names the component with the largest contribution.
-- It states years of experience and the distance (distance is left out when there's no
-  location).
-- It describes cost relative to average. A `cost_index` of 1.25 reads "cost 25% above
-  average", and anything that rounds to 0% reads "average cost".
+### The standout: peer percentiles, not normalized scores
+
+The lead names the factor the provider is best at **compared with the other providers in
+their specialty**:
+
+| Factor | Peer percentile (within the specialty, over all providers) |
+|---|---|
+| Quality | Share of peers with a lower quality score |
+| Experience | Share of peers with fewer years |
+| Cost | Share of peers with a *higher* cost index, so cheaper ranks higher |
+| Volume | Share of peers with a lower patient volume (the same percentile the score uses) |
+| Distance | No peer percentile, because distance depends on the search. Its normalized score stands in, and it only counts when it is ≥ 0.8, meaning within the nearest fifth of the radius |
+
+The standout is the factor with the highest of these values, if that value is at least
+0.80: the provider beats at least 80% of their peers on it. Otherwise the lead is "No
+single standout factor." Ties go to the earlier factor (quality, experience, cost, volume,
+distance).
+
+**Why not the normalized scores?** Those curves are shaped for *ranking*, not for
+comparing one factor against another. The experience curve saturates early on purpose, to
+give diminishing returns:
+
+- 13 years of experience normalizes to 0.77, while a typical quality score of 72
+  normalizes to 0.72.
+- So by normalized score, 13 years looks like this provider's strength, even though it's
+  below average experience for most specialties.
+
+Picking the highest normalized score made 57% of providers "stand out for experience" on
+the seeded data. Peer percentiles put every factor on the same scale: "better than X% of
+peers" means the same thing for quality as it does for cost. On the same data the leads
+are now spread evenly:
+
+| Lead | Providers |
+|---|---|
+| quality | 222 |
+| cost | 216 |
+| volume | 214 |
+| experience | 194 |
+| no single standout | 654 |
+
+"No standout" is common by design. With four roughly independent factors, a provider has
+about a 0.8⁴ ≈ 41% chance of ranking below the 80th percentile on all of them.
+
+**These percentiles never touch the score.** The engine's input (`ProviderMetrics`) has no
+field for them. Volume's percentile reaches the score as before, and is the same value
+the explanation uses. The quality, experience and cost percentiles are attached only
+after ranking, for the explanations of the page being returned. A test inverts them and
+checks that every score and every position stays identical.
+
+Like the volume percentile, the peer percentiles are computed over **all** providers in
+the specialty, never the filtered search results. A provider is described the same way
+whatever else the search asked for.
+
+### Wording
+
+| Standout | Lead |
+|---|---|
+| quality | Stands out for a high quality score (88/100; higher than 92% of cardiologists). |
+| experience | Stands out for experience (25 years; more experienced than 90% of cardiologists). |
+| cost | Stands out for low cost (23% below average; cheaper than 85% of cardiologists). |
+| volume | Stands out for high patient volume within the specialty (busier than 80% of cardiologists). |
+| distance | Stands out for being close by (2.1 miles away). |
+
+Percentages are rounded down, so "cheaper than 85%" is never an overstatement. The peer
+group is named per specialty ("cardiologists", "primary care doctors"). An unknown
+specialty falls back to `<Name> providers`.
+
+**Then the facts:** years of experience, distance (only when there's a location), and cost
+relative to average. Whatever the lead already said is skipped. A `cost_index` of 1.25
+reads "cost 25% above average", and anything that rounds to 0% reads "average cost".
