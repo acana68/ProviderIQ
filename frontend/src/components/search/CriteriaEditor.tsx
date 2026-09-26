@@ -4,21 +4,12 @@ import {
   DEFAULT_RADIUS_MILES,
   MAX_RADIUS_MILES,
   MIN_RADIUS_MILES,
-  PRIORITIES,
   type Location,
-  type Priority,
   type SearchCriteria,
 } from '../../types/search'
 import { ErrorState } from '../common/ErrorState'
 import styles from './CriteriaEditor.module.css'
-
-const PRIORITY_LABELS: Record<Priority, string> = {
-  balanced: 'Balanced',
-  quality: 'Quality',
-  cost: 'Cost',
-  experience: 'Experience',
-  distance: 'Distance',
-}
+import { PriorityControl } from './PriorityControl'
 
 interface CriteriaEditorProps {
   value: SearchCriteria
@@ -173,38 +164,11 @@ export function CriteriaEditor({ value, onChange }: CriteriaEditorProps) {
         Accepting new patients only
       </label>
 
-      <fieldset className={styles.priority}>
-        <legend>Priority</legend>
-        <div className={styles.segments}>
-          {PRIORITIES.map((option) => {
-            const disabled = option === 'distance' && !hasLocation
-            return (
-              <label
-                key={option}
-                className={styles.segment}
-                title={disabled ? 'Choose a location to prioritize distance.' : undefined}
-              >
-                <input
-                  type="radio"
-                  className="visually-hidden"
-                  name={`${id}-priority`}
-                  value={option}
-                  checked={priority === option}
-                  disabled={disabled}
-                  aria-describedby={disabled ? `${id}-priority-hint` : undefined}
-                  onChange={() => update({ priority: option })}
-                />
-                {PRIORITY_LABELS[option]}
-              </label>
-            )
-          })}
-        </div>
-        {!hasLocation && (
-          <p id={`${id}-priority-hint`} className={styles.hint}>
-            Distance needs a location.
-          </p>
-        )}
-      </fieldset>
+      <PriorityControl
+        value={priority}
+        hasLocation={hasLocation}
+        onChange={(next) => update({ priority: next })}
+      />
     </div>
   )
 }

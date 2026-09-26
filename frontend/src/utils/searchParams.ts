@@ -113,3 +113,19 @@ function number(
 function oneOf<T extends string>(value: string | null, allowed: readonly T[]): T | undefined {
   return allowed.find((option) => option === value)
 }
+
+/**
+ * The search context for a provider's detail page (/providers/{id}?...), so it can show
+ * the score the search gave: GET /providers/{id} takes priority, city, state, radius_miles.
+ */
+export function scoreContextParams(criteria: SearchCriteria): URLSearchParams {
+  const params = new URLSearchParams({ priority: criteria.priority ?? 'balanced' })
+  if (criteria.location) {
+    params.set('city', criteria.location.city)
+    params.set('state', criteria.location.state)
+    if (criteria.radius_miles !== undefined) {
+      params.set('radius_miles', String(criteria.radius_miles))
+    }
+  }
+  return params
+}

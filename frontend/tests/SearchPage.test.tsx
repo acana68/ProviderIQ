@@ -3,26 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router'
 import { describe, expect, it } from 'vitest'
 import { SearchPage } from '../src/pages/SearchPage'
-import type { ConditionSummary, SpecialtySummary } from '../src/types/provider'
-import type { Location, ParseQueryResponse, ParsedCriteria } from '../src/types/search'
+import type { ParseQueryResponse, ParsedCriteria } from '../src/types/search'
+import { routeFetch } from './fixtures'
 import { errorBody, hangingFetch, jsonResponse, mockFetch } from './utils'
-
-const SPECIALTIES: SpecialtySummary[] = [
-  { id: 1, slug: 'cardiology', name: 'Cardiology', provider_count: 162 },
-  { id: 3, slug: 'dermatology', name: 'Dermatology', provider_count: 134 },
-]
-const CARDIOLOGY_CONDITIONS: ConditionSummary[] = [
-  { id: 1, slug: 'heart-failure', name: 'Heart failure' },
-  { id: 2, slug: 'atrial-fibrillation', name: 'Atrial fibrillation' },
-]
-const DERMATOLOGY_CONDITIONS: ConditionSummary[] = [
-  { id: 3, slug: 'psoriasis', name: 'Psoriasis' },
-  { id: 4, slug: 'eczema', name: 'Eczema' },
-]
-const CITIES: Location[] = [
-  { city: 'Chicago', state: 'IL' },
-  { city: 'New York', state: 'NY' },
-]
 
 const NO_CRITERIA: ParsedCriteria = {
   specialty: null,
@@ -48,37 +31,16 @@ const LLM_RESULT: ParseQueryResponse = {
   warnings: [],
 }
 
-type Handler = (init?: RequestInit) => Response | Promise<Response>
-
-const REFERENCE_ROUTES: Record<string, Handler> = {
-  'GET /api/v1/specialties': () => jsonResponse(SPECIALTIES),
-  'GET /api/v1/conditions': () =>
-    jsonResponse([...CARDIOLOGY_CONDITIONS, ...DERMATOLOGY_CONDITIONS]),
-  'GET /api/v1/conditions?specialty=cardiology': () => jsonResponse(CARDIOLOGY_CONDITIONS),
-  'GET /api/v1/conditions?specialty=dermatology': () => jsonResponse(DERMATOLOGY_CONDITIONS),
-  'GET /api/v1/cities': () => jsonResponse(CITIES),
-}
-
-/** A fake API: answers by method and URL, and fails loudly on anything unexpected. */
-function routeFetch(routes: Record<string, Handler> = {}) {
-  return mockFetch().mockImplementation(async (input, init) => {
-    const key = `${init?.method ?? 'GET'} ${String(input)}`
-    const handler = routes[key] ?? REFERENCE_ROUTES[key]
-    if (!handler) throw new Error(`Unexpected request: ${key}`)
-    return handler(init)
-  })
-}
-
 /** The /results URL the page navigated to, shown by a stand-in results page. */
 function ResultsProbe() {
   const { search } = useLocation()
   return <output aria-label="results URL">{search}</output>
 }
 
-async function renderSearchPage() {
+async function renderSearchPage(path = '/') {
   const user = userEvent.setup()
   render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/" element={<SearchPage />} />
         <Route path="/results" element={<ResultsProbe />} />
@@ -397,6 +359,34 @@ describe('SearchPage', () => {
       await user.click(screen.getByRole('button', { name: 'Search providers' }))
 
       expect(await resultsParams()).toEqual({ priority: 'balanced', source: 'manual' })
+    })
+  })
+
+  it('starts from the criteria in its URL, as "Change search" links to', async () => {
+    routeFetch()
+    const user = await renderSearchPage(
+      '/?specialty=cardiology&condition=heart-failure&city=New+York&state=NY&radius_miles=10' +
+        '&priority=distance&sort=cost&page=3&source=nl&parser_used=rule_based',
+    )
+
+    expect(specialty()).toHaveValue('cardiology')
+    await waitFor(() => expect(condition()).toHaveValue('heart-failure'))
+    expect(location()).toHaveValue('New York|NY')
+    expect(radius()).toHaveValue(10)
+    expect(priority('Distance')).toBeChecked()
+
+    await user.click(screen.getByRole('button', { name: 'Search providers' }))
+
+    // Sort and page are left behind; where the criteria came from is kept.
+    expect(await resultsParams()).toEqual({
+      specialty: 'cardiology',
+      condition: 'heart-failure',
+      city: 'New York',
+      state: 'NY',
+      radius_miles: '10',
+      priority: 'distance',
+      source: 'nl',
+      parser_used: 'rule_based',
     })
   })
 

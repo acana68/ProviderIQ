@@ -1,0 +1,16 @@
+.track {
+  display: flex;
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--color-score-track);
+}
+
+.segment {
+  height: 100%;
+}
+
+/* A hairline between segments so neighbouring colors stay distinct. */
+.segment + .segment {
+  box-shadow: inset 1px 0 0 var(--color-surface);
+}

@@ -1,18 +1,27 @@
 import { type FormEvent, useId, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { CriteriaEditor } from '../components/search/CriteriaEditor'
 import { NaturalLanguageSearch } from '../components/search/NaturalLanguageSearch'
 import type { ParseQueryResponse, ParserUsed, SearchCriteria } from '../types/search'
-import { INITIAL_CRITERIA, criteriaForSearch, criteriaFromParsed } from '../utils/criteria'
-import { criteriaToSearchParams } from '../utils/searchParams'
+import {
+  INITIAL_CRITERIA,
+  criteriaForEditor,
+  criteriaForSearch,
+  criteriaFromParsed,
+} from '../utils/criteria'
+import { criteriaToSearchParams, searchParamsToCriteria } from '../utils/searchParams'
 import styles from './SearchPage.module.css'
 
 export function SearchPage() {
   const navigate = useNavigate()
-  const [criteria, setCriteria] = useState<SearchCriteria>(INITIAL_CRITERIA)
+  // Starts from the URL, so "Change search" on the results page comes back to the same
+  // criteria (the URL is only read once; editing doesn't write it back).
+  const [params] = useSearchParams()
+  const [fromUrl] = useState(() => searchParamsToCriteria(params))
+  const [criteria, setCriteria] = useState<SearchCriteria>(() => criteriaForEditor(fromUrl))
   // Set once the criteria came from Interpret. They stay "nl" even if edited afterwards:
   // the description is still where they came from.
-  const [parserUsed, setParserUsed] = useState<ParserUsed | null>(null)
+  const [parserUsed, setParserUsed] = useState<ParserUsed | null>(fromUrl.parser_used ?? null)
   const headingId = useId()
 
   function handleParsed(result: ParseQueryResponse) {

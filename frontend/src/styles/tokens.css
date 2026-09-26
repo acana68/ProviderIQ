@@ -26,6 +26,15 @@
 
   --color-focus-ring: rgb(37 99 168 / 40%);
 
+  /* Score components (ScoreBar segments and legend). Distinct hues of similar weight, so
+     none dominates; the labels carry the meaning, never the color alone. */
+  --color-score-quality: #2563a8;
+  --color-score-experience: #2f9e8f;
+  --color-score-cost: #d08a1e;
+  --color-score-volume: #8a63b8;
+  --color-score-distance: #5b8c3a;
+  --color-score-track: #e6ebf0;
+
   /* Spacing (4px base) */
   --space-1: 0.25rem;
   --space-2: 0.5rem;

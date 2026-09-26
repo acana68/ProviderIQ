@@ -1,0 +1,20 @@
+/* One color per score component, shared by ScoreBar and ScoreLegend. */
+.quality {
+  background: var(--color-score-quality);
+}
+
+.experience {
+  background: var(--color-score-experience);
+}
+
+.cost {
+  background: var(--color-score-cost);
+}
+
+.volume {
+  background: var(--color-score-volume);
+}
+
+.distance {
+  background: var(--color-score-distance);
+}

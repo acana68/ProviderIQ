@@ -6,38 +6,35 @@
   margin: 0 auto;
 }
 
-.card {
-  padding: var(--space-5);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
-}
-
-.cardHeading {
-  margin-bottom: var(--space-4);
-  font-size: var(--font-size-lg);
-}
-
-.summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
-  gap: var(--space-3) var(--space-5);
-  margin: 0 0 var(--space-4);
-}
-
-.row dt {
-  color: var(--color-text-subtle);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.row dd {
+.title {
   margin: 0;
 }
 
-.muted {
-  color: var(--color-text-muted);
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.suggestions {
+  display: inline-block;
+  margin: 0 0 var(--space-3);
+  padding-left: var(--space-5);
+  text-align: left;
+}
+
+.linkButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-accent);
+  cursor: pointer;
+}
+
+.linkButton:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
 }

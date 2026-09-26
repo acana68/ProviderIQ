@@ -32,3 +32,25 @@ export function criteriaForSearch(criteria: SearchCriteria): SearchCriteria {
   if (!rest.location) return rest
   return { ...rest, radius_miles: radius_miles ?? DEFAULT_RADIUS_MILES }
 }
+
+/**
+ * Criteria from a URL -> what the editor holds. Sort and page belong to the results page,
+ * and where the criteria came from (source, parser_used) is kept separately by SearchPage.
+ */
+export function criteriaForEditor(criteria: SearchCriteria): SearchCriteria {
+  const editable: SearchCriteria = { priority: criteria.priority ?? 'balanced' }
+  if (criteria.specialty) editable.specialty = criteria.specialty
+  if (criteria.condition) editable.condition = criteria.condition
+  if (criteria.location) {
+    editable.location = criteria.location
+    editable.radius_miles = criteria.radius_miles ?? DEFAULT_RADIUS_MILES
+  }
+  if (criteria.min_quality_score !== undefined) {
+    editable.min_quality_score = criteria.min_quality_score
+  }
+  if (criteria.min_years_experience !== undefined) {
+    editable.min_years_experience = criteria.min_years_experience
+  }
+  if (criteria.accepting_new_patients) editable.accepting_new_patients = true
+  return editable
+}

@@ -1,97 +1,132 @@
 import { Link, useSearchParams } from 'react-router'
-import type { ParserUsed, Priority, SearchCriteria, SortOption } from '../types/search'
-import { searchParamsToCriteria } from '../utils/searchParams'
+import { EmptyState } from '../components/common/EmptyState'
+import { ErrorState } from '../components/common/ErrorState'
+import { Pagination } from '../components/results/Pagination'
+import { ProviderCard, ProviderCardSkeleton } from '../components/results/ProviderCard'
+import { ResultsToolbar } from '../components/results/ResultsToolbar'
+import { ScoreLegend } from '../components/results/ScoreLegend'
+import { SearchSummary } from '../components/results/SearchSummary'
+import { useSearch } from '../hooks/useSearch'
+import { DEFAULT_RADIUS_MILES, MAX_RADIUS_MILES, type SearchCriteria } from '../types/search'
+import {
+  criteriaToSearchParams,
+  scoreContextParams,
+  searchParamsToCriteria,
+} from '../utils/searchParams'
 import styles from './ResultsPage.module.css'
 
-const PRIORITY_LABELS: Record<Priority, string> = {
-  balanced: 'Balanced',
-  quality: 'Quality',
-  cost: 'Cost',
-  experience: 'Experience',
-  distance: 'Distance',
-}
+const SKELETON_COUNT = 3
 
-const SORT_LABELS: Record<SortOption, string> = {
-  match: 'Best match',
-  quality: 'Quality',
-  experience: 'Experience',
-  distance: 'Distance',
-  cost: 'Cost',
-}
-
-const PARSER_LABELS: Record<ParserUsed, string> = {
-  llm: 'AI',
-  rule_based: 'keyword matching',
-}
-
+/** Ranked results for the criteria in the URL. The URL is the only state: every control
+ * here rewrites it, and the search follows. */
 export function ResultsPage() {
-  const [params] = useSearchParams()
+  const [params, setParams] = useSearchParams()
   const criteria = searchParamsToCriteria(params)
-  const rows = summarize(criteria)
+  const results = useSearch(criteria)
+  const { data } = results
+
+  const hasLocation = criteria.location !== undefined
+  const priority = criteria.priority ?? 'balanced'
+  const changeSearchTo = `/?${criteriaToSearchParams({ ...criteria, sort: undefined, page: undefined })}`
+  const detailQuery = scoreContextParams(criteria).toString()
+
+  function update(changes: SearchCriteria) {
+    setParams(criteriaToSearchParams({ ...criteria, ...changes }))
+  }
+
+  function changePage(page: number) {
+    // Page 1 is the default, so it's left out of the URL.
+    update({ page: page === 1 ? undefined : page })
+    window.scrollTo({ top: 0 })
+  }
 
   return (
-    <section className={styles.page}>
+    <div className={styles.page}>
       <title>Results · ProviderIQ</title>
-      <h1>Results</h1>
+      <h1 className={styles.title}>Results</h1>
 
-      <div className={styles.card}>
-        <h2 className={styles.cardHeading}>Your search</h2>
-        {rows.length > 0 ? (
-          <dl className={styles.summary}>
-            {rows.map(([term, detail]) => (
-              <div key={term} className={styles.row}>
-                <dt>{term}</dt>
-                <dd>{detail}</dd>
-              </div>
+      <SearchSummary criteria={criteria} changeSearchTo={changeSearchTo} />
+
+      <ResultsToolbar
+        total={data?.total ?? null}
+        loading={results.loading}
+        sort={criteria.sort ?? 'match'}
+        priority={priority}
+        hasLocation={hasLocation}
+        // A new ordering starts again from page 1.
+        onSortChange={(sort) => update({ sort, page: undefined })}
+        onPriorityChange={(next) => update({ priority: next, page: undefined })}
+      />
+
+      {results.loading && (
+        // Hidden from screen readers; the toolbar's status says "Searching…".
+        <div className={styles.list} data-testid="results-loading">
+          {Array.from({ length: SKELETON_COUNT }, (_, index) => (
+            <ProviderCardSkeleton key={index} />
+          ))}
+        </div>
+      )}
+
+      {results.error && (
+        <ErrorState title="Couldn't load results" error={results.error} onRetry={results.retry} />
+      )}
+
+      {data && data.total === 0 && (
+        <EmptyState title="No providers match your search">
+          <p>Try loosening it:</p>
+          <ul className={styles.suggestions}>
+            {suggestions(criteria).map((suggestion) => (
+              <li key={suggestion}>{suggestion}</li>
             ))}
-          </dl>
-        ) : (
-          <p className={styles.muted}>No filters: all providers.</p>
-        )}
-        <Link to="/">Change search</Link>
-      </div>
+          </ul>
+          <Link to={changeSearchTo}>Change search</Link>
+        </EmptyState>
+      )}
 
-      <p className={styles.muted}>Ranked search results will appear here.</p>
-    </section>
+      {data && data.total > 0 && data.items.length === 0 && (
+        // A page past the end, e.g. from an old link.
+        <EmptyState title={`There's no page ${data.page}`}>
+          <button type="button" className={styles.linkButton} onClick={() => changePage(1)}>
+            Go to the first page
+          </button>
+        </EmptyState>
+      )}
+
+      {data && data.items.length > 0 && (
+        <>
+          <ScoreLegend weights={data.weights_used} />
+          <ol className={styles.list} aria-label="Providers">
+            {data.items.map((result) => (
+              <li key={result.provider.id}>
+                <ProviderCard
+                  result={result}
+                  to={`/providers/${result.provider.id}?${detailQuery}`}
+                />
+              </li>
+            ))}
+          </ol>
+          <Pagination page={data.page} totalPages={data.total_pages} onPageChange={changePage} />
+        </>
+      )}
+    </div>
   )
 }
 
-/** Criteria as label/value rows, in the order the editor shows them. Unset fields are left out. */
-function summarize(criteria: SearchCriteria): [string, string][] {
-  const rows: [string, string][] = []
-  if (criteria.specialty) rows.push(['Specialty', humanize(criteria.specialty)])
-  if (criteria.condition) rows.push(['Condition', humanize(criteria.condition)])
-  if (criteria.location) {
-    const { city, state } = criteria.location
-    const radius =
-      criteria.radius_miles === undefined ? '' : ` (within ${criteria.radius_miles} mi)`
-    rows.push(['Location', `${city}, ${state}${radius}`])
+/** Ways to broaden a search that found nothing, for the filters it actually has. */
+function suggestions(criteria: SearchCriteria): string[] {
+  const list: string[] = []
+  const radius = criteria.radius_miles ?? DEFAULT_RADIUS_MILES
+  if (criteria.location && radius < MAX_RADIUS_MILES) {
+    list.push(`Widen the radius (currently ${radius} miles).`)
   }
-  if (criteria.min_quality_score !== undefined) {
-    rows.push(['Minimum quality score', String(criteria.min_quality_score)])
+  if (criteria.min_quality_score !== undefined || criteria.min_years_experience !== undefined) {
+    list.push('Remove the minimum quality score or years of experience.')
   }
-  if (criteria.min_years_experience !== undefined) {
-    rows.push(['Minimum years of experience', String(criteria.min_years_experience)])
+  if (criteria.accepting_new_patients) {
+    list.push("Include providers who aren't accepting new patients.")
   }
-  if (criteria.accepting_new_patients !== undefined) {
-    rows.push(['Accepting new patients', criteria.accepting_new_patients ? 'Yes' : 'No'])
-  }
-  if (criteria.priority) rows.push(['Priority', PRIORITY_LABELS[criteria.priority]])
-  if (criteria.sort) rows.push(['Sort', SORT_LABELS[criteria.sort]])
-  if (criteria.page) rows.push(['Page', String(criteria.page)])
-  if (criteria.source === 'nl') {
-    const parser = criteria.parser_used
-      ? ` (interpreted by ${PARSER_LABELS[criteria.parser_used]})`
-      : ''
-    rows.push(['From', `Your description${parser}`])
-  } else if (criteria.source === 'manual') {
-    rows.push(['From', 'Manual criteria'])
-  }
-  return rows
-}
-
-/** "heart-failure" -> "Heart failure". Real names come with the results in Stage 10. */
-function humanize(slug: string): string {
-  const words = slug.replaceAll('-', ' ')
-  return words.charAt(0).toUpperCase() + words.slice(1)
+  if (criteria.condition) list.push('Search without a specific condition.')
+  if (criteria.location) list.push('Try another location, or search anywhere.')
+  if (list.length === 0) list.push('Try a different specialty.')
+  return list
 }

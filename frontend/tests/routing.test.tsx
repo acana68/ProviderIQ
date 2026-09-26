@@ -18,13 +18,22 @@ describe('routing', () => {
     expect(screen.getByRole('heading', { name: 'Provider 42' })).toBeInTheDocument()
   })
 
-  it.each([
-    ['/methodology', 'Methodology'],
-    ['/results', 'Results'],
-  ])('renders %s', (path, heading) => {
+  it.each([['/methodology', 'Methodology']])('renders %s', (path, heading) => {
     renderAppAt(path)
 
     expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
+  })
+
+  it('renders /results', async () => {
+    const emptySearch = { items: [], page: 1, page_size: 20, total: 0, total_pages: 0 }
+    mockFetch().mockImplementation(async (input) =>
+      jsonResponse(String(input).endsWith('/search') ? emptySearch : []),
+    )
+
+    renderAppAt('/results')
+
+    expect(screen.getByRole('heading', { name: 'Results', level: 1 })).toBeInTheDocument()
+    expect(await screen.findByText('No providers match your search')).toBeInTheDocument()
   })
 
   it('renders the search page at /', async () => {
