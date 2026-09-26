@@ -18,3 +18,21 @@ In development. Full documentation comes at the end of the build.
     uvicorn app.main:app --reload
 
 API docs: http://localhost:8000/docs
+
+## Frontend (local)
+
+Requires Node 24 (see `frontend/.nvmrc`). Start the backend first: the dev server
+proxies `/api` to http://localhost:8000.
+
+    cd frontend
+    npm install
+    npm run dev            # http://localhost:5173
+
+Other scripts:
+
+    npm run typecheck      # tsc, strict mode
+    npm run lint           # ESLint
+    npm run format         # Prettier (format:check to verify only)
+    npm test               # Vitest, once (test:watch to keep running)
+    npm run build          # type-check and build to dist/
+    npm run preview        # serve dist/, with the same /api proxy

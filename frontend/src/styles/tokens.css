@@ -1,0 +1,67 @@
+/* Design tokens. Components use these variables, never raw values, so the look can be
+   tuned in one place: neutral grays with a single calm blue accent. */
+:root {
+  /* Neutrals */
+  --color-bg: #f6f8fa;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f0f3f6;
+  --color-border: #dde3ea;
+  --color-border-strong: #c3ccd6;
+  --color-text: #1b2430;
+  --color-text-muted: #56626f;
+  --color-text-subtle: #7a8591;
+
+  /* Accent (calm blue) */
+  --color-accent: #2563a8;
+  --color-accent-hover: #1d4f87;
+  --color-accent-soft: #e8f0fa;
+  --color-on-accent: #ffffff;
+
+  /* Status */
+  --color-danger: #b42318;
+  --color-danger-soft: #fef3f2;
+  --color-danger-border: #f5c2bd;
+  --color-success: #127a4a;
+  --color-success-soft: #ecf8f1;
+
+  --color-focus-ring: rgb(37 99 168 / 40%);
+
+  /* Spacing (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 999px;
+
+  /* Typography */
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 6%);
+  --shadow-md: 0 2px 8px rgb(16 24 40 / 8%), 0 1px 2px rgb(16 24 40 / 6%);
+
+  /* Layout */
+  --content-max-width: 72rem;
+}
