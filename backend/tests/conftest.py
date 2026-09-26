@@ -38,6 +38,10 @@ def settings() -> Settings:
         cors_origins=["http://localhost:5173"],
         max_request_body_bytes=65_536,
         rate_limit_per_minute=1000,
+        # Tests never call a real LLM, whatever the local .env says.
+        ai_provider="none",
+        anthropic_api_key=None,
+        ai_rate_limit_per_minute=1000,
     )
 
 

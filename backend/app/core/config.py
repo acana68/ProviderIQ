@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
-from pydantic import Field, field_validator
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 # config.py → core → app → backend → repo root
@@ -33,10 +33,31 @@ class Settings(BaseSettings):
     # Per client IP, per app process (see core/rate_limit.py).
     rate_limit_per_minute: int = Field(default=120, gt=0)
 
+    # AI query parsing (app/ai/). "none" uses the keyword parser and needs no key.
+    ai_provider: Literal["anthropic", "none"] = "none"
+    # SecretStr: never shown in repr(), logs, or error messages.
+    anthropic_api_key: SecretStr | None = None
+    ai_model: str = "claude-haiku-4-5-20251001"
+    # The most one parse waits for the model; the client doesn't retry.
+    ai_timeout_seconds: float = Field(default=8, gt=0, le=60)
+    # Per client IP on POST /ai/parse-query, on top of rate_limit_per_minute.
+    ai_rate_limit_per_minute: int = Field(default=10, gt=0)
+
     @field_validator("log_level", mode="before")
     @classmethod
     def _uppercase_log_level(cls, value: Any) -> Any:
         return value.upper() if isinstance(value, str) else value
+
+    @field_validator("ai_provider", mode="before")
+    @classmethod
+    def _lowercase_ai_provider(cls, value: Any) -> Any:
+        return value.lower() if isinstance(value, str) else value
+
+    @field_validator("anthropic_api_key", mode="before")
+    @classmethod
+    def _blank_key_is_no_key(cls, value: Any) -> Any:
+        # `ANTHROPIC_API_KEY=` in .env means "not set", not an empty key.
+        return None if isinstance(value, str) and not value.strip() else value
 
     @field_validator("cors_origins", mode="before")
     @classmethod

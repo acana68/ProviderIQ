@@ -1,4 +1,9 @@
-"""The ranking engine and geo helpers must stay pure Python: no database, no web framework."""
+"""Import boundaries that are design rules, enforced:
+
+- The ranking engine and geo helpers are pure Python: no database, no web framework.
+- The AI package never touches repositories or the database (docs/architecture.md). The
+  LLM can only return criteria; it has no path to data.
+"""
 
 import ast
 import subprocess
@@ -8,15 +13,30 @@ from pathlib import Path
 import pytest
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
-SERVICES_DIR = BACKEND_DIR / "app" / "services"
-FORBIDDEN = ("sqlalchemy", "fastapi", "app.database")
+APP_DIR = BACKEND_DIR / "app"
 
-# Every module in services/ranking/, plus these single modules.
-PURE_MODULES = sorted((SERVICES_DIR / "ranking").rglob("*.py")) + [SERVICES_DIR / "geo.py"]
+# group name -> (modules, packages they must not import, directly or indirectly)
+BOUNDARIES: dict[str, tuple[list[Path], tuple[str, ...]]] = {
+    "ranking": (
+        sorted((APP_DIR / "services" / "ranking").rglob("*.py"))
+        + [APP_DIR / "services" / "geo.py"],
+        ("sqlalchemy", "fastapi", "app.database"),
+    ),
+    "ai": (
+        sorted((APP_DIR / "ai").rglob("*.py")),
+        ("sqlalchemy", "fastapi", "app.database", "app.repositories", "app.models"),
+    ),
+}
+
+CASES = [
+    pytest.param(path, forbidden, id=f"{group}:{path.relative_to(APP_DIR).as_posix()}")
+    for group, (paths, forbidden) in BOUNDARIES.items()
+    for path in paths
+]
 
 
-def _is_forbidden(module: str) -> bool:
-    return any(module == name or module.startswith(f"{name}.") for name in FORBIDDEN)
+def _is_forbidden(module: str, forbidden: tuple[str, ...]) -> bool:
+    return any(module == name or module.startswith(f"{name}.") for name in forbidden)
 
 
 def _module_name(path: Path) -> str:
@@ -41,32 +61,36 @@ def _imported_modules(path: Path) -> list[tuple[int, str]]:
     return found
 
 
-def test_pure_modules_exist() -> None:
-    assert len(PURE_MODULES) >= 4
-    assert all(path.exists() for path in PURE_MODULES)
+@pytest.mark.parametrize("group", BOUNDARIES)
+def test_boundary_covers_real_modules(group: str) -> None:
+    paths, _ = BOUNDARIES[group]
+    assert len(paths) >= 4
+    assert all(path.exists() for path in paths)
 
 
-@pytest.mark.parametrize("path", PURE_MODULES, ids=_module_name)
-def test_module_does_not_import_forbidden_packages(path: Path) -> None:
+@pytest.mark.parametrize(("path", "forbidden"), CASES)
+def test_module_does_not_import_forbidden_packages(path: Path, forbidden: tuple[str, ...]) -> None:
     violations = [
         f"{path.name}:{line} imports {module}"
         for line, module in _imported_modules(path)
-        if _is_forbidden(module)
+        if _is_forbidden(module, forbidden)
     ]
 
     assert not violations, violations
 
 
-def test_importing_pure_modules_does_not_load_forbidden_packages_indirectly() -> None:
+@pytest.mark.parametrize("group", BOUNDARIES)
+def test_importing_does_not_load_forbidden_packages_indirectly(group: str) -> None:
     """Catches indirect imports too, e.g. ranking -> app.models -> sqlalchemy.
 
     Runs in a fresh interpreter, because this test process has already imported everything.
     """
+    paths, forbidden = BOUNDARIES[group]
     code = (
         "import importlib, sys\n"
-        f"for name in {[_module_name(path) for path in PURE_MODULES]!r}:\n"
+        f"for name in {[_module_name(path) for path in paths]!r}:\n"
         "    importlib.import_module(name)\n"
-        f"forbidden = {FORBIDDEN!r}\n"
+        f"forbidden = {forbidden!r}\n"
         "print('\\n'.join(sorted(m for m in sys.modules\n"
         "    if any(m == f or m.startswith(f + '.') for f in forbidden))))\n"
     )

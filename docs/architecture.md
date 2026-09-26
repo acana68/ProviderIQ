@@ -79,6 +79,8 @@ backend/app/
 │   └── ranking/            # normalization.py, weights.py, engine.py (pure functions)
 └── ai/
     ├── base.py             # QueryParser protocol
+    ├── vocabulary.py       # allowed slugs/cities, loaded via a protocol (no repository import)
+    ├── criteria.py         # final checks shared by both parsers
     ├── llm_client.py       # provider-specific client behind an interface
     ├── llm_parser.py
     ├── rule_based_parser.py
@@ -271,32 +273,77 @@ Quality never drops below 0.25. That's deliberate: even a cost-focused search sh
 
 Ranking the full filtered set in Python is fine at this scale. At 100M providers, scoring moves into the database or Elasticsearch.
 
-## 8. How the AI parser connects to the backend
+## 8. How AI is used
+
+The LLM does exactly one job: it turns a patient's sentence into the same structured
+criteria the search form produces. Everything else stays deterministic code.
 
 ```
 "cardiologist near NYC for heart failure, quality matters"
-      │  POST /ai/parse-query   (max 500 chars, rate limited)
+      │  POST /ai/parse-query   (1–500 chars, own rate limit)
       ▼
 QueryParser.parse(text) → ParseResult { criteria, parser_used, warnings }
       │
-      ├─ LLMQueryParser
-      │    • system prompt lists the ONLY allowed specialty/condition slugs + priorities
-      │    • provider's structured-output / JSON-schema mode
-      │    • 8s timeout, no tools, no DB access, no secrets in the prompt
-      │    • response → Pydantic ParsedCriteria (extra="forbid", enums, bounded ranges)
-      │    • post-validation: unknown slugs dropped with a warning, radius clamped 1–100,
-      │      city checked against the cities table
+      ├─ LLMQueryParser (AI_PROVIDER=anthropic and a key is set)
+      │    Claude, forced tool use → ParsedCriteria → vocabulary check
       │
-      └─ on timeout / API error / invalid output → RuleBasedQueryParser
-           (synonym map like "heart doctor" → cardiology, city match,
-            "within N miles" regex, priority keywords)
+      └─ RuleBasedQueryParser (AI_PROVIDER=none, no key, or any LLM failure)
       ▼
 Frontend shows editable criteria → user clicks Search → POST /search (structured only)
 ```
 
-**Provider-agnostic design:** `LLMQueryParser` depends on an `LLMClient` interface with a single method, `complete_json(system, user, schema) -> dict`. Switching providers means writing one new client class and changing an env var. Tests use a `FakeLLMClient` that returns canned or malformed output, so tests never call a real API.
+- **Parse only.** `/ai/parse-query` never searches, and `/search` never sees free text or
+  calls the LLM. Ranking stays deterministic and testable, and the user can fix what the
+  AI got wrong before searching.
+- **Forced tool use.** The request defines a single tool whose `input_schema` is the
+  `ParsedCriteria` JSON schema, and `tool_choice` forces that tool. So the reply is always
+  one tool call whose input is the criteria object; no free-form text is parsed. The tool
+  is never executed; it is only a typed container for the answer. The request also uses
+  temperature 0, a 512-token cap, and the `AI_TIMEOUT_SECONDS` timeout with no retries.
+- **Validation, twice.**
+  - First, the output must validate against `ParsedCriteria`: a closed schema
+    (`extra="forbid"`), enums, and bounded ranges. The same shapes as `SearchRequest`.
+  - Then every specialty, condition, and city is checked against the vocabulary loaded
+    from the database. Unknown values are dropped with a warning that doesn't repeat them.
+  - Last, a radius or distance priority without a location is dropped, because `/search`
+    would reject it.
+- **Fallback, always.** Any failure falls back to the keyword parser: a timeout, API
+  error, refusal, truncated or malformed output, or an extra field. The response still
+  succeeds, with `parser_used: "rule_based"` and the warning "AI parser unavailable; used
+  keyword matching instead." With `AI_PROVIDER=none` (the default), or `anthropic` without
+  a key (warned at startup), the app runs entirely without AI.
+- **Injection containment.**
+  - The query is escaped and wrapped in `<query>` tags. The system prompt says it is data
+    to interpret, not instructions.
+  - Detection isn't what we rely on. The model has no data access, no executable tools,
+    and nothing secret in its prompt, and it can only answer through the criteria schema.
+  - So the worst a successful injection can do is produce some other valid search.
+  - `ai/` is forbidden from importing repositories, models, or the database, which a test
+    enforces. The LLM has no path to data.
+- **Privacy.**
+  - The query text is never logged, stored, or echoed in warnings. The parse log line has
+    only the parser used, the latency, the query length, and the warning count.
+  - LLM failures log only the exception type, because exception messages can quote the
+    output.
+  - `search_logs` records `parser_used`, never the text.
+  - The API key is a `SecretStr`, so it is never printed.
+- **Cost controls.**
+  - Claude Haiku 4.5 by default (`AI_MODEL`).
+  - A 512-token output cap and no retries.
+  - A per-IP limit on this endpoint (`AI_RATE_LIMIT_PER_MINUTE`, default 10), checked
+    before any database or API work.
+  - The 500-character input limit.
+  - Tests use a `FakeLLMClient`. The one test against the real API is marked `live` and
+    runs only with `pytest -m live`.
 
-**Prompt injection:** the input is untrusted, and we assume someone will try "ignore instructions and...". The worst case is that the model outputs some other valid combination of enum values, which just means a different legitimate search. The LLM has no tools, no data access, and nothing secret to leak. Its output is validated against a closed schema and rendered as text (React escapes it). That's containing the blast radius instead of trying to detect every attack.
+**Measuring it:** `python -m scripts.eval_parser` scores both parsers field by field on
+about 20 labeled queries. It runs the LLM parser only when a key is configured.
+
+**Provider-agnostic design:** `LLMQueryParser` depends on an `LLMClient` interface with a
+single method, `complete_json(system, user, schema) -> dict`. Switching providers means
+writing one new client class. Forced tool choice and temperature both work on the default
+model. Some newer Claude models reject one or the other, which would make every parse
+fall back, so re-check `parser_used` after changing `AI_MODEL`.
 
 ## 9. Roadmap
 
@@ -345,9 +392,10 @@ provideriq/
 │   │   ├── services/
 │   │   │   ├── search_service.py  geo.py  explanation.py
 │   │   │   └── ranking/       normalization.py weights.py engine.py
-│   │   └── ai/                base.py llm_client.py llm_parser.py rule_based_parser.py prompts.py factory.py
+│   │   └── ai/                base.py vocabulary.py criteria.py rule_based_parser.py
+│   │                          llm_client.py llm_parser.py prompts.py factory.py
 │   ├── alembic/               env.py  versions/
-│   ├── scripts/               seed_db.py
+│   ├── scripts/               generate_data.py seed_db.py ranking_demo.py eval_parser.py
 │   ├── tests/                 conftest.py  unit/  integration/
 │   ├── alembic.ini
 │   ├── pyproject.toml         # ruff + pytest config

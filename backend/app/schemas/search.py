@@ -1,17 +1,17 @@
-from typing import Annotated, Literal, Self
+from typing import Literal, Self
 
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    Field,
-    StringConstraints,
-    ValidationInfo,
-    field_validator,
-)
+from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
 from pydantic_core import PydanticCustomError
 
 from app.models import Provider
-from app.schemas.common import StateCode
+from app.schemas.common import (
+    CityName,
+    Location,
+    ParserUsed,
+    RadiusMiles,
+    Slug,
+    StateCode,
+)
 from app.schemas.provider import ProviderSummary
 from app.schemas.score import ProviderScore
 from app.services.ranking.engine import (
@@ -23,18 +23,6 @@ from app.services.ranking.engine import (
 from app.services.ranking.weights import Priority
 
 DEFAULT_RADIUS_MILES = 25.0
-MAX_RADIUS_MILES = 100.0
-
-Slug = Annotated[str, StringConstraints(min_length=1, max_length=100)]
-CityName = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)]
-RadiusMiles = Annotated[float, Field(ge=1, le=MAX_RADIUS_MILES)]
-
-
-class Location(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    city: CityName
-    state: StateCode
 
 
 class SearchRequest(BaseModel):
@@ -52,6 +40,15 @@ class SearchRequest(BaseModel):
     page: int = Field(default=1, ge=1)
     page_size: int = Field(default=20, ge=1, le=50)
     source: Literal["nl", "manual"] = "manual"
+    # Which parser produced the criteria; only meaningful for natural-language searches.
+    parser_used: ParserUsed | None = None
+
+    @field_validator("parser_used")
+    @classmethod
+    def _parser_needs_nl_source(cls, value: str | None, info: ValidationInfo) -> str | None:
+        if value is not None and info.data.get("source") != "nl":
+            raise PydanticCustomError("nl_source_required", 'parser_used requires source="nl"')
+        return value
 
     @field_validator("radius_miles")
     @classmethod

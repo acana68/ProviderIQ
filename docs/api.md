@@ -47,7 +47,7 @@ submitted value is never echoed back.
 | `VALIDATION_ERROR` | 422 | Malformed request: invalid parameter or body field, unknown body field |
 | `INVALID_SEARCH` | 422 | Well-formed criteria that can't be used: an unknown specialty or condition slug, or `priority`/`sort` of `distance` without a location |
 | `LOCATION_NOT_FOUND` | 422 | City/state not in `GET /cities` |
-| `RATE_LIMITED` | 429 | Over `RATE_LIMIT_PER_MINUTE` (default 120). Wait `Retry-After` seconds |
+| `RATE_LIMITED` | 429 | Over `RATE_LIMIT_PER_MINUTE` (default 120), or `AI_RATE_LIMIT_PER_MINUTE` (default 10) on `/ai/parse-query`. Wait `Retry-After` seconds |
 | `INTERNAL_ERROR` | 500 | Unexpected server error. Details go to the server log only |
 
 ### Request IDs
@@ -284,6 +284,7 @@ computed. The body never contains free text, and unknown fields are rejected.
 | `page` | int ≥ 1 | Default `1` |
 | `page_size` | int 1–50 | Default `20` |
 | `source` | `manual` \| `nl` | Default `manual`. Whether the criteria came from the form or the AI parser |
+| `parser_used` | `llm` \| `rule_based`, optional | Which parser produced the criteria, from `/ai/parse-query`. Only allowed with `"source": "nl"` (`422` otherwise) |
 
 Sort orders: `match` by overall score, `quality` and `experience` highest first, `cost`
 cheapest first, `distance` nearest first. Ties always fall back to overall score, then
@@ -377,8 +378,8 @@ Response (first item only):
   distance weight, and the rest are rescaled to sum to 1. For example, `{"priority": "cost"}`
   gives `{ "quality": 0.294, "experience": 0.118, "cost": 0.529, "volume": 0.059 }`.
 
-Every successful search writes a `search_logs` row with the source, specialty, state,
-priority, result count, and latency. It never stores the condition, city, or any text.
+Every successful search writes a `search_logs` row with the source, parser used, specialty,
+state, priority, result count, and latency. It never stores the condition, city, or any text.
 
 Errors:
 
@@ -403,3 +404,77 @@ Errors:
   }
 }
 ```
+
+## `POST /ai/parse-query`
+
+Turns a natural-language query into search criteria. It never runs a search. The
+frontend shows the criteria as editable fields, and the user then runs `POST /search` with
+them. Parsing never fails because of the AI: if the model is unavailable, slow, or returns
+anything invalid, the keyword parser answers instead, and a warning says so.
+
+Request:
+
+```json
+{ "query": "Find me a highly rated cardiologist near New York with experience treating heart failure" }
+```
+
+`query` is trimmed and must be 1–500 characters (`422` otherwise). Unknown fields are
+rejected.
+
+Response:
+
+```json
+{
+  "criteria": {
+    "specialty": "cardiology",
+    "condition": "heart-failure",
+    "location": { "city": "New York", "state": "NY" },
+    "radius_miles": null,
+    "min_quality_score": null,
+    "min_years_experience": null,
+    "accepting_new_patients": null,
+    "priority": "quality"
+  },
+  "parser_used": "rule_based",
+  "warnings": []
+}
+```
+
+- **`criteria`** uses exactly the field names and value shapes of the `POST /search`
+  body, and every value is one the directory knows. Send the non-null fields to
+  `/search` along with `"source": "nl"` and `"parser_used": <parser_used>`.
+- **`parser_used`**: `llm` when the AI parser answered, and `rule_based` when the keyword
+  parser did. That happens when `AI_PROVIDER=none` or no key is configured, or as a
+  fallback.
+- **`warnings`** are human-readable notes to show next to the criteria: a fallback, a
+  specialty inferred from the condition, or a value dropped because it wasn't in the
+  directory. They never repeat the query or a rejected value.
+
+For example, `"who treats heart failure? nearest one please"` gives:
+
+```json
+{
+  "criteria": {
+    "specialty": "cardiology",
+    "condition": "heart-failure",
+    "location": null,
+    "radius_miles": null,
+    "min_quality_score": null,
+    "min_years_experience": null,
+    "accepting_new_patients": null,
+    "priority": null
+  },
+  "parser_used": "rule_based",
+  "warnings": [
+    "Ignored the distance priority because no location was recognized.",
+    "Inferred the specialty (Cardiology) from the condition."
+  ]
+}
+```
+
+A radius or distance priority without a recognized location is dropped, because
+`/search` would reject it.
+
+This endpoint has its own per-IP limit, `AI_RATE_LIMIT_PER_MINUTE` (default 10), on top
+of the global one. Over it you get `429 RATE_LIMITED` with `Retry-After`. The server logs
+the parser used, the latency, and the query length, but never the query text.

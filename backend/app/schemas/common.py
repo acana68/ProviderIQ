@@ -2,10 +2,25 @@ import math
 from http import HTTPStatus
 from typing import Annotated, Any, Literal, Self
 
-from pydantic import BaseModel, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 # Two letters in any case, normalized to uppercase ("ny" -> "NY").
 StateCode = Annotated[str, StringConstraints(pattern=r"^[A-Za-z]{2}$", to_upper=True)]
+
+# Shared by search requests and AI-parsed criteria, so the two always have the same shape.
+MAX_RADIUS_MILES = 100.0
+Slug = Annotated[str, StringConstraints(min_length=1, max_length=100)]
+CityName = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)]
+RadiusMiles = Annotated[float, Field(ge=1, le=MAX_RADIUS_MILES)]
+# Which parser turned natural language into criteria.
+ParserUsed = Literal["llm", "rule_based"]
+
+
+class Location(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    city: CityName
+    state: StateCode
 
 
 class HealthResponse(BaseModel):

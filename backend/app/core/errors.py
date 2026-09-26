@@ -42,12 +42,14 @@ class AppError(Exception):
         message: str,
         status_code: int = 400,
         details: list[dict[str, str]] | None = None,
+        headers: dict[str, str] | None = None,
     ) -> None:
         super().__init__(message)
         self.code = code
         self.message = message
         self.status_code = status_code
         self.details = details
+        self.headers = headers
 
 
 class NotFoundError(AppError):
@@ -91,7 +93,7 @@ def internal_error_response() -> JSONResponse:
 
 async def app_error_handler(request: Request, exc: Exception) -> JSONResponse:
     assert isinstance(exc, AppError)
-    return error_response(exc.status_code, exc.code, exc.message, exc.details)
+    return error_response(exc.status_code, exc.code, exc.message, exc.details, exc.headers)
 
 
 async def validation_error_handler(request: Request, exc: Exception) -> JSONResponse:

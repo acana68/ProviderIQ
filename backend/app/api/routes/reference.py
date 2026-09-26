@@ -4,9 +4,8 @@ from fastapi import APIRouter, Query
 
 from app.api.deps import ReferenceRepo
 from app.core.errors import NotFoundError
-from app.schemas.common import error_responses
+from app.schemas.common import Location, error_responses
 from app.schemas.reference import ConditionSummary, SpecialtySummary
-from app.schemas.search import Location
 
 router = APIRouter(tags=["reference"])
 

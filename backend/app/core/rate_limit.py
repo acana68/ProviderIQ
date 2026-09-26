@@ -58,6 +58,11 @@ class SlidingWindowRateLimiter:
         self._next_sweep = now + self._window
 
 
+def retry_after_header(seconds: float) -> str:
+    """Retry-After takes whole seconds; round up so a client that waits isn't early."""
+    return str(max(1, math.ceil(seconds)))
+
+
 class RateLimitMiddleware:
     """Rejects requests over the limit with 429 RATE_LIMITED and a Retry-After header.
 
@@ -91,6 +96,6 @@ class RateLimitMiddleware:
             429,
             "RATE_LIMITED",
             "Too many requests; please retry later",
-            headers={"Retry-After": str(max(1, math.ceil(retry_after)))},
+            headers={"Retry-After": retry_after_header(retry_after)},
         )
         await response(scope, receive, send)

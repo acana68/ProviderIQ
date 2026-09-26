@@ -18,11 +18,11 @@ from app.repositories.provider_repository import (
 )
 from app.repositories.reference_repository import ReferenceRepository
 from app.repositories.search_log_repository import SearchLogRepository
+from app.schemas.common import Location
 from app.schemas.provider import ProviderDetail, ScoredProviderDetail
 from app.schemas.score import ProviderScore
 from app.schemas.search import (
     DEFAULT_RADIUS_MILES,
-    Location,
     SearchRequest,
     SearchResponse,
     SearchResult,
@@ -188,6 +188,7 @@ class SearchService:
             "search",
             extra={
                 "source": request.source,
+                "parser_used": request.parser_used,
                 "specialty": request.specialty,
                 "state": state,
                 "priority": request.priority.value,
@@ -199,6 +200,7 @@ class SearchService:
         try:
             self.search_logs.add(
                 source=request.source,
+                parser_used=request.parser_used,
                 specialty_id=specialty_id,
                 state=state,
                 priority=request.priority.value,

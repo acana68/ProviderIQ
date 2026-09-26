@@ -61,3 +61,19 @@ class ReferenceRepository:
         return self.session.scalars(
             select(City).where(func.lower(City.name) == name.lower(), City.state == state)
         ).one_or_none()
+
+    def list_condition_specialties(self) -> Sequence[Row[tuple[str, str]]]:
+        """Distinct (condition_slug, specialty_slug) pairs: which specialties' providers
+        treat each condition. Derived from providers, like list_conditions(specialty)."""
+        stmt = (
+            select(
+                Condition.slug.label("condition_slug"),
+                Specialty.slug.label("specialty_slug"),
+            )
+            .join(provider_conditions, provider_conditions.c.condition_id == Condition.id)
+            .join(Provider, Provider.id == provider_conditions.c.provider_id)
+            .join(Specialty, Specialty.id == Provider.specialty_id)
+            .distinct()
+            .order_by(Condition.slug, Specialty.slug)
+        )
+        return self.session.execute(stmt).all()

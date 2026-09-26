@@ -11,6 +11,7 @@ class SearchLogRepository:
         self,
         *,
         source: str,
+        parser_used: str | None,
         specialty_id: int | None,
         state: str | None,
         priority: str,
@@ -24,6 +25,7 @@ class SearchLogRepository:
         self.session.add(
             SearchLog(
                 source=source,
+                parser_used=parser_used,
                 specialty_id=specialty_id,
                 state=state,
                 priority=priority,
