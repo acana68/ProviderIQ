@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.exc import OperationalError
 
 from app.database.session import get_db
+from tests.helpers import assert_error
 
 # Appears in the simulated driver error; must never reach the response body.
 SECRET_ERROR_DETAIL = "password authentication failed for user provideriq"
@@ -46,4 +47,6 @@ def test_health_returns_503_when_database_is_unavailable(app: FastAPI) -> None:
 
 
 def test_unknown_route_returns_404(client: TestClient) -> None:
-    assert client.get("/api/v1/does-not-exist").status_code == 404
+    error = assert_error(client.get("/api/v1/does-not-exist"), 404, "NOT_FOUND")
+
+    assert error["message"] == "Not Found"
