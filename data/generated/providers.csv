@@ -1,0 +1,1501 @@
+provider_key,first_name,last_name,credential,specialty,subspecialty,city,state,zip_code,latitude,longitude,years_experience,quality_score,cost_index,patient_volume,complication_rate,readmission_rate,accepting_new_patients
+P00001,Danielle,Johnson,MD,primary-care,,New York,NY,10054,40.731779,-73.857878,3,72.5,0.81,2274,0.0067,0.0665,true
+P00002,Joshua,Walker,MD,gastroenterology,Inflammatory Bowel Disease,New York,NY,10044,40.688066,-73.822724,31,69.9,1.17,1122,0.0207,0.0699,true
+P00003,Jill,Rhodes,MD,primary-care,,Miami,FL,33120,25.893990,-80.380775,9,76.7,1.12,2846,0.0074,0.0712,true
+P00004,Patricia,Miller,MD,neurology,Vascular Neurology,Miami,FL,33163,25.784078,-80.243118,7,68.4,0.98,1884,0.0136,0.0984,true
+P00005,Robert,Johnson,MD,primary-care,,New York,NY,10048,40.749169,-73.966456,5,56.0,0.84,1736,0.0143,0.0935,true
+P00006,Jeffery,Wagner,MD,dermatology,,New York,NY,10013,40.710641,-74.022065,1,69.3,1.12,2022,0.0054,0.0072,true
+P00007,Anthony,Gonzalez,MD,primary-care,Geriatrics,New York,NY,10062,40.843038,-74.021923,10,79.0,1.01,856,0.0061,0.0477,true
+P00008,Debra,Gardner,MD,psychiatry,Geriatric Psychiatry,Houston,TX,77075,29.617581,-95.388016,20,77.5,1.05,726,0.0033,0.0653,true
+P00009,Jeffrey,Lawrence,MD,primary-care,,Dallas,TX,75284,32.595659,-96.908529,26,68.7,0.96,3295,0.0065,0.0470,true
+P00010,Lisa,Smith,MD,orthopedics,,Los Angeles,CA,90070,34.026931,-118.076288,36,76.8,1.01,2733,0.0554,0.0689,true
+P00011,Linda,Wolfe,MD,orthopedics,,New York,NY,10071,40.834219,-74.085867,9,71.4,0.88,1007,0.0536,0.0621,true
+P00012,Matthew,Moore,MD,psychiatry,Child and Adolescent Psychiatry,Los Angeles,CA,90072,34.000487,-118.246771,13,74.4,1.07,996,0.0024,0.0768,false
+P00013,Susan,Rogers,DO,dermatology,Dermatopathology,New York,NY,10012,40.544625,-73.945050,7,95.6,0.95,3101,0.0024,0.0022,true
+P00014,Christopher,Davis,MD,dermatology,,Dallas,TX,75277,32.916377,-96.609769,19,76.5,1.48,4411,0.0032,0.0045,false
+P00015,Melanie,Munoz,MD,gastroenterology,,New York,NY,10071,40.798095,-73.884681,15,79.5,1.09,1499,0.0156,0.0643,true
+P00016,Lindsay,Blair,DO,primary-care,,Dallas,TX,75230,32.656611,-96.853348,1,98.3,1.14,946,0.0046,0.0369,false
+P00017,Amanda,Dudley,MD,gastroenterology,Inflammatory Bowel Disease,Atlanta,GA,30365,33.694052,-84.492032,20,56.4,1.20,3034,0.0327,0.1265,true
+P00018,Nicholas,Arnold,MD,endocrinology,Obesity Medicine,Boston,MA,02166,42.191505,-71.075260,24,66.6,1.30,1212,0.0100,0.0711,true
+P00019,Maria,Montgomery,DO,psychiatry,Geriatric Psychiatry,Los Angeles,CA,90086,33.970395,-118.053953,5,67.8,1.04,420,0.0036,0.0913,true
+P00020,Michelle,Ray,MD,orthopedics,,Los Angeles,CA,90042,34.110740,-118.482279,19,82.2,0.89,2846,0.0436,0.0521,true
+P00021,Janet,Williams,MD,endocrinology,,Chicago,IL,60699,41.960360,-87.482157,1,61.7,1.34,1349,0.0114,0.0792,false
+P00022,Jeremy,Roberts,MD,pulmonology,Interventional Pulmonology,San Francisco,CA,94199,37.766419,-122.679322,17,58.8,0.93,1031,0.0245,0.1837,true
+P00023,Christopher,Hall,MD,dermatology,,Dallas,TX,75253,32.944479,-96.711617,22,56.3,1.32,4940,0.0038,0.0072,true
+P00024,Craig,Ramirez,DO,dermatology,,Los Angeles,CA,90079,33.986061,-118.386212,2,68.3,1.09,2167,0.0040,0.0047,false
+P00025,Cynthia,Diaz,MD,neurology,,Los Angeles,CA,90060,34.143899,-118.348268,38,72.6,1.24,1589,0.0148,0.0835,false
+P00026,Mitchell,Clark,MD,dermatology,Dermatopathology,Los Angeles,CA,90095,34.121701,-118.272294,18,63.1,0.86,1550,0.0037,0.0053,true
+P00027,Joseph,Zuniga,MD,cardiology,,Miami,FL,33154,25.599992,-80.322739,34,92.0,0.95,1895,0.0165,0.0681,false
+P00028,Deborah,Lynch,MD,primary-care,Sports Medicine,Seattle,WA,98111,47.419745,-122.270279,5,77.3,1.20,3445,0.0062,0.0517,true
+P00029,George,Daniel,MD,gastroenterology,,Boston,MA,02192,42.298299,-71.321435,17,67.5,0.86,2009,0.0194,0.0687,true
+P00030,Frank,Gray,MD,primary-care,Preventive Medicine,Chicago,IL,60632,41.788223,-87.449698,16,85.4,0.80,4716,0.0068,0.0447,true
+P00031,Veronica,Bowman,MD,pulmonology,Critical Care Medicine,Pittsburgh,PA,15289,40.398423,-79.833802,11,76.0,1.09,860,0.0235,0.1367,true
+P00032,Angela,Cohen,DO,orthopedics,,New York,NY,10010,40.578007,-74.099258,11,71.8,1.23,1510,0.0494,0.0578,true
+P00033,Megan,Parsons,MD,primary-care,Sports Medicine,Austin,TX,78720,30.322383,-97.506839,29,79.9,1.04,2868,0.0074,0.0794,true
+P00034,Jeremy,Johnson,MD,primary-care,Sports Medicine,Orlando,FL,32821,28.610799,-81.306580,21,74.3,0.97,1565,0.0074,0.0787,true
+P00035,Leslie,Adams,MD,endocrinology,,Houston,TX,77097,29.765004,-95.329931,1,61.4,0.97,911,0.0114,0.0751,true
+P00036,Jason,Hahn,MD,neurology,,New York,NY,10004,40.638797,-73.945528,16,53.9,0.94,1323,0.0291,0.1378,true
+P00037,Nancy,Edwards,MD,primary-care,,Miami,FL,33180,25.668395,-80.224874,12,79.4,0.79,1992,0.0056,0.0513,false
+P00038,Diana,Foster,MD,primary-care,,New York,NY,10058,40.657981,-73.739135,7,65.4,1.30,2017,0.0108,0.0621,true
+P00039,Robin,Ellis,MD,endocrinology,,Tampa,FL,33697,27.861873,-82.615053,9,75.0,0.93,1159,0.0060,0.0402,true
+P00040,Joseph,Wright,MD,oncology,,Dallas,TX,75212,32.971948,-96.825187,16,72.3,1.01,331,0.0529,0.1399,true
+P00041,Anna,Baker,MD,neurology,Vascular Neurology,Dallas,TX,75297,32.881019,-96.964222,2,78.9,1.05,1083,0.0100,0.0563,true
+P00042,Brenda,Hurst,MD,gastroenterology,Hepatology,Dallas,TX,75247,32.811206,-96.726159,18,68.5,0.92,1736,0.0213,0.0890,true
+P00043,Reginald,Robinson,MD,dermatology,Dermatopathology,Houston,TX,77056,29.686872,-95.516604,10,92.2,1.11,1894,0.0025,0.0066,false
+P00044,Whitney,Hicks,DO,primary-care,Geriatrics,San Francisco,CA,94195,37.713962,-122.156941,14,77.9,0.72,2495,0.0046,0.0415,true
+P00045,Christopher,Williams,MD,psychiatry,Addiction Psychiatry,Houston,TX,77053,29.647970,-95.319357,9,58.7,1.53,677,0.0033,0.1295,false
+P00046,Daniel,Burton,MD,primary-care,Adolescent Medicine,New York,NY,10050,40.741312,-73.760085,4,70.3,0.96,2315,0.0089,0.0718,false
+P00047,Laura,Henderson,DO,cardiology,,Atlanta,GA,30338,33.889104,-84.487476,19,71.5,0.84,1580,0.0307,0.1292,false
+P00048,Bryan,James,MD,pulmonology,,Houston,TX,77046,29.721104,-95.131774,10,74.4,1.60,1478,0.0196,0.1579,true
+P00049,Wendy,Rice,MD,primary-care,Sports Medicine,Houston,TX,77097,29.926650,-95.343902,9,68.7,1.13,1952,0.0079,0.0512,true
+P00050,Tasha,Valencia,MD,gastroenterology,,New York,NY,10033,40.849288,-73.809198,28,67.1,1.03,2092,0.0216,0.1160,true
+P00051,Alexander,Le,MD,dermatology,,Houston,TX,77061,29.915882,-95.485661,10,69.8,0.84,2000,0.0044,0.0062,true
+P00052,Erin,Herrera,MD,primary-care,,Los Angeles,CA,90055,34.197597,-118.089765,1,57.7,0.91,2346,0.0107,0.1024,true
+P00053,Joseph,Davidson,MD,cardiology,Heart Failure,New York,NY,10052,40.707798,-74.194098,19,64.7,1.05,2970,0.0357,0.1276,true
+P00054,Daniel,Graham,MD,orthopedics,,Philadelphia,PA,19171,39.859416,-75.107256,10,65.2,1.15,1753,0.0799,0.1193,true
+P00055,Shawn,Mckay,MD,primary-care,Preventive Medicine,Chicago,IL,60620,41.823294,-87.711271,19,83.9,1.22,4106,0.0051,0.0441,true
+P00056,Nancy,Baker,MD,dermatology,Pediatric Dermatology,Houston,TX,77086,29.619014,-95.307818,31,67.6,1.06,2299,0.0037,0.0061,true
+P00057,Vincent,White,MD,neurology,,New York,NY,10045,40.797043,-73.784668,26,67.8,1.06,1879,0.0203,0.1089,true
+P00058,Rita,Harrell,MD,gastroenterology,Advanced Endoscopy,Houston,TX,77010,29.933746,-95.480173,25,85.7,0.93,2025,0.0134,0.0572,true
+P00059,Kenneth,Fowler,MD,dermatology,Dermatopathology,New York,NY,10096,40.635630,-74.082226,3,68.1,1.60,2145,0.0030,0.0034,true
+P00060,Chelsea,Hernandez,MD,primary-care,,Pittsburgh,PA,15236,40.547353,-79.944143,16,70.5,1.33,3622,0.0088,0.0900,true
+P00061,Kathryn,Ryan,MD,primary-care,,Boston,MA,02191,42.447330,-70.894105,18,81.3,1.05,3413,0.0080,0.0571,true
+P00062,Kimberly,Moreno,DO,primary-care,,New York,NY,10019,40.683743,-74.085247,30,65.9,0.84,4546,0.0111,0.0740,true
+P00063,Aaron,Nguyen,MD,oncology,,Miami,FL,33182,25.667389,-80.382212,3,77.5,0.81,260,0.0451,0.1139,true
+P00064,Andrew,Hickman,MD,cardiology,Heart Failure,Tampa,FL,33679,27.959608,-82.534694,1,85.2,1.55,2061,0.0277,0.1004,true
+P00065,Natasha,Decker,MD,gastroenterology,,Miami,FL,33186,25.768795,-80.075456,13,99.0,0.98,999,0.0105,0.0542,false
+P00066,Kyle,Brown,MD,cardiology,Interventional Cardiology,Los Angeles,CA,90034,34.173340,-118.307844,5,64.5,0.96,1874,0.0344,0.1454,true
+P00067,Natalie,Arroyo,MD,pulmonology,,Houston,TX,77090,29.885626,-95.200331,32,62.3,0.90,1436,0.0276,0.1372,true
+P00068,Christopher,Tucker,MD,dermatology,,Houston,TX,77073,29.918538,-95.293803,7,78.2,0.94,3425,0.0034,0.0049,true
+P00069,Chad,Hodges,MD,cardiology,,Los Angeles,CA,90047,34.206414,-118.257396,13,62.6,1.15,1878,0.0453,0.1289,true
+P00070,Katie,Anderson,MD,neurology,Movement Disorders,Houston,TX,77099,29.681307,-95.578597,15,84.4,0.64,1144,0.0118,0.0588,true
+P00071,Thomas,Pierce,MD,dermatology,,Atlanta,GA,30356,33.722492,-84.435347,32,72.5,1.34,2761,0.0031,0.0054,true
+P00072,Joseph,Brennan,MD,cardiology,,Houston,TX,77077,29.571498,-95.433598,19,69.7,0.97,1464,0.0352,0.0913,true
+P00073,Rodney,Lewis,MD,neurology,,Orlando,FL,32808,28.709416,-81.438837,26,81.0,0.98,2353,0.0110,0.0711,true
+P00074,Amber,Blair,MD,psychiatry,,New York,NY,10027,40.619740,-74.019726,14,79.6,1.29,584,0.0033,0.0971,true
+P00075,James,Collins,MD,primary-care,Adolescent Medicine,Pittsburgh,PA,15215,40.505802,-79.865196,2,75.2,0.85,2034,0.0079,0.0914,true
+P00076,Wanda,Santos,MD,neurology,Vascular Neurology,Phoenix,AZ,85057,33.266722,-112.109388,1,69.5,1.04,1145,0.0142,0.0778,true
+P00077,Samuel,Holmes,MD,orthopedics,,New York,NY,10032,40.681524,-74.163334,34,61.8,0.83,4926,0.0642,0.0861,true
+P00078,David,Walker,MD,pulmonology,,San Francisco,CA,94198,37.968981,-122.375038,20,80.8,1.04,898,0.0128,0.0957,false
+P00079,Matthew,Chapman,DO,orthopedics,Spine Surgery,Chicago,IL,60616,41.798551,-87.462364,30,84.6,0.85,1139,0.0350,0.0465,true
+P00080,Jerry,Robinson,MD,pulmonology,,Chicago,IL,60620,42.052107,-87.795027,1,76.2,1.00,952,0.0218,0.1044,true
+P00081,Chad,Welch,MD,cardiology,Interventional Cardiology,Philadelphia,PA,19133,40.044898,-75.348152,9,67.2,0.93,856,0.0359,0.1291,true
+P00082,Jeremy,Whitehead,MD,primary-care,Adolescent Medicine,San Francisco,CA,94143,37.633781,-122.593543,13,64.4,0.76,2118,0.0087,0.0810,true
+P00083,Michele,Jones,MD,orthopedics,,Atlanta,GA,30375,33.822729,-84.428837,24,64.0,1.03,3297,0.0468,0.0884,true
+P00084,John,Caldwell,DO,neurology,,Atlanta,GA,30374,33.609406,-84.564678,12,59.9,1.03,854,0.0158,0.0939,false
+P00085,Jason,Anderson,MD,primary-care,Preventive Medicine,Dallas,TX,75294,32.688302,-96.756208,21,62.1,1.01,1415,0.0124,0.0915,true
+P00086,Selena,Duncan,DO,primary-care,,Dallas,TX,75235,32.691269,-97.014891,9,71.9,1.23,2105,0.0072,0.0715,true
+P00087,Thomas,Mueller,MD,dermatology,,San Francisco,CA,94105,37.901729,-122.542915,21,63.3,0.92,5836,0.0049,0.0074,true
+P00088,Lindsey,Lee,MD,primary-care,Preventive Medicine,San Diego,CA,92160,32.664055,-117.272309,14,63.6,1.25,3676,0.0161,0.0942,true
+P00089,Collin,Jordan,MD,dermatology,,New York,NY,10022,40.602974,-74.210930,31,67.2,0.68,5078,0.0041,0.0043,true
+P00090,Rodney,Owens,MD,dermatology,,Phoenix,AZ,85014,33.288498,-112.066680,9,86.9,1.18,4930,0.0027,0.0029,true
+P00091,Jessica,Nunez,MD,gastroenterology,Hepatology,Los Angeles,CA,90049,34.021118,-118.311125,21,74.8,1.22,3072,0.0187,0.0732,true
+P00092,Tracey,Garcia,MD,neurology,Vascular Neurology,Chicago,IL,60628,41.999702,-87.756603,9,69.9,1.06,1381,0.0138,0.0921,true
+P00093,Richard,Morgan,MD,primary-care,,Los Angeles,CA,90068,34.165497,-118.322111,27,88.4,1.01,3724,0.0055,0.0551,true
+P00094,Michelle,Wright,MD,oncology,Hematologic Oncology,San Francisco,CA,94174,37.699064,-122.600825,18,75.0,1.14,553,0.0687,0.1725,false
+P00095,James,West,DO,gastroenterology,,Phoenix,AZ,85048,33.295278,-111.973857,16,90.8,1.14,2470,0.0156,0.0562,false
+P00096,Robert,Ramirez,MD,psychiatry,,Los Angeles,CA,90024,33.888588,-118.141938,20,72.7,0.90,488,0.0036,0.1035,true
+P00097,John,Leblanc,MD,primary-care,,Dallas,TX,75299,32.783176,-96.555971,19,86.8,0.70,3037,0.0058,0.0450,true
+P00098,Scott,Callahan,MD,oncology,,Philadelphia,PA,19106,39.816694,-75.280058,10,80.8,1.28,359,0.0477,0.1758,true
+P00099,Andrea,Williams,MD,neurology,,Dallas,TX,75231,32.944220,-96.915532,7,47.7,0.79,1569,0.0273,0.2130,false
+P00100,Yvette,Huff,MD,primary-care,,Houston,TX,77042,29.837094,-95.153313,2,70.3,0.90,4971,0.0076,0.0527,true
+P00101,Tanya,House,MD,oncology,Breast Oncology,Philadelphia,PA,19163,39.927104,-75.008104,19,50.8,1.33,540,0.0732,0.2512,true
+P00102,Melinda,Martin,MD,endocrinology,Diabetes,New York,NY,10031,40.573255,-74.113107,9,64.6,1.08,1309,0.0099,0.0442,true
+P00103,Todd,Lewis,DO,endocrinology,Diabetes,Los Angeles,CA,90085,33.851546,-118.309199,14,70.2,0.74,1391,0.0092,0.0664,true
+P00104,Richard,Brown,MD,cardiology,Echocardiography,Los Angeles,CA,90022,34.190666,-118.226042,5,71.3,0.87,1804,0.0284,0.1223,true
+P00105,Nicholas,Galloway,MD,psychiatry,,Paterson,NJ,07548,41.020219,-74.366189,1,57.5,1.15,709,0.0054,0.1456,true
+P00106,Joseph,Bowers,MD,orthopedics,,Atlanta,GA,30372,33.546887,-84.350373,17,74.4,0.90,1309,0.0453,0.0417,false
+P00107,Spencer,Henderson,MD,pulmonology,,Chicago,IL,60664,41.776870,-87.389713,11,72.1,0.85,724,0.0238,0.1420,true
+P00108,Susan,Cowan,MD,dermatology,,San Francisco,CA,94131,37.827060,-122.264535,11,63.2,0.69,2429,0.0044,0.0054,true
+P00109,Angela,Higgins,MD,psychiatry,,Los Angeles,CA,90013,34.203797,-118.106489,21,84.7,0.73,671,0.0021,0.0783,true
+P00110,Eric,Phillips,MD,primary-care,Adolescent Medicine,Buffalo,NY,14209,42.873307,-78.725809,20,69.5,1.14,5433,0.0063,0.0561,true
+P00111,Tanya,Riley,MD,pulmonology,,Chicago,IL,60638,41.690527,-87.530777,23,50.9,0.87,2834,0.0488,0.1977,true
+P00112,Amy,Adkins,MD,gastroenterology,,Chicago,IL,60693,41.810647,-87.668185,10,55.4,0.97,1641,0.0249,0.0846,true
+P00113,Brian,Silva,MD,dermatology,,Houston,TX,77064,29.804869,-95.575044,28,99.0,0.97,2329,0.0022,0.0021,false
+P00114,Wesley,Farrell,DO,primary-care,Adolescent Medicine,Chicago,IL,60655,42.045985,-87.565194,15,88.4,0.71,2770,0.0041,0.0412,true
+P00115,Eric,Yu,MD,neurology,,New York,NY,10039,40.652152,-73.959391,15,73.0,1.01,2131,0.0158,0.0894,true
+P00116,Christopher,Lopez,MD,gastroenterology,,New York,NY,10022,40.592963,-74.217148,11,66.0,0.96,1272,0.0231,0.0708,true
+P00117,Brooke,Leonard,MD,oncology,Thoracic Oncology,Dallas,TX,75241,32.778084,-96.914120,13,73.9,1.11,526,0.0546,0.1403,true
+P00118,Joe,Wilson,MD,primary-care,Geriatrics,Orlando,FL,32814,28.484580,-81.180820,14,71.3,1.01,4296,0.0097,0.0861,true
+P00119,Pamela,Sanchez,MD,dermatology,,Albany,NY,12249,42.506733,-73.940447,1,93.0,1.00,2320,0.0019,0.0035,true
+P00120,Brooke,Harvey,MD,gastroenterology,,Jersey City,NJ,07363,40.723968,-73.991949,31,65.9,1.17,1641,0.0231,0.0872,true
+P00121,Robert,Silva,MD,dermatology,,Phoenix,AZ,85030,33.363801,-111.932064,7,78.0,1.52,5167,0.0031,0.0040,true
+P00122,Alexandra,Donovan,MD,primary-care,,San Diego,CA,92186,32.804007,-117.175044,27,69.4,1.14,2289,0.0099,0.0811,true
+P00123,James,Moran,MD,gastroenterology,,Miami,FL,33181,25.583566,-80.178700,13,66.9,0.89,754,0.0222,0.0739,true
+P00124,John,Foster,MD,endocrinology,Thyroid Disorders,Los Angeles,CA,90063,33.940844,-118.077874,20,82.5,0.89,3072,0.0049,0.0397,true
+P00125,Emily,Evans,MD,primary-care,,Tampa,FL,33688,27.975622,-82.470656,24,85.0,0.61,1734,0.0070,0.0558,true
+P00126,Leslie,Walton,MD,psychiatry,,New York,NY,10000,40.665968,-73.836664,10,70.1,1.06,661,0.0032,0.0970,true
+P00127,Charles,Ellis,MD,primary-care,Preventive Medicine,Paterson,NJ,07596,40.939118,-74.252441,21,83.7,1.06,1750,0.0053,0.0514,true
+P00128,Yolanda,Ferrell,MD,primary-care,,Los Angeles,CA,90054,34.132748,-118.317654,20,74.4,0.93,3184,0.0060,0.0594,true
+P00129,Charles,Lewis,MD,pulmonology,,Newark,NJ,07130,40.799111,-73.965377,24,58.8,1.00,1199,0.0186,0.1691,false
+P00130,Joseph,Mahoney,MD,primary-care,Sports Medicine,Buffalo,NY,14207,43.034923,-78.894564,21,87.8,0.79,2313,0.0057,0.0418,true
+P00131,Nicole,Suarez,MD,cardiology,,Seattle,WA,98182,47.725926,-122.068201,27,71.5,1.59,2580,0.0447,0.1477,true
+P00132,Mike,Moore,MD,orthopedics,,Dallas,TX,75221,32.870267,-96.611472,13,79.0,0.91,2509,0.0283,0.0416,false
+P00133,Martha,Warner,MD,primary-care,,New York,NY,10014,40.812961,-73.775539,29,82.1,0.86,4567,0.0057,0.0558,false
+P00134,Cheryl,Archer,MD,endocrinology,Thyroid Disorders,Chicago,IL,60686,41.771576,-87.546868,9,72.6,0.99,1129,0.0090,0.0562,true
+P00135,Destiny,Smith,MD,dermatology,,Miami,FL,33193,25.770250,-79.984707,34,59.4,0.96,2417,0.0058,0.0109,false
+P00136,Lisa,Evans,DO,orthopedics,Sports Medicine,Phoenix,AZ,85066,33.584894,-112.114772,15,70.2,0.95,2464,0.0327,0.0467,true
+P00137,Elizabeth,Mcmillan,MD,dermatology,Pediatric Dermatology,Philadelphia,PA,19125,39.990749,-75.316199,2,71.5,0.98,4377,0.0051,0.0064,true
+P00138,Dennis,Wilson,MD,orthopedics,Sports Medicine,Dallas,TX,75245,32.711850,-97.018608,20,89.4,0.71,1798,0.0307,0.0480,false
+P00139,Daniel,Tran,MD,gastroenterology,,New York,NY,10080,40.724282,-74.033414,15,78.8,1.38,1393,0.0270,0.0863,true
+P00140,Joseph,Jacobs,MD,psychiatry,Addiction Psychiatry,New York,NY,10027,40.522186,-73.894053,6,72.8,0.98,456,0.0027,0.0831,true
+P00141,Jennifer,Harris,MD,dermatology,,New York,NY,10048,40.785357,-74.090892,14,58.8,1.03,2032,0.0071,0.0069,true
+P00142,Cynthia,Baker,MD,cardiology,,Orlando,FL,32820,28.579698,-81.501435,17,67.5,0.68,2565,0.0483,0.1545,false
+P00143,Tracy,Whitehead,MD,psychiatry,Geriatric Psychiatry,Phoenix,AZ,85089,33.455990,-111.965935,29,62.1,1.37,1036,0.0037,0.1145,true
+P00144,Meghan,Davis,MD,cardiology,,Seattle,WA,98102,47.672637,-122.226307,1,71.1,1.01,2555,0.0496,0.1528,true
+P00145,Rodney,Hill,MD,neurology,Vascular Neurology,Phoenix,AZ,85075,33.277011,-111.988145,8,66.1,1.11,774,0.0188,0.1133,true
+P00146,Adam,Wise,MD,psychiatry,,Phoenix,AZ,85040,33.354889,-112.122901,14,81.2,1.46,1213,0.0023,0.0803,true
+P00147,Dana,Green,MD,gastroenterology,,Dallas,TX,75244,32.732606,-96.775566,19,64.9,0.95,1466,0.0205,0.0778,true
+P00148,Joyce,Arnold,MD,cardiology,Interventional Cardiology,Philadelphia,PA,19178,39.914259,-75.088425,13,81.4,0.94,1185,0.0270,0.0948,true
+P00149,Ronald,Smith,MD,primary-care,Preventive Medicine,Seattle,WA,98146,47.521041,-122.532054,20,72.4,1.31,2613,0.0078,0.0734,true
+P00150,Charles,Ware,MD,gastroenterology,Inflammatory Bowel Disease,Los Angeles,CA,90057,34.032621,-117.996987,9,69.9,0.64,1576,0.0223,0.0932,true
+P00151,Rebecca,Gardner,DO,gastroenterology,,Chicago,IL,60687,41.904416,-87.378629,19,84.2,1.25,1104,0.0202,0.0709,true
+P00152,Mary,Aguilar,MD,psychiatry,,Buffalo,NY,14280,42.921520,-78.750675,17,79.1,0.82,932,0.0027,0.0754,true
+P00153,Earl,Anderson,MD,gastroenterology,,Houston,TX,77012,29.623042,-95.282425,19,71.7,0.84,1223,0.0202,0.0898,true
+P00154,Kyle,Nolan,MD,dermatology,Mohs Surgery,New York,NY,10060,40.653900,-74.215407,21,99.0,0.92,2099,0.0017,0.0027,true
+P00155,Laura,Valencia,MD,gastroenterology,,Boston,MA,02162,42.213540,-71.212243,21,81.6,1.23,707,0.0163,0.0678,true
+P00156,Rachel,Clark,MD,orthopedics,Joint Replacement,Atlanta,GA,30359,33.839951,-84.346520,17,69.5,0.91,1587,0.0468,0.0717,true
+P00157,John,Garcia,MD,pulmonology,Critical Care Medicine,New York,NY,10086,40.747032,-73.991428,4,84.1,1.03,1707,0.0182,0.0904,true
+P00158,Kimberly,Henson,MD,dermatology,,Houston,TX,77058,29.711286,-95.605907,9,69.9,1.37,4380,0.0040,0.0055,true
+P00159,Richard,Oliver,DO,primary-care,,Los Angeles,CA,90083,34.031257,-118.093887,22,67.7,1.10,3299,0.0081,0.0629,true
+P00160,Eric,Spears,MD,endocrinology,,San Diego,CA,92160,32.802737,-117.396859,28,68.2,1.01,1134,0.0123,0.0602,true
+P00161,Michelle,Cherry,MD,endocrinology,,Dallas,TX,75228,32.915125,-96.897899,10,92.1,1.14,936,0.0043,0.0370,false
+P00162,Lisa,Keith,MD,primary-care,Sports Medicine,Atlanta,GA,30372,33.708779,-84.234157,22,99.0,0.94,1276,0.0042,0.0414,true
+P00163,Angel,Doyle,DO,primary-care,Adolescent Medicine,Houston,TX,77041,29.895021,-95.404175,18,70.2,1.10,1560,0.0093,0.0680,true
+P00164,Martin,Galvan,MD,psychiatry,Addiction Psychiatry,Los Angeles,CA,90024,33.897398,-118.272179,22,62.5,1.00,1349,0.0043,0.1056,true
+P00165,Leah,Shields,MD,psychiatry,Geriatric Psychiatry,Houston,TX,77089,29.934557,-95.344743,7,71.7,1.06,909,0.0030,0.0837,true
+P00166,Lisa,Adams,MD,dermatology,,Miami,FL,33152,25.643037,-80.299272,1,75.0,1.00,2879,0.0041,0.0043,true
+P00167,Kristin,Rodriguez,MD,primary-care,Sports Medicine,New York,NY,10037,40.647817,-74.012310,12,71.1,1.19,2729,0.0076,0.0622,true
+P00168,Monica,Garrison,MD,primary-care,Adolescent Medicine,Buffalo,NY,14251,42.766385,-78.810954,3,53.6,1.40,2844,0.0107,0.1115,false
+P00169,Jeffrey,Velasquez,MD,psychiatry,,Tampa,FL,33699,28.009911,-82.499116,17,58.5,1.42,653,0.0048,0.1308,false
+P00170,Steven,Torres,MD,cardiology,,Philadelphia,PA,19185,39.918231,-75.317453,2,67.9,1.16,1107,0.0351,0.1658,true
+P00171,Laura,Perez,MD,primary-care,Adolescent Medicine,Los Angeles,CA,90028,34.129580,-118.084504,8,68.4,0.96,2043,0.0093,0.0766,true
+P00172,Andrew,Lee,MD,oncology,Thoracic Oncology,San Francisco,CA,94183,37.777279,-122.417466,8,56.3,0.96,175,0.0716,0.2457,true
+P00173,Mark,Lin,MD,gastroenterology,,Jersey City,NJ,07305,40.778731,-74.189943,14,83.8,1.47,1110,0.0142,0.0668,true
+P00174,Tammy,Ramirez,MD,primary-care,,Miami,FL,33198,25.904895,-80.063777,27,55.8,1.06,2113,0.0146,0.1258,true
+P00175,Darlene,Ross,MD,primary-care,,Austin,TX,78777,30.208068,-97.684603,5,61.1,1.30,1591,0.0146,0.1296,true
+P00176,Tina,Herrera,MD,endocrinology,Obesity Medicine,Denver,CO,80290,39.791442,-104.776198,11,60.2,1.00,589,0.0092,0.0765,true
+P00177,Sheila,Wilson,MD,pulmonology,Sleep Medicine,Chicago,IL,60620,41.897343,-87.609359,18,75.6,1.12,1054,0.0188,0.1348,true
+P00178,Tara,White,MD,dermatology,Dermatopathology,Miami,FL,33170,25.716090,-79.982431,1,66.5,1.22,3214,0.0059,0.0088,true
+P00179,Sydney,Baker,MD,psychiatry,,Pittsburgh,PA,15254,40.403001,-80.105395,21,73.8,1.39,858,0.0029,0.0681,false
+P00180,Daniel,Hamilton,MD,gastroenterology,,Boston,MA,02111,42.401131,-70.932750,20,77.9,1.08,3059,0.0131,0.0824,true
+P00181,Jessica,Edwards,MD,primary-care,Geriatrics,Seattle,WA,98169,47.482924,-122.505669,13,86.5,1.02,2221,0.0043,0.0444,true
+P00182,Catherine,Dixon,MD,psychiatry,,Buffalo,NY,14287,42.680098,-78.946651,16,74.0,1.04,654,0.0035,0.0776,true
+P00183,Paul,Ray,DO,cardiology,Electrophysiology,Dallas,TX,75252,32.814558,-96.774668,22,71.0,0.98,2753,0.0291,0.0921,true
+P00184,Jonathan,Fletcher,MD,cardiology,,Tampa,FL,33656,27.820780,-82.459817,29,62.8,0.71,3393,0.0426,0.1016,true
+P00185,Aaron,Frost,MD,primary-care,,San Francisco,CA,94195,37.851073,-122.416350,10,61.5,1.13,1238,0.0118,0.1149,true
+P00186,Amanda,Ball,MD,gastroenterology,,Atlanta,GA,30308,33.931461,-84.487531,16,83.1,1.60,1956,0.0125,0.0683,true
+P00187,Judy,Lambert,DO,primary-care,,Boston,MA,02121,42.298562,-71.282362,26,82.5,0.72,2788,0.0049,0.0626,true
+P00188,Michael,Jones,MD,gastroenterology,,Los Angeles,CA,90025,34.008481,-118.312150,20,78.4,0.74,3585,0.0197,0.0673,true
+P00189,Elizabeth,Rivera,MD,primary-care,,Phoenix,AZ,85037,33.471792,-112.250586,21,70.4,0.82,3736,0.0103,0.0813,false
+P00190,Lee,Charles,MD,primary-care,,Rochester,NY,14628,43.042381,-77.852514,13,88.2,0.91,1816,0.0045,0.0370,true
+P00191,Jennifer,Evans,MD,neurology,,Dallas,TX,75283,32.851807,-96.960716,10,72.1,0.87,1633,0.0141,0.0704,true
+P00192,Kyle,Ortiz,MD,oncology,,Paterson,NJ,07584,40.886666,-73.969662,20,76.3,1.14,967,0.0407,0.1372,true
+P00193,Richard,Phillips,MD,orthopedics,,Los Angeles,CA,90072,34.175720,-118.046240,34,78.0,1.48,1025,0.0354,0.0413,true
+P00194,David,Fisher,MD,gastroenterology,Inflammatory Bowel Disease,Orlando,FL,32808,28.488488,-81.468018,30,71.0,0.86,2552,0.0234,0.0729,true
+P00195,Shelby,Byrd,MD,primary-care,,Houston,TX,77077,29.769450,-95.418100,16,66.8,0.96,2488,0.0109,0.0690,true
+P00196,Raven,Gilbert,MD,orthopedics,,Los Angeles,CA,90090,34.118407,-118.341606,34,67.7,1.01,1826,0.0476,0.0732,false
+P00197,Kevin,Kelley,MD,dermatology,Dermatopathology,San Francisco,CA,94161,37.650365,-122.552604,16,84.3,0.65,4759,0.0024,0.0033,true
+P00198,Aaron,Mitchell,MD,primary-care,,Dallas,TX,75290,32.795998,-96.695697,21,68.4,1.24,2986,0.0108,0.0750,true
+P00199,Russell,Carpenter,MD,dermatology,,New York,NY,10076,40.681270,-73.969038,15,92.2,0.82,3789,0.0035,0.0034,false
+P00200,Diana,Marshall,MD,orthopedics,,New York,NY,10050,40.818990,-74.005747,42,88.4,1.33,2410,0.0250,0.0284,true
+P00201,Scott,Lewis,MD,psychiatry,Child and Adolescent Psychiatry,San Diego,CA,92132,32.623101,-117.088534,18,80.3,1.08,366,0.0033,0.0789,true
+P00202,Thomas,Santana,MD,orthopedics,Spine Surgery,New York,NY,10001,40.885499,-74.014331,10,67.8,0.90,1119,0.0495,0.0576,true
+P00203,Laura,Jackson,MD,orthopedics,,San Francisco,CA,94130,37.772600,-122.536787,14,79.8,0.88,1290,0.0354,0.0474,true
+P00204,Christopher,Robertson,DO,primary-care,,Miami,FL,33173,25.915843,-80.145188,17,61.3,0.92,1795,0.0116,0.1036,true
+P00205,Cynthia,Rogers,MD,pulmonology,Interventional Pulmonology,Miami,FL,33174,25.868431,-80.079849,15,66.4,1.15,1363,0.0257,0.1897,false
+P00206,Loretta,Potter,MD,orthopedics,Joint Replacement,Dallas,TX,75292,32.857383,-96.922010,22,70.5,0.97,2273,0.0587,0.0840,true
+P00207,Emily,Walker,MD,primary-care,Geriatrics,Phoenix,AZ,85088,33.249459,-112.099517,1,70.2,0.62,2731,0.0108,0.0888,true
+P00208,James,Johnson,MD,cardiology,,New York,NY,10099,40.909565,-74.067446,27,75.4,1.01,2841,0.0292,0.1081,true
+P00209,John,Alvarez,MD,oncology,Thoracic Oncology,Houston,TX,77034,29.875609,-95.457609,20,76.9,1.01,366,0.0454,0.1520,true
+P00210,Melissa,Jones,MD,orthopedics,,Chicago,IL,60610,41.939980,-87.664694,17,73.1,0.96,2264,0.0490,0.0563,true
+P00211,Robert,Soto,DO,pulmonology,,Boston,MA,02189,42.508053,-71.090713,14,59.1,0.95,946,0.0283,0.1465,true
+P00212,James,Horton,MD,primary-care,,Chicago,IL,60660,41.841466,-87.489602,16,84.4,0.99,2188,0.0043,0.0514,true
+P00213,Troy,Sanchez,MD,oncology,Breast Oncology,Chicago,IL,60610,41.749746,-87.496002,29,77.9,1.35,589,0.0368,0.1481,false
+P00214,Diana,Smith,MD,orthopedics,Sports Medicine,Los Angeles,CA,90013,34.007358,-118.411455,16,62.8,0.98,1959,0.0599,0.0792,true
+P00215,Karen,Carrillo,MD,neurology,,Tampa,FL,33632,28.149364,-82.374366,13,75.7,0.71,587,0.0117,0.0963,true
+P00216,Daniel,Coleman,MD,primary-care,,Boston,MA,02181,42.275096,-71.179866,22,93.6,0.98,3807,0.0043,0.0292,true
+P00217,Gregory,Rubio,MD,gastroenterology,Advanced Endoscopy,Los Angeles,CA,90097,33.936294,-118.097636,19,76.0,1.16,1399,0.0176,0.0640,true
+P00218,April,Williams,MD,oncology,,Dallas,TX,75272,32.882066,-96.765214,5,70.0,1.10,567,0.0652,0.1244,true
+P00219,John,Charles,MD,primary-care,,Orlando,FL,32879,28.385126,-81.327526,5,78.2,0.75,1303,0.0068,0.0565,true
+P00220,Stephen,Solis,MD,oncology,Hematologic Oncology,Boston,MA,02162,42.323589,-71.135475,22,95.0,1.07,525,0.0205,0.0770,true
+P00221,Elizabeth,Travis,MD,primary-care,Geriatrics,New York,NY,10095,40.766170,-73.738782,17,54.9,0.87,2158,0.0158,0.1182,true
+P00222,Caitlin,Dodson,MD,cardiology,Electrophysiology,Jersey City,NJ,07322,40.843612,-73.920239,25,68.4,1.38,1639,0.0277,0.1044,true
+P00223,Patricia,Salazar,DO,primary-care,,Houston,TX,77047,29.631975,-95.476990,8,86.9,1.16,3104,0.0045,0.0468,true
+P00224,Jennifer,Wagner,MD,cardiology,Electrophysiology,New York,NY,10040,40.827984,-73.990353,30,93.3,1.08,2291,0.0193,0.0742,false
+P00225,Maria,Kelley,MD,neurology,Headache Medicine,New York,NY,10027,40.598375,-74.091503,32,73.3,1.12,744,0.0157,0.0692,true
+P00226,Phyllis,Manning,MD,cardiology,,Orlando,FL,32815,28.563446,-81.529155,12,81.9,1.13,1403,0.0357,0.0963,true
+P00227,Thomas,Green,MD,primary-care,,Boston,MA,02173,42.463547,-70.857163,1,53.3,0.90,2134,0.0134,0.1181,true
+P00228,John,Walsh,MD,dermatology,Pediatric Dermatology,Chicago,IL,60625,41.831919,-87.811644,6,60.2,1.01,1626,0.0038,0.0057,true
+P00229,Katie,Boyd,MD,oncology,,Boston,MA,02156,42.257889,-71.151301,17,77.3,1.19,336,0.0375,0.1075,true
+P00230,Courtney,Hill,MD,dermatology,,Houston,TX,77060,29.801683,-95.453328,24,72.6,1.01,3379,0.0038,0.0052,true
+P00231,Chris,Mitchell,MD,primary-care,,Dallas,TX,75283,32.798420,-96.749755,32,69.7,1.16,2790,0.0101,0.0727,true
+P00232,Joseph,Flores,MD,psychiatry,Child and Adolescent Psychiatry,Los Angeles,CA,90058,34.202667,-118.369287,17,52.7,0.89,479,0.0045,0.1308,true
+P00233,Amber,Taylor,DO,dermatology,,New York,NY,10028,40.629111,-73.911468,16,99.0,1.05,6015,0.0012,0.0026,true
+P00234,Jesse,Benson,MD,oncology,,Boston,MA,02125,42.199708,-70.987310,26,84.1,1.14,383,0.0516,0.1620,false
+P00235,Jasmine,Brown,MD,neurology,,San Francisco,CA,94152,37.930355,-122.237883,33,66.8,1.53,1310,0.0165,0.0964,true
+P00236,Rick,Daniels,MD,cardiology,Interventional Cardiology,Phoenix,AZ,85088,33.313998,-112.199675,8,62.1,1.22,1346,0.0450,0.1511,true
+P00237,Robert,Clark,MD,oncology,Hematologic Oncology,Phoenix,AZ,85056,33.647079,-112.151227,29,77.7,0.91,363,0.0464,0.1618,true
+P00238,Robert,Stein,MD,primary-care,Geriatrics,Los Angeles,CA,90066,34.242641,-118.180803,16,85.1,0.84,901,0.0068,0.0410,true
+P00239,Brandy,Dominguez,MD,psychiatry,,Dallas,TX,75274,32.575693,-96.741444,13,75.1,0.83,460,0.0030,0.1003,true
+P00240,Melissa,Cannon,MD,neurology,,Houston,TX,77010,29.854485,-95.188749,12,67.6,1.20,1087,0.0175,0.0872,true
+P00241,Omar,Smith,MD,orthopedics,,New York,NY,10023,40.893359,-73.926198,30,67.8,0.78,2123,0.0533,0.0842,false
+P00242,Michael,Molina,MD,dermatology,Dermatopathology,San Diego,CA,92180,32.589163,-117.066018,22,76.9,1.05,2446,0.0032,0.0029,false
+P00243,Melissa,Ashley,MD,oncology,,Rochester,NY,14658,43.020140,-77.765251,5,67.2,0.59,276,0.0644,0.1380,false
+P00244,Robert,Adkins,MD,orthopedics,,Dallas,TX,75293,32.664612,-96.819852,14,61.6,1.17,1472,0.0681,0.0814,false
+P00245,Amy,Morrison,DO,primary-care,Adolescent Medicine,Los Angeles,CA,90000,33.866836,-118.240531,1,82.7,1.42,2912,0.0068,0.0685,true
+P00246,Jeffrey,Robinson,MD,primary-care,Adolescent Medicine,Houston,TX,77014,29.767364,-95.344458,32,67.1,1.20,2096,0.0097,0.0791,true
+P00247,Ryan,Johnson,MD,primary-care,,Los Angeles,CA,90095,34.186012,-118.374101,14,67.8,1.06,2897,0.0101,0.0902,true
+P00248,Matthew,Shelton,MD,dermatology,Dermatopathology,New York,NY,10096,40.561828,-74.208296,6,76.3,1.09,5676,0.0042,0.0047,true
+P00249,Richard,Martin,MD,orthopedics,,Miami,FL,33124,25.925441,-80.302057,17,67.4,1.18,2382,0.0425,0.0802,true
+P00250,Tanner,Anderson,MD,oncology,,Atlanta,GA,30305,33.721350,-84.305607,21,96.1,1.25,714,0.0293,0.0944,true
+P00251,Cindy,Johnson,MD,orthopedics,,New York,NY,10090,40.514975,-74.108296,23,83.7,0.86,1048,0.0386,0.0395,true
+P00252,Phillip,Elliott,MD,cardiology,,New York,NY,10078,40.773859,-73.837120,9,58.8,0.68,2228,0.0498,0.1579,false
+P00253,Anthony,Day,DO,cardiology,Heart Failure,Boston,MA,02150,42.377889,-71.293550,20,51.8,0.69,4236,0.0662,0.2865,true
+P00254,Derek,Murray,MD,primary-care,,Buffalo,NY,14241,42.735559,-79.036432,19,73.8,0.89,2443,0.0066,0.0598,true
+P00255,Brent,Gray,MD,neurology,,Orlando,FL,32884,28.573878,-81.564838,22,52.7,1.49,718,0.0284,0.1669,true
+P00256,Jason,Murphy,MD,neurology,Epilepsy,Chicago,IL,60617,41.811719,-87.836845,7,63.3,0.88,625,0.0205,0.1380,true
+P00257,Kathleen,Gray,MD,primary-care,Geriatrics,Seattle,WA,98178,47.718476,-122.394173,26,50.0,0.85,2669,0.0154,0.1759,true
+P00258,Karen,Decker,MD,oncology,Hematologic Oncology,San Diego,CA,92124,32.674710,-117.359177,21,55.9,0.93,364,0.0607,0.2632,true
+P00259,Johnny,Miller,MD,orthopedics,,Atlanta,GA,30389,33.922915,-84.421230,20,72.2,0.82,1288,0.0346,0.0511,true
+P00260,Andrew,Ryan,MD,primary-care,Geriatrics,Tampa,FL,33690,27.844974,-82.458498,22,57.8,1.16,3911,0.0129,0.0794,true
+P00261,Zoe,Bell,MD,cardiology,,Los Angeles,CA,90006,34.233398,-118.299374,22,88.6,0.76,1442,0.0283,0.0740,true
+P00262,Debra,Harrington,MD,endocrinology,,San Diego,CA,92184,32.741754,-117.299993,29,78.3,1.06,1526,0.0096,0.0674,false
+P00263,Denise,Webster,MD,pulmonology,,New York,NY,10033,40.745843,-73.920831,13,67.8,0.81,801,0.0352,0.1641,false
+P00264,Stefanie,Gonzalez,MD,dermatology,,Los Angeles,CA,90014,34.094238,-118.040672,8,75.3,0.99,3201,0.0057,0.0046,true
+P00265,Andrew,Hernandez,DO,cardiology,Heart Failure,Seattle,WA,98155,47.542867,-122.526173,13,82.3,0.91,1204,0.0234,0.0692,true
+P00266,David,Caldwell,MD,primary-care,,Phoenix,AZ,85087,33.569641,-112.064315,16,73.1,0.92,2746,0.0076,0.0632,false
+P00267,Anne,Robinson,DO,endocrinology,,New York,NY,10014,40.850255,-73.812489,1,59.1,0.85,903,0.0092,0.0661,true
+P00268,Holly,Wang,MD,dermatology,Mohs Surgery,New York,NY,10025,40.848087,-74.010542,32,69.1,1.00,2999,0.0042,0.0046,true
+P00269,Gary,Lawson,MD,cardiology,Interventional Cardiology,Dallas,TX,75234,32.966762,-96.770166,16,59.5,1.32,2410,0.0466,0.1896,true
+P00270,Julie,Wilson,MD,cardiology,Heart Failure,Denver,CO,80280,39.544096,-104.961670,7,56.4,0.75,1627,0.0569,0.2901,true
+P00271,Lori,Oconnell,MD,cardiology,Interventional Cardiology,Chicago,IL,60656,41.846394,-87.749873,8,83.0,0.71,1335,0.0216,0.0778,true
+P00272,Daniel,Johnson,MD,cardiology,,New York,NY,10086,40.898537,-73.938248,27,88.8,1.10,1400,0.0292,0.0894,true
+P00273,Larry,Byrd,MD,cardiology,,Dallas,TX,75221,32.813485,-96.714589,18,80.9,1.12,1621,0.0231,0.0836,true
+P00274,Susan,Sanders,MD,neurology,,Phoenix,AZ,85042,33.555446,-111.923801,2,84.1,1.10,1181,0.0107,0.0730,true
+P00275,Jennifer,Jones,MD,gastroenterology,Hepatology,Houston,TX,77075,29.833259,-95.241383,13,78.1,1.52,1110,0.0176,0.0665,true
+P00276,Hannah,Burton,MD,primary-care,,Dallas,TX,75224,32.921177,-96.690717,9,79.6,0.82,3245,0.0072,0.0517,true
+P00277,Curtis,Barton,MD,orthopedics,,New York,NY,10046,40.882080,-74.145247,16,65.2,0.77,2428,0.0538,0.0685,true
+P00278,Melissa,Burke,MD,primary-care,,New York,NY,10029,40.613748,-73.958862,11,63.5,1.20,1677,0.0109,0.1088,true
+P00279,David,Riggs,MD,oncology,Thoracic Oncology,New York,NY,10035,40.588291,-74.184901,15,83.8,0.98,805,0.0344,0.1594,true
+P00280,Kimberly,Reed,MD,cardiology,Echocardiography,Atlanta,GA,30331,33.900788,-84.392983,7,56.1,1.24,2521,0.0881,0.2200,true
+P00281,Ross,Wood,MD,oncology,,Orlando,FL,32852,28.686169,-81.259902,16,69.9,0.84,421,0.0655,0.1864,true
+P00282,William,Peterson,MD,gastroenterology,,Atlanta,GA,30309,33.783150,-84.549112,23,59.7,1.01,2414,0.0253,0.0798,true
+P00283,Melissa,Short,MD,endocrinology,Obesity Medicine,New York,NY,10046,40.616299,-74.253484,13,78.0,0.91,2144,0.0050,0.0563,true
+P00284,Daniel,Yu,MD,neurology,,Philadelphia,PA,19115,39.921982,-74.935119,19,75.6,0.98,1356,0.0105,0.0569,false
+P00285,Cynthia,Poole,MD,cardiology,Electrophysiology,Chicago,IL,60626,41.966757,-87.661813,19,71.7,1.01,1725,0.0272,0.1169,true
+P00286,Jasmine,Graham,MD,pulmonology,,Los Angeles,CA,90067,33.941435,-118.315678,3,64.6,0.93,671,0.0275,0.1596,true
+P00287,Jessica,Sheppard,MD,dermatology,Dermatopathology,Denver,CO,80285,39.829825,-104.801977,15,66.5,1.04,2365,0.0045,0.0065,true
+P00288,Joseph,Morton,DO,primary-care,Preventive Medicine,New York,NY,10019,40.817402,-74.081513,22,68.8,1.25,2702,0.0102,0.0796,true
+P00289,Amanda,Webb,MD,neurology,Movement Disorders,New York,NY,10011,40.858298,-73.956499,12,67.3,0.82,1874,0.0168,0.0747,true
+P00290,Ryan,Simon,MD,primary-care,,Denver,CO,80285,39.570097,-104.818989,17,57.0,1.19,3003,0.0110,0.1149,true
+P00291,Joseph,Christian,MD,pulmonology,,Austin,TX,78753,30.136265,-97.685901,28,83.7,0.85,1867,0.0116,0.1063,false
+P00292,Mariah,Miller,MD,cardiology,,Chicago,IL,60623,41.699648,-87.487536,11,58.9,0.98,1284,0.0512,0.2257,true
+P00293,Nicole,Sanchez,MD,neurology,Movement Disorders,Houston,TX,77097,29.883435,-95.229274,10,65.7,1.06,4016,0.0196,0.0873,true
+P00294,Steven,Bishop,MD,endocrinology,,New York,NY,10006,40.616419,-74.077515,24,78.2,1.22,2292,0.0062,0.0586,false
+P00295,Nicholas,Johnson,MD,primary-care,Adolescent Medicine,Buffalo,NY,14274,42.836467,-78.724588,3,80.8,0.86,2625,0.0061,0.0444,false
+P00296,Melissa,White,MD,primary-care,,Tampa,FL,33689,27.769995,-82.536016,1,62.9,0.99,1768,0.0121,0.0676,true
+P00297,Jason,Salinas,MD,pulmonology,,San Diego,CA,92188,32.611860,-116.972513,14,73.2,0.88,1348,0.0249,0.1476,true
+P00298,Matthew,Beard,MD,gastroenterology,Inflammatory Bowel Disease,New York,NY,10038,40.731814,-74.096650,16,65.2,0.86,838,0.0283,0.1039,false
+P00299,Jacqueline,Hill,DO,primary-care,Geriatrics,New York,NY,10012,40.877230,-73.986843,22,81.3,1.23,1757,0.0075,0.0614,true
+P00300,Alejandro,Vaughan,MD,psychiatry,,Chicago,IL,60663,41.747881,-87.515323,8,73.1,1.02,297,0.0028,0.0943,true
+P00301,Christopher,Cortez,MD,oncology,,Phoenix,AZ,85001,33.536619,-112.207458,6,90.9,0.80,406,0.0315,0.0929,true
+P00302,Tracy,Chang,MD,cardiology,,Phoenix,AZ,85035,33.343867,-112.158971,16,77.7,1.13,913,0.0336,0.0732,true
+P00303,Hannah,Brewer,MD,cardiology,Interventional Cardiology,Philadelphia,PA,19103,39.846577,-75.309150,19,78.9,1.07,1732,0.0304,0.1045,true
+P00304,Travis,Mcguire,MD,primary-care,Preventive Medicine,Philadelphia,PA,19115,40.033445,-75.293481,10,45.8,0.93,2970,0.0196,0.1480,false
+P00305,Christopher,Walker,MD,orthopedics,,Dallas,TX,75260,32.893810,-96.682479,4,63.2,0.83,1298,0.0486,0.0677,true
+P00306,Heather,Torres,MD,cardiology,Interventional Cardiology,Tampa,FL,33645,27.944127,-82.602172,19,91.6,0.90,1993,0.0183,0.0682,true
+P00307,Bonnie,Kennedy,MD,primary-care,Preventive Medicine,New York,NY,10040,40.557158,-73.897525,15,58.7,1.12,3263,0.0131,0.1092,true
+P00308,Alyssa,Coleman,MD,psychiatry,Addiction Psychiatry,Newark,NJ,07173,40.906466,-74.209488,24,87.0,1.09,767,0.0019,0.0506,true
+P00309,Julie,Rivera,MD,primary-care,,Newark,NJ,07125,40.623208,-74.380245,31,63.6,1.01,3395,0.0071,0.0760,true
+P00310,Jacqueline,Nelson,DO,primary-care,,Tampa,FL,33672,27.926752,-82.220726,4,60.0,0.84,1929,0.0116,0.1277,true
+P00311,John,Martinez,MD,dermatology,Mohs Surgery,Philadelphia,PA,19139,39.918935,-75.269820,23,67.6,0.95,3608,0.0043,0.0050,true
+P00312,James,Wilson,MD,pulmonology,,Phoenix,AZ,85052,33.598536,-112.051334,13,79.4,1.22,744,0.0215,0.0941,true
+P00313,Amanda,Gill,MD,psychiatry,,Seattle,WA,98174,47.687669,-122.439452,21,71.8,0.91,306,0.0030,0.1000,true
+P00314,Jacob,Robinson,DO,oncology,,Denver,CO,80246,39.630784,-104.917227,1,57.7,0.85,411,0.0709,0.2013,true
+P00315,Todd,Hardy,MD,dermatology,,Chicago,IL,60656,41.824902,-87.851553,8,77.8,0.92,4876,0.0029,0.0031,true
+P00316,Tiffany,Warren,MD,gastroenterology,,Philadelphia,PA,19154,39.963880,-75.243993,17,61.0,1.39,902,0.0284,0.1298,true
+P00317,Justin,Garcia,MD,primary-care,Geriatrics,Houston,TX,77031,29.886985,-95.201744,23,50.1,1.54,2405,0.0128,0.0818,true
+P00318,James,Perez,DO,orthopedics,Hand Surgery,San Diego,CA,92173,32.690957,-117.016396,20,81.8,1.52,4352,0.0388,0.0461,true
+P00319,Harry,Smith,MD,primary-care,,New York,NY,10058,40.814763,-73.759859,15,72.6,0.90,1638,0.0109,0.0669,true
+P00320,Amanda,Hill,MD,orthopedics,Spine Surgery,Tampa,FL,33657,28.019279,-82.262592,30,82.7,1.11,1490,0.0389,0.0481,true
+P00321,Terri,Tran,DO,endocrinology,,Philadelphia,PA,19185,40.015093,-75.133629,22,73.6,0.82,1331,0.0085,0.0771,true
+P00322,Heidi,Martinez,MD,dermatology,,Los Angeles,CA,90014,34.202811,-118.419439,22,73.6,0.99,8853,0.0033,0.0048,true
+P00323,Miranda,Henry,MD,pulmonology,,Boston,MA,02106,42.378310,-71.350904,30,83.9,0.83,1433,0.0155,0.1067,true
+P00324,Monique,Andrews,MD,primary-care,Sports Medicine,New York,NY,10034,40.822709,-73.810858,21,62.6,0.86,2092,0.0101,0.0849,true
+P00325,Taylor,Alexander,MD,primary-care,,Denver,CO,80234,39.851903,-104.777451,24,88.1,1.23,2644,0.0047,0.0335,false
+P00326,Jack,Williams,MD,neurology,Headache Medicine,New York,NY,10026,40.767915,-74.028689,22,68.2,0.76,2308,0.0179,0.1056,true
+P00327,Shelley,Woods,MD,pulmonology,,Los Angeles,CA,90047,34.166349,-118.364756,18,56.1,0.98,848,0.0267,0.2191,true
+P00328,Lynn,Morales,MD,dermatology,,Los Angeles,CA,90066,33.847460,-118.208792,20,70.4,1.21,3920,0.0030,0.0045,true
+P00329,Charles,Soto,MD,primary-care,,Miami,FL,33153,25.760048,-80.222491,20,57.3,1.05,2057,0.0121,0.0972,true
+P00330,Brian,Hernandez,MD,endocrinology,Diabetes,Houston,TX,77058,29.919426,-95.224934,16,68.1,0.99,659,0.0095,0.0605,true
+P00331,Anna,Torres,MD,orthopedics,Joint Replacement,Orlando,FL,32880,28.606719,-81.188245,18,86.4,0.83,1109,0.0408,0.0531,true
+P00332,Victoria,Wilson,DO,orthopedics,,San Francisco,CA,94163,37.963053,-122.340315,17,85.7,1.02,945,0.0248,0.0399,true
+P00333,Kathy,Obrien,MD,primary-care,,Philadelphia,PA,19155,40.086589,-75.311783,24,85.6,0.87,2827,0.0059,0.0570,false
+P00334,Krystal,Perez,MD,pulmonology,Sleep Medicine,Dallas,TX,75220,32.659123,-96.716614,11,83.2,1.26,835,0.0143,0.0931,true
+P00335,Alexandra,Hayes,MD,neurology,Epilepsy,Newark,NJ,07143,40.782484,-74.165331,10,73.9,0.86,1428,0.0121,0.0839,true
+P00336,Scott,Dalton,MD,pulmonology,,Atlanta,GA,30396,33.588017,-84.536439,18,76.0,1.17,1267,0.0241,0.1100,true
+P00337,Veronica,Torres,MD,pulmonology,,Seattle,WA,98182,47.583630,-122.208999,20,56.1,0.86,2002,0.0359,0.1727,true
+P00338,Christine,Lynch,MD,oncology,,Miami,FL,33154,25.695278,-80.316330,28,78.2,0.92,627,0.0389,0.0978,true
+P00339,Jody,Meza,MD,cardiology,,Boston,MA,02173,42.470121,-70.808500,22,92.9,1.21,2336,0.0193,0.0739,true
+P00340,Jared,Clark,MD,gastroenterology,,Seattle,WA,98179,47.708407,-122.131139,23,56.6,0.96,971,0.0282,0.1186,true
+P00341,Donna,Moore,MD,orthopedics,,Los Angeles,CA,90033,33.986681,-118.120520,15,70.9,0.90,3155,0.0457,0.0650,true
+P00342,Glenn,Jones,DO,primary-care,,New York,NY,10085,40.723708,-73.839855,4,66.4,0.94,1983,0.0085,0.0561,true
+P00343,Aaron,Hayes,MD,primary-care,,Newark,NJ,07154,40.551963,-74.101015,24,81.9,0.97,2020,0.0054,0.0560,true
+P00344,Brittney,Carter,MD,oncology,Hematologic Oncology,Los Angeles,CA,90058,33.843175,-118.227138,13,94.7,1.14,687,0.0300,0.1020,true
+P00345,Jesse,Mann,MD,orthopedics,Hand Surgery,San Francisco,CA,94118,37.799765,-122.374125,36,54.1,1.17,2962,0.0915,0.0969,true
+P00346,Jacqueline,Gibson,MD,primary-care,,San Francisco,CA,94164,37.814936,-122.675104,18,51.8,1.06,1528,0.0127,0.1053,true
+P00347,Grace,Bradshaw,MD,cardiology,Heart Failure,Dallas,TX,75215,32.751852,-96.627708,19,76.1,1.36,1624,0.0306,0.0707,true
+P00348,Kristin,Weber,MD,psychiatry,Geriatric Psychiatry,Philadelphia,PA,19151,39.999824,-75.277983,6,75.0,1.23,424,0.0025,0.0752,true
+P00349,Donna,Peck,MD,dermatology,Pediatric Dermatology,Rochester,NY,14691,43.264120,-77.393387,12,90.1,0.91,3325,0.0024,0.0037,false
+P00350,Ronald,Stephens,MD,dermatology,Pediatric Dermatology,San Diego,CA,92152,32.610280,-117.167886,15,48.5,1.60,3087,0.0101,0.0106,true
+P00351,Deborah,Kerr,MD,primary-care,,New York,NY,10069,40.558463,-73.934287,7,85.7,1.02,2142,0.0075,0.0525,true
+P00352,Margaret,Jones,MD,cardiology,,Seattle,WA,98165,47.605443,-122.163772,1,55.4,1.01,1955,0.0691,0.2205,false
+P00353,Gabriel,Parker,MD,psychiatry,Child and Adolescent Psychiatry,Houston,TX,77076,29.703817,-95.608516,29,65.7,1.06,1491,0.0028,0.0969,true
+P00354,Kaitlyn,Carroll,MD,pulmonology,,Orlando,FL,32898,28.641690,-81.263663,14,85.9,0.83,372,0.0151,0.0995,true
+P00355,Keith,Martinez,DO,gastroenterology,Inflammatory Bowel Disease,Houston,TX,77090,29.795408,-95.148557,13,97.6,0.85,1413,0.0084,0.0367,true
+P00356,Haley,Lyons,MD,endocrinology,Obesity Medicine,New York,NY,10088,40.841656,-74.224573,6,81.4,1.60,771,0.0066,0.0421,true
+P00357,Sherri,Mason,MD,pulmonology,Interventional Pulmonology,Chicago,IL,60635,41.802859,-87.641454,16,64.2,0.91,864,0.0246,0.2436,false
+P00358,Troy,Miller,MD,psychiatry,,Newark,NJ,07180,40.850663,-74.109052,14,77.4,0.86,434,0.0041,0.0880,false
+P00359,Bill,Reynolds,MD,gastroenterology,Advanced Endoscopy,Houston,TX,77016,29.902261,-95.272252,17,81.1,0.98,1992,0.0195,0.0757,false
+P00360,Marcus,Wright,MD,primary-care,,Los Angeles,CA,90066,33.948727,-118.361083,24,82.4,0.74,3411,0.0072,0.0550,true
+P00361,Christopher,Hayden,MD,neurology,Headache Medicine,Los Angeles,CA,90083,34.119077,-118.053597,18,74.0,0.85,867,0.0131,0.0957,true
+P00362,Mary,Johnston,MD,oncology,,Newark,NJ,07159,40.817235,-74.242222,8,71.1,1.06,337,0.0513,0.1626,true
+P00363,Stephanie,Key,MD,psychiatry,,Houston,TX,77094,29.583620,-95.326420,26,71.8,0.79,881,0.0026,0.0809,true
+P00364,Emily,Adams,MD,dermatology,Mohs Surgery,Jersey City,NJ,07312,40.768620,-73.912669,10,82.3,0.84,3058,0.0046,0.0055,true
+P00365,Billy,Avila,MD,psychiatry,Child and Adolescent Psychiatry,Phoenix,AZ,85024,33.607892,-112.250239,14,68.6,0.91,519,0.0022,0.0644,true
+P00366,Thomas,Pearson,MD,neurology,,New York,NY,10010,40.847720,-74.189438,1,89.2,1.04,518,0.0074,0.0688,true
+P00367,Sabrina,White,DO,neurology,,Chicago,IL,60674,41.839110,-87.867007,16,62.5,1.25,963,0.0192,0.1267,true
+P00368,Brenda,Walters,MD,orthopedics,,New York,NY,10059,40.626468,-73.852833,11,58.8,1.00,1782,0.0706,0.0822,true
+P00369,Travis,Davis,MD,dermatology,Pediatric Dermatology,Los Angeles,CA,90025,34.193708,-118.152186,22,67.8,0.74,5351,0.0043,0.0039,true
+P00370,Michael,Cook,MD,cardiology,,Pittsburgh,PA,15260,40.481006,-80.249135,21,56.8,0.74,701,0.0463,0.1716,true
+P00371,Elizabeth,Hodge,MD,pulmonology,Critical Care Medicine,Los Angeles,CA,90016,33.868995,-118.118235,23,51.6,1.00,2182,0.0323,0.2439,true
+P00372,Mark,Steele,DO,primary-care,,New York,NY,10073,40.792951,-74.021242,16,92.5,0.86,1089,0.0049,0.0465,true
+P00373,Keith,Landry,MD,primary-care,,Rochester,NY,14626,42.999301,-77.771996,17,79.2,1.01,4527,0.0072,0.0510,true
+P00374,Lisa,Pierce,MD,oncology,Thoracic Oncology,Austin,TX,78720,30.378477,-97.832467,34,69.9,1.06,303,0.0405,0.1140,true
+P00375,Shawn,Edwards,MD,primary-care,Geriatrics,Philadelphia,PA,19158,39.839672,-75.233527,17,56.5,1.16,4748,0.0127,0.0752,true
+P00376,Marcus,Cordova,MD,primary-care,Sports Medicine,Seattle,WA,98180,47.521711,-122.389639,29,47.3,0.89,2477,0.0157,0.1364,true
+P00377,Richard,Robertson,MD,orthopedics,Hand Surgery,New York,NY,10050,40.689981,-74.041846,7,69.9,1.08,1571,0.0483,0.0602,true
+P00378,Vanessa,Sandoval,MD,endocrinology,,Los Angeles,CA,90015,34.024951,-118.066976,31,78.2,1.07,1492,0.0055,0.0481,true
+P00379,Amy,Gutierrez,MD,oncology,,Pittsburgh,PA,15230,40.490281,-79.993984,1,74.6,1.36,415,0.0660,0.1616,true
+P00380,Jacob,Cox,DO,oncology,,New York,NY,10015,40.597932,-74.068158,22,74.7,0.89,577,0.0434,0.1256,true
+P00381,Katherine,Garrett,MD,oncology,,Miami,FL,33132,25.914869,-80.202005,1,73.1,1.09,337,0.0461,0.1344,true
+P00382,Kathleen,Harris,MD,oncology,,Houston,TX,77039,29.671135,-95.432718,16,79.6,0.92,686,0.0451,0.1380,true
+P00383,Andrea,Pennington,MD,endocrinology,,Boston,MA,02136,42.289072,-71.180353,5,72.8,1.12,940,0.0079,0.0615,false
+P00384,Samuel,Wolfe,DO,primary-care,Sports Medicine,Rochester,NY,14616,43.314841,-77.515284,17,51.7,0.92,3382,0.0165,0.1294,true
+P00385,David,Dudley,MD,dermatology,Pediatric Dermatology,Philadelphia,PA,19121,39.856804,-75.307705,32,65.5,1.06,3801,0.0053,0.0073,true
+P00386,Chelsea,Allen,MD,primary-care,,Rochester,NY,14691,43.110442,-77.436554,27,67.1,1.00,2918,0.0062,0.0772,false
+P00387,Eric,Pierce,MD,oncology,,New York,NY,10096,40.556476,-73.824370,14,65.2,0.99,276,0.0557,0.1463,false
+P00388,Andrea,Davis,DO,psychiatry,,Chicago,IL,60618,42.057707,-87.586394,12,69.0,1.60,992,0.0028,0.1105,false
+P00389,Victoria,Durham,MD,dermatology,,Pittsburgh,PA,15293,40.324221,-80.230971,21,67.0,1.12,2740,0.0051,0.0054,true
+P00390,Steven,Wilson,MD,cardiology,Heart Failure,New York,NY,10017,40.533861,-74.043231,4,63.6,1.29,2030,0.0479,0.1447,true
+P00391,Marilyn,Jimenez,MD,primary-care,Geriatrics,Seattle,WA,98174,47.559217,-122.412472,18,76.2,1.27,4035,0.0079,0.0643,true
+P00392,Jennifer,Hicks,MD,gastroenterology,Inflammatory Bowel Disease,Houston,TX,77048,29.708046,-95.501714,23,58.8,0.83,801,0.0238,0.0910,true
+P00393,Joshua,Davenport,MD,primary-care,,Houston,TX,77002,29.632462,-95.280419,40,77.7,1.07,1734,0.0045,0.0513,true
+P00394,Tina,Sanchez,MD,dermatology,,Newark,NJ,07111,40.654209,-74.186007,8,52.4,1.13,4884,0.0074,0.0098,true
+P00395,Andrea,Reyes,DO,gastroenterology,,Houston,TX,77098,29.700831,-95.340070,11,69.5,1.17,2668,0.0251,0.0752,true
+P00396,Sandra,Romero,MD,neurology,,Seattle,WA,98129,47.576633,-122.606081,3,62.4,1.09,1281,0.0166,0.1507,false
+P00397,Natasha,Shields,MD,primary-care,,Albany,NY,12284,42.532563,-73.671538,1,72.1,0.93,1817,0.0069,0.0665,false
+P00398,Joshua,Tyler,MD,orthopedics,Sports Medicine,Philadelphia,PA,19190,40.061889,-75.364334,14,68.2,0.88,1218,0.0456,0.0572,false
+P00399,Robert,Villa,MD,endocrinology,,New York,NY,10020,40.799664,-73.765304,17,67.1,0.86,1375,0.0139,0.0796,true
+P00400,William,Hoover,MD,orthopedics,,Miami,FL,33117,25.817692,-80.364639,5,76.9,1.17,1689,0.0353,0.0414,true
+P00401,Justin,Evans,DO,gastroenterology,Inflammatory Bowel Disease,Atlanta,GA,30322,33.881431,-84.405408,11,71.3,1.01,1334,0.0200,0.0895,true
+P00402,Brenda,Duarte,MD,oncology,,Pittsburgh,PA,15211,40.518884,-79.801039,1,72.9,1.07,176,0.0468,0.1354,true
+P00403,Tracy,Hernandez,MD,primary-care,,Seattle,WA,98175,47.518164,-122.411227,15,85.3,1.08,3759,0.0053,0.0483,true
+P00404,Amanda,Reed,MD,oncology,,Orlando,FL,32883,28.349557,-81.420232,23,94.3,0.78,772,0.0320,0.1053,false
+P00405,Andrea,Daniels,MD,primary-care,Adolescent Medicine,Houston,TX,77069,29.757647,-95.295759,12,77.3,1.07,6328,0.0113,0.0775,false
+P00406,Stanley,Morris,MD,primary-care,Geriatrics,Dallas,TX,75205,32.933044,-96.813405,25,64.8,0.69,3538,0.0122,0.0829,true
+P00407,Jacob,Terry,DO,cardiology,Echocardiography,Philadelphia,PA,19118,40.062863,-75.264933,18,67.1,1.08,1775,0.0333,0.1555,false
+P00408,Ashley,Hall,MD,psychiatry,Geriatric Psychiatry,Los Angeles,CA,90042,34.024399,-118.269250,18,74.1,0.93,457,0.0028,0.0726,true
+P00409,Kimberly,Williams,MD,primary-care,,Atlanta,GA,30334,33.807055,-84.575856,21,73.0,0.95,1543,0.0062,0.0376,true
+P00410,Julie,Thornton,MD,primary-care,,Dallas,TX,75247,32.886516,-96.633252,13,64.0,1.12,1812,0.0119,0.1297,true
+P00411,Lisa,Hughes,DO,neurology,Movement Disorders,Atlanta,GA,30321,33.573024,-84.247445,20,68.8,1.00,1157,0.0145,0.0802,true
+P00412,Elizabeth,Hoover,DO,psychiatry,,Austin,TX,78767,30.213199,-97.946053,9,71.5,0.98,502,0.0038,0.0808,false
+P00413,Tina,Simpson,MD,primary-care,,Denver,CO,80269,39.636790,-104.864074,19,73.2,0.88,1363,0.0089,0.0784,true
+P00414,Benjamin,Shaw,MD,pulmonology,Sleep Medicine,Tampa,FL,33623,28.002620,-82.455018,18,63.4,0.97,1157,0.0186,0.1566,true
+P00415,Brittany,Kane,MD,oncology,,Pittsburgh,PA,15220,40.499204,-79.825758,12,78.0,1.08,721,0.0465,0.1537,true
+P00416,Morgan,Alexander,MD,psychiatry,Addiction Psychiatry,Phoenix,AZ,85094,33.373752,-112.067850,16,59.1,1.00,431,0.0048,0.1775,true
+P00417,Alicia,Bryant,MD,dermatology,Mohs Surgery,Los Angeles,CA,90089,34.054669,-118.015152,25,79.0,0.73,6890,0.0035,0.0033,true
+P00418,Jennifer,Ortiz,MD,dermatology,,New York,NY,10006,40.755246,-74.009384,12,77.9,0.86,4023,0.0035,0.0040,true
+P00419,Diana,Moore,MD,dermatology,Dermatopathology,Chicago,IL,60636,41.818334,-87.459295,17,66.1,0.86,3530,0.0042,0.0044,true
+P00420,Terrance,Costa,MD,primary-care,,Miami,FL,33130,25.711516,-80.124980,2,76.5,0.73,1740,0.0079,0.0699,true
+P00421,Matthew,Schwartz,MD,psychiatry,Geriatric Psychiatry,New York,NY,10016,40.624212,-73.829547,1,69.1,0.95,828,0.0036,0.1005,true
+P00422,Debra,Christian,MD,dermatology,Pediatric Dermatology,Phoenix,AZ,85068,33.560758,-112.112439,25,99.0,0.66,1510,0.0016,0.0028,true
+P00423,Melissa,Villarreal,MD,primary-care,,San Diego,CA,92128,32.734115,-117.171633,15,59.3,0.86,3351,0.0101,0.0972,true
+P00424,Norman,Stewart,MD,psychiatry,Geriatric Psychiatry,Newark,NJ,07133,40.691670,-74.250864,1,53.3,1.05,345,0.0067,0.1702,false
+P00425,Jennifer,Malone,MD,dermatology,,New York,NY,10083,40.831524,-74.177580,12,84.0,1.04,5049,0.0024,0.0036,true
+P00426,Monique,Johnson,DO,neurology,Headache Medicine,Seattle,WA,98123,47.633885,-122.242479,32,79.4,0.88,1318,0.0101,0.0806,true
+P00427,Casey,Welch,MD,primary-care,Geriatrics,Houston,TX,77002,29.738170,-95.526360,27,83.3,1.16,2911,0.0075,0.0514,true
+P00428,Samantha,Bright,MD,orthopedics,Spine Surgery,Miami,FL,33115,25.843548,-80.400665,26,69.2,1.02,1797,0.0571,0.0612,true
+P00429,Julie,Hamilton,DO,oncology,,Chicago,IL,60662,41.980556,-87.703691,3,66.8,0.89,468,0.0771,0.2267,false
+P00430,Corey,Schultz,MD,orthopedics,Spine Surgery,Los Angeles,CA,90013,33.979947,-118.426823,27,80.1,0.95,2847,0.0434,0.0398,true
+P00431,Monique,Wallace,MD,orthopedics,,Los Angeles,CA,90018,34.243851,-118.278424,12,84.9,0.85,3089,0.0397,0.0653,true
+P00432,Heather,Berger,MD,oncology,Thoracic Oncology,San Francisco,CA,94173,37.615725,-122.410052,15,66.2,0.91,217,0.0579,0.2002,false
+P00433,Brandon,Flynn,MD,cardiology,Echocardiography,Boston,MA,02128,42.493852,-71.260356,9,77.6,0.96,1809,0.0363,0.1046,true
+P00434,Kelly,Brooks,MD,pulmonology,,New York,NY,10023,40.828142,-73.923430,21,81.3,1.18,1205,0.0112,0.0963,true
+P00435,Dustin,Schmidt,MD,orthopedics,,Atlanta,GA,30358,33.749268,-84.434792,16,63.4,1.30,1245,0.0452,0.0539,true
+P00436,Ashlee,Sparks,MD,psychiatry,,New York,NY,10009,40.639513,-74.095567,22,75.1,0.85,422,0.0030,0.0801,false
+P00437,George,Miller,MD,neurology,Epilepsy,Miami,FL,33139,25.769900,-80.052474,20,75.5,1.19,1601,0.0165,0.0923,true
+P00438,Monica,Harvey,DO,cardiology,,Chicago,IL,60689,41.785529,-87.537397,30,76.0,1.28,1504,0.0228,0.1009,true
+P00439,John,Durham,MD,orthopedics,,Los Angeles,CA,90098,34.222283,-118.107054,1,65.4,1.07,397,0.0442,0.0604,true
+P00440,Douglas,Murray,MD,cardiology,,Dallas,TX,75263,32.788785,-96.584100,16,86.2,1.13,1873,0.0278,0.0653,false
+P00441,Jonathan,Scott,DO,orthopedics,Hand Surgery,Philadelphia,PA,19197,40.063390,-75.074284,30,83.5,0.88,1227,0.0347,0.0472,false
+P00442,Albert,Ballard,DO,primary-care,,Houston,TX,77005,29.865615,-95.299579,21,58.5,1.10,1770,0.0107,0.0911,false
+P00443,Rachel,Byrd,MD,pulmonology,,Jersey City,NJ,07313,40.618832,-74.276739,24,71.0,1.11,1663,0.0229,0.1776,false
+P00444,Eric,Alexander,MD,cardiology,,New York,NY,10046,40.617991,-74.157242,18,73.7,0.89,627,0.0464,0.1285,true
+P00445,Michael,Matthews,MD,cardiology,,Chicago,IL,60606,41.850102,-87.784521,8,87.6,0.82,2666,0.0292,0.1050,true
+P00446,Danielle,Coleman,DO,gastroenterology,Advanced Endoscopy,San Francisco,CA,94193,37.839830,-122.172968,4,69.5,0.94,693,0.0197,0.0874,false
+P00447,John,Bruce,MD,dermatology,,Dallas,TX,75204,32.978943,-96.886691,6,83.0,0.95,8078,0.0033,0.0043,true
+P00448,James,Cruz,DO,oncology,,Chicago,IL,60652,41.836211,-87.479834,12,71.0,1.03,528,0.0472,0.1306,true
+P00449,Timothy,Young,MD,oncology,,Tampa,FL,33611,27.784150,-82.379271,28,69.8,1.13,426,0.0470,0.1795,true
+P00450,Ashley,Andrews,MD,primary-care,,Orlando,FL,32860,28.644006,-81.541448,31,79.6,1.18,2593,0.0085,0.0550,true
+P00451,Victoria,Phillips,MD,pulmonology,,Philadelphia,PA,19101,40.007960,-75.414366,19,72.6,1.24,1273,0.0241,0.1382,true
+P00452,Tiffany,Barrett,MD,gastroenterology,Inflammatory Bowel Disease,Orlando,FL,32855,28.652053,-81.243030,1,54.7,1.04,2412,0.0352,0.0985,false
+P00453,Joshua,Knight,MD,cardiology,,Los Angeles,CA,90048,33.908722,-118.358448,18,93.9,1.11,2036,0.0207,0.0692,true
+P00454,Gina,Garner,DO,primary-care,Preventive Medicine,Philadelphia,PA,19115,39.806291,-75.361358,7,66.1,1.00,2799,0.0112,0.0795,true
+P00455,Brandon,Obrien,MD,primary-care,,Houston,TX,77038,29.673175,-95.314541,8,85.4,1.05,2345,0.0086,0.0547,false
+P00456,Tyler,Strong,MD,primary-care,,Philadelphia,PA,19146,39.893093,-75.226216,14,62.3,0.93,2948,0.0108,0.0701,true
+P00457,Justin,Lindsey,MD,endocrinology,,Los Angeles,CA,90035,33.926430,-118.133534,21,76.0,1.25,1408,0.0079,0.0614,true
+P00458,Catherine,Gomez,DO,primary-care,Geriatrics,Los Angeles,CA,90032,33.937272,-118.103449,14,66.7,1.33,2061,0.0099,0.0731,true
+P00459,Dana,Oliver,MD,gastroenterology,Inflammatory Bowel Disease,Chicago,IL,60691,41.845790,-87.695300,27,57.8,1.03,2482,0.0248,0.1029,true
+P00460,Erica,Le,MD,pulmonology,,Chicago,IL,60635,41.799875,-87.399181,21,67.4,0.86,1275,0.0188,0.1615,true
+P00461,Donna,Massey,MD,orthopedics,Hand Surgery,Phoenix,AZ,85053,33.407556,-112.084443,15,62.5,1.14,1155,0.0521,0.0750,true
+P00462,Courtney,Berger,MD,pulmonology,,Denver,CO,80292,39.750477,-104.900994,12,72.2,0.66,1163,0.0263,0.1179,false
+P00463,Debbie,Parker,MD,cardiology,Echocardiography,Boston,MA,02140,42.424922,-71.271603,21,75.6,0.95,1136,0.0409,0.1395,true
+P00464,Scott,Riley,MD,dermatology,,Pittsburgh,PA,15209,40.382304,-80.025376,7,86.4,0.76,3391,0.0025,0.0038,true
+P00465,Jessica,Davis,MD,endocrinology,Thyroid Disorders,Houston,TX,77065,29.917761,-95.227693,31,88.4,0.79,2395,0.0044,0.0270,true
+P00466,Kenneth,Burgess,MD,pulmonology,,Austin,TX,78733,30.350942,-97.819278,18,76.7,0.94,1580,0.0171,0.1392,true
+P00467,Gregory,Anderson,MD,endocrinology,,Chicago,IL,60687,41.781675,-87.539186,10,64.7,1.33,1447,0.0110,0.0980,true
+P00468,Amber,Mata,MD,primary-care,Sports Medicine,Buffalo,NY,14289,42.822460,-78.979622,9,65.0,1.42,1479,0.0095,0.0914,true
+P00469,Alyssa,Mcintyre,DO,oncology,Breast Oncology,New York,NY,10074,40.870009,-74.198353,29,88.2,0.99,515,0.0492,0.1207,true
+P00470,Maria,Scott,MD,gastroenterology,Advanced Endoscopy,Miami,FL,33162,25.784486,-80.263710,25,65.9,1.16,2556,0.0218,0.1119,true
+P00471,Makayla,Olson,MD,pulmonology,,Houston,TX,77095,29.678706,-95.368519,31,80.2,0.96,2063,0.0190,0.1573,true
+P00472,Lindsay,Francis,MD,pulmonology,,Chicago,IL,60678,42.018238,-87.636981,18,76.0,1.10,1845,0.0198,0.1424,true
+P00473,Matthew,Wilson,MD,primary-care,Adolescent Medicine,Dallas,TX,75215,32.748142,-96.658854,14,75.8,0.94,2741,0.0088,0.0689,true
+P00474,Sydney,Taylor,MD,psychiatry,Child and Adolescent Psychiatry,Dallas,TX,75245,32.767948,-96.893958,24,51.7,0.94,1187,0.0072,0.1386,false
+P00475,Tammy,Dalton,MD,pulmonology,Sleep Medicine,Orlando,FL,32872,28.547238,-81.470833,25,76.0,1.12,989,0.0159,0.1251,true
+P00476,Jennifer,Whitney,MD,oncology,,Chicago,IL,60638,41.844430,-87.647337,14,83.3,0.90,264,0.0474,0.0925,true
+P00477,Tammy,Ballard,MD,pulmonology,,New York,NY,10088,40.825216,-74.018939,24,81.8,1.26,1348,0.0145,0.0903,true
+P00478,Michael,Gibbs,MD,dermatology,Pediatric Dermatology,Dallas,TX,75225,32.713497,-96.570875,41,60.8,1.04,3861,0.0061,0.0074,true
+P00479,Alexander,Herrera,MD,primary-care,,Rochester,NY,14615,43.217168,-77.726812,28,65.9,1.06,3564,0.0081,0.0595,true
+P00480,Shawn,Chambers,MD,neurology,Vascular Neurology,Philadelphia,PA,19172,39.994033,-75.332650,20,50.1,1.09,1750,0.0288,0.1424,true
+P00481,Emily,Richards,MD,neurology,,Dallas,TX,75291,32.901954,-96.734907,9,68.2,1.29,944,0.0184,0.1025,false
+P00482,Lynn,Bentley,MD,orthopedics,Joint Replacement,Boston,MA,02185,42.237211,-70.825051,10,71.8,0.97,2685,0.0739,0.0728,true
+P00483,Daniel,Hall,MD,gastroenterology,Inflammatory Bowel Disease,Chicago,IL,60603,41.836073,-87.677601,27,89.7,1.10,1423,0.0157,0.0510,true
+P00484,Angel,Henson,MD,orthopedics,,New York,NY,10026,40.783124,-74.247275,27,78.8,1.17,1869,0.0346,0.0631,false
+P00485,Anna,Herman,MD,neurology,,Atlanta,GA,30316,33.812673,-84.616808,21,59.7,0.86,907,0.0199,0.1227,true
+P00486,Jeffrey,Brown,MD,pulmonology,,New York,NY,10079,40.598991,-74.038934,27,78.5,0.80,1523,0.0217,0.1203,true
+P00487,Madison,Blankenship,MD,pulmonology,,New York,NY,10063,40.752699,-74.124284,29,72.7,1.08,1926,0.0301,0.1816,false
+P00488,Kevin,Ortiz,MD,primary-care,Geriatrics,Jersey City,NJ,07325,40.590586,-74.019358,1,68.3,1.24,1817,0.0068,0.0611,true
+P00489,Donald,Shah,MD,primary-care,Geriatrics,New York,NY,10011,40.657047,-74.071309,11,77.2,1.23,2043,0.0065,0.0556,true
+P00490,Kevin,Vasquez,MD,orthopedics,Hand Surgery,Rochester,NY,14615,43.129984,-77.558404,10,66.9,1.19,1319,0.0473,0.0523,false
+P00491,Colton,Clay,MD,gastroenterology,,Pittsburgh,PA,15252,40.267567,-80.034514,30,68.8,0.92,1009,0.0275,0.1149,true
+P00492,Derek,Chavez,MD,cardiology,,Trenton,NJ,08675,40.233276,-74.947641,15,68.4,0.84,2934,0.0288,0.1011,false
+P00493,Ellen,Paul,DO,orthopedics,Spine Surgery,Los Angeles,CA,90033,34.035333,-118.187371,14,65.0,1.13,954,0.0635,0.0681,true
+P00494,Sonya,Barnes,MD,oncology,,Dallas,TX,75266,32.889243,-96.962281,12,81.7,0.81,1192,0.0337,0.1896,true
+P00495,Julia,Moore,MD,primary-care,Adolescent Medicine,Chicago,IL,60622,41.913531,-87.861769,5,76.4,0.89,2298,0.0060,0.0570,true
+P00496,Robert,Garcia,MD,primary-care,,Denver,CO,80222,39.731804,-104.803192,9,77.1,1.30,3628,0.0095,0.0706,true
+P00497,Tracy,Russell,MD,primary-care,Adolescent Medicine,Chicago,IL,60687,41.821395,-87.601764,16,59.7,1.15,3337,0.0088,0.1103,true
+P00498,Stephanie,Johnson,MD,cardiology,Heart Failure,Chicago,IL,60699,41.946813,-87.502406,14,67.7,0.91,877,0.0376,0.1259,true
+P00499,Mitchell,Ramos,MD,primary-care,,Phoenix,AZ,85077,33.430880,-112.279479,15,62.3,0.98,2693,0.0099,0.0729,true
+P00500,Stephanie,Foley,MD,primary-care,Adolescent Medicine,Miami,FL,33109,25.765824,-80.110033,1,74.8,1.06,1598,0.0072,0.0823,false
+P00501,Cory,Jennings,MD,primary-care,,Dallas,TX,75218,32.824556,-96.989748,20,64.2,0.85,2006,0.0063,0.0676,true
+P00502,Amy,Levine,MD,cardiology,,Buffalo,NY,14289,42.827995,-78.885876,14,56.3,1.35,1415,0.0328,0.1165,true
+P00503,Michael,Sanders,DO,pulmonology,,Pittsburgh,PA,15210,40.539951,-79.848212,30,79.2,1.09,1318,0.0143,0.1097,true
+P00504,James,Martinez,MD,neurology,Vascular Neurology,San Francisco,CA,94118,37.594519,-122.544188,8,87.2,0.97,1424,0.0138,0.0690,true
+P00505,Melanie,Gibson,MD,primary-care,Sports Medicine,Jersey City,NJ,07318,40.800685,-74.087090,28,75.4,1.00,3758,0.0079,0.0700,false
+P00506,Elizabeth,May,DO,neurology,,Philadelphia,PA,19191,39.763313,-75.042688,18,65.0,0.97,582,0.0169,0.1405,false
+P00507,Carla,Smith,MD,endocrinology,,Jersey City,NJ,07309,40.750521,-73.977999,25,65.5,1.26,1096,0.0121,0.0636,true
+P00508,Kristin,Sanchez,MD,dermatology,,San Diego,CA,92163,32.753205,-116.924244,26,75.2,1.02,4303,0.0038,0.0051,true
+P00509,David,Cunningham,MD,primary-care,,Houston,TX,77050,29.731839,-95.268925,23,68.9,0.92,2009,0.0106,0.0632,true
+P00510,Casey,Hubbard,MD,orthopedics,,Denver,CO,80262,39.637518,-104.802904,19,62.9,0.82,1148,0.0544,0.0906,true
+P00511,Jamie,Robinson,MD,gastroenterology,,Chicago,IL,60657,41.982468,-87.579612,17,60.6,0.88,2005,0.0191,0.0762,true
+P00512,Molly,Murphy,MD,cardiology,Interventional Cardiology,Chicago,IL,60646,41.782038,-87.407026,28,50.4,1.19,1570,0.0464,0.1445,true
+P00513,Dylan,Lester,MD,endocrinology,Thyroid Disorders,Denver,CO,80236,39.780108,-104.983566,14,75.4,1.12,1805,0.0070,0.0569,true
+P00514,Aaron,Garrison,MD,primary-care,,Dallas,TX,75275,32.961030,-96.769030,5,72.1,1.05,1738,0.0075,0.0836,true
+P00515,Duane,Anderson,DO,psychiatry,Addiction Psychiatry,San Diego,CA,92168,32.595304,-117.093354,25,69.8,1.13,646,0.0028,0.0840,true
+P00516,John,Thompson,MD,neurology,,Orlando,FL,32818,28.715306,-81.241262,32,75.5,1.05,2178,0.0112,0.0638,true
+P00517,Donna,Johnson,MD,primary-care,,San Diego,CA,92183,32.692418,-116.921856,27,75.7,0.99,4347,0.0071,0.0498,false
+P00518,Alexis,Tyler,MD,orthopedics,,Miami,FL,33167,25.679907,-80.154277,16,68.1,1.02,1688,0.0395,0.0644,true
+P00519,John,Morris,MD,primary-care,,New York,NY,10059,40.756951,-73.807113,7,60.9,1.13,3233,0.0110,0.1091,true
+P00520,Grant,Williams,MD,orthopedics,Spine Surgery,Dallas,TX,75228,32.698992,-96.631819,20,82.0,0.88,1761,0.0376,0.0404,true
+P00521,Judy,Fox,MD,primary-care,Geriatrics,Houston,TX,77066,29.795158,-95.312850,9,65.2,0.79,1633,0.0074,0.0675,false
+P00522,Julie,Alvarez,MD,cardiology,,Orlando,FL,32865,28.580654,-81.297810,10,79.7,0.99,1143,0.0292,0.0891,true
+P00523,Kimberly,Palmer,MD,primary-care,,Atlanta,GA,30371,33.940427,-84.454477,10,84.1,0.92,2937,0.0056,0.0361,true
+P00524,Daniel,Gordon,MD,orthopedics,,San Francisco,CA,94156,37.976195,-122.521630,20,65.7,1.04,2038,0.0686,0.0578,true
+P00525,Sonia,Williams,DO,cardiology,,Philadelphia,PA,19103,40.097115,-75.111700,10,75.4,0.99,847,0.0451,0.1086,false
+P00526,Krista,Camacho,MD,primary-care,,Dallas,TX,75256,32.857388,-96.602399,13,73.5,0.76,2175,0.0082,0.0643,true
+P00527,Adrienne,Ellis,DO,pulmonology,,Boston,MA,02151,42.511706,-71.197382,5,46.3,1.10,1327,0.0367,0.2639,true
+P00528,Tamara,Brown,MD,orthopedics,Sports Medicine,Austin,TX,78759,30.465877,-97.738430,24,78.2,0.90,2775,0.0430,0.0758,true
+P00529,Timothy,Morales,MD,primary-care,,Atlanta,GA,30394,33.673896,-84.151160,1,62.8,1.08,2374,0.0118,0.1047,true
+P00530,Gina,Henry,MD,psychiatry,,Philadelphia,PA,19180,40.072903,-75.062016,23,65.2,1.40,514,0.0040,0.1260,false
+P00531,Renee,Jones,MD,cardiology,,Miami,FL,33117,25.653647,-80.167125,17,73.4,1.06,1954,0.0337,0.0961,true
+P00532,Christopher,Franklin,MD,neurology,Epilepsy,Houston,TX,77078,29.819135,-95.410912,25,63.1,0.97,1513,0.0179,0.0916,true
+P00533,Cameron,Hill,DO,psychiatry,,Atlanta,GA,30351,33.902966,-84.521303,16,59.6,0.86,526,0.0034,0.1078,true
+P00534,Cynthia,Kelley,MD,psychiatry,Child and Adolescent Psychiatry,Boston,MA,02122,42.420238,-71.302903,17,65.7,0.90,708,0.0039,0.1138,true
+P00535,Mark,Vang,MD,cardiology,,San Francisco,CA,94112,37.806601,-122.251683,18,59.8,1.25,2305,0.0441,0.1782,true
+P00536,Alyssa,Chavez,MD,primary-care,Geriatrics,Phoenix,AZ,85096,33.475190,-112.102109,22,73.9,0.85,2921,0.0082,0.0659,true
+P00537,Catherine,Garcia,MD,neurology,Epilepsy,Dallas,TX,75210,32.766161,-96.618439,14,74.3,1.08,2007,0.0129,0.0691,true
+P00538,Jacqueline,Farrell,MD,oncology,,New York,NY,10099,40.705597,-74.192460,27,82.0,1.02,533,0.0366,0.0662,true
+P00539,Debra,Mack,MD,psychiatry,,Dallas,TX,75205,32.666946,-96.809238,4,60.1,0.69,733,0.0045,0.1280,true
+P00540,Jennifer,Lewis,MD,dermatology,,Chicago,IL,60650,41.835122,-87.443717,17,76.8,1.07,3583,0.0033,0.0064,true
+P00541,Shannon,Perez,MD,cardiology,Interventional Cardiology,Boston,MA,02181,42.327254,-71.095345,1,69.0,0.81,1019,0.0473,0.1084,true
+P00542,Matthew,Chavez,MD,dermatology,Pediatric Dermatology,Pittsburgh,PA,15255,40.535300,-80.158319,32,71.8,0.82,6439,0.0045,0.0051,true
+P00543,Robert,Davis,MD,cardiology,Electrophysiology,Chicago,IL,60690,41.869689,-87.525382,2,49.2,0.80,1781,0.0747,0.1956,true
+P00544,Ronald,Ortega,MD,cardiology,Electrophysiology,Boston,MA,02132,42.240040,-70.999812,20,51.2,1.02,2624,0.0367,0.2012,true
+P00545,Nicholas,Hernandez,MD,primary-care,,New York,NY,10036,40.798376,-73.809629,24,61.3,0.75,2305,0.0101,0.0801,true
+P00546,Sandra,Jones,MD,orthopedics,,New York,NY,10076,40.693867,-74.257275,21,62.4,1.13,3304,0.0532,0.0633,true
+P00547,Marie,Davis,MD,gastroenterology,Inflammatory Bowel Disease,Los Angeles,CA,90087,34.143646,-118.017190,27,72.3,0.93,1349,0.0206,0.0827,true
+P00548,Colin,Rodgers,MD,endocrinology,Thyroid Disorders,Denver,CO,80276,39.739135,-104.829347,12,66.1,1.12,911,0.0115,0.0759,true
+P00549,Lisa,Hawkins,DO,neurology,,Pittsburgh,PA,15222,40.495099,-79.735699,18,69.4,0.74,1130,0.0158,0.1503,true
+P00550,Brenda,Hoffman,MD,primary-care,,Chicago,IL,60668,41.724313,-87.590776,26,63.9,1.10,4453,0.0141,0.1065,true
+P00551,Mark,Martinez,MD,oncology,,Seattle,WA,98174,47.446023,-122.238426,12,73.1,0.84,356,0.0405,0.1921,true
+P00552,Michael,Ortega,MD,primary-care,Preventive Medicine,New York,NY,10057,40.507225,-73.991677,23,70.6,1.13,1638,0.0085,0.0767,true
+P00553,Karen,Parrish,MD,psychiatry,,New York,NY,10018,40.542029,-73.970821,19,58.0,0.91,377,0.0043,0.0968,true
+P00554,Jennifer,Schmitt,MD,endocrinology,Diabetes,Austin,TX,78764,30.087276,-97.603448,12,66.0,1.25,1921,0.0100,0.0806,true
+P00555,Caroline,Bell,MD,orthopedics,,New York,NY,10081,40.690054,-74.227382,20,83.2,1.01,1088,0.0415,0.0641,true
+P00556,Becky,Lewis,MD,cardiology,Electrophysiology,San Francisco,CA,94194,37.766014,-122.619921,1,94.3,1.15,3647,0.0197,0.0629,false
+P00557,Diane,Walker,MD,orthopedics,Hand Surgery,Tampa,FL,33668,27.995538,-82.492670,16,69.4,1.10,1466,0.0426,0.0681,true
+P00558,Daniel,Bruce,MD,orthopedics,,Los Angeles,CA,90024,33.909475,-118.340644,13,70.3,0.88,1149,0.0399,0.0674,true
+P00559,Michael,Farmer,MD,neurology,Epilepsy,Dallas,TX,75265,32.668386,-96.927087,26,82.5,0.79,1386,0.0091,0.0844,true
+P00560,Audrey,Aguirre,MD,orthopedics,,Los Angeles,CA,90019,33.931620,-118.271801,21,77.6,0.96,2125,0.0415,0.0590,true
+P00561,Megan,Villegas,MD,dermatology,,Philadelphia,PA,19140,40.058543,-75.401680,22,62.1,0.95,3631,0.0048,0.0051,false
+P00562,Loretta,Austin,MD,cardiology,Echocardiography,Dallas,TX,75271,32.756035,-96.912329,24,68.8,1.07,956,0.0376,0.1379,true
+P00563,Dawn,Johnson,MD,primary-care,Adolescent Medicine,Seattle,WA,98147,47.577466,-122.111525,11,61.4,0.93,2692,0.0145,0.1058,true
+P00564,Sarah,Gallegos,MD,dermatology,Dermatopathology,Newark,NJ,07188,40.737600,-74.087441,9,63.6,1.10,3073,0.0077,0.0061,true
+P00565,Joseph,White,MD,dermatology,,Chicago,IL,60682,41.973384,-87.653050,28,67.8,1.00,4188,0.0030,0.0048,true
+P00566,Jacqueline,Parker,MD,psychiatry,Child and Adolescent Psychiatry,Phoenix,AZ,85072,33.353779,-111.859071,14,68.4,0.87,778,0.0028,0.1113,true
+P00567,Matthew,Smith,MD,gastroenterology,Advanced Endoscopy,Los Angeles,CA,90067,34.256804,-118.252492,23,78.4,0.96,845,0.0154,0.0617,true
+P00568,Molly,Knight,MD,primary-care,,Miami,FL,33191,25.671456,-80.336291,32,79.2,1.11,2474,0.0068,0.0609,true
+P00569,Richard,Thomas,DO,primary-care,Preventive Medicine,Denver,CO,80229,39.689527,-104.842273,22,75.4,0.95,2380,0.0089,0.0620,false
+P00570,Cynthia,Johnson,MD,primary-care,Geriatrics,Chicago,IL,60626,41.806088,-87.539698,12,77.1,1.14,3302,0.0073,0.0726,false
+P00571,Julie,Lewis,MD,psychiatry,Addiction Psychiatry,New York,NY,10055,40.595486,-73.921104,15,81.9,0.76,489,0.0022,0.0631,false
+P00572,Robert,Peterson,MD,cardiology,,Tampa,FL,33676,28.041872,-82.451167,15,69.1,1.08,834,0.0382,0.1478,true
+P00573,Mitchell,Griffith,MD,pulmonology,,New York,NY,10041,40.625330,-74.004230,28,68.1,0.76,1261,0.0229,0.1383,true
+P00574,Kimberly,Bradley,MD,cardiology,,Atlanta,GA,30368,33.814711,-84.393879,23,73.3,0.93,2576,0.0269,0.1057,true
+P00575,Christopher,Williams,MD,endocrinology,Diabetes,Atlanta,GA,30391,33.767380,-84.274443,32,81.5,0.85,2640,0.0053,0.0449,true
+P00576,Eric,Williamson,MD,oncology,Hematologic Oncology,Houston,TX,77023,29.911877,-95.445925,20,98.9,1.15,493,0.0260,0.0804,true
+P00577,Emily,Nelson,MD,psychiatry,,Los Angeles,CA,90023,33.948748,-118.194204,3,71.3,0.99,1088,0.0027,0.0754,true
+P00578,Ebony,Tucker,MD,cardiology,,San Francisco,CA,94144,37.840849,-122.432580,12,72.9,1.26,2583,0.0244,0.1382,false
+P00579,Scott,Nelson,MD,orthopedics,Spine Surgery,Austin,TX,78788,30.296509,-97.922166,12,65.3,0.96,1309,0.0704,0.1013,true
+P00580,Kari,Wilson,MD,pulmonology,,Philadelphia,PA,19159,40.154307,-75.252985,35,63.0,0.94,2365,0.0227,0.1262,true
+P00581,Russell,Campbell,MD,orthopedics,Joint Replacement,Los Angeles,CA,90050,34.137773,-118.262016,12,96.8,0.94,1304,0.0214,0.0257,true
+P00582,Erika,Tucker,MD,primary-care,,Miami,FL,33184,25.778382,-80.174986,20,63.4,1.03,3447,0.0101,0.0951,true
+P00583,Elizabeth,Williams,MD,orthopedics,,Los Angeles,CA,90013,34.170443,-118.384495,1,71.1,0.99,1940,0.0520,0.0742,true
+P00584,Randall,Greene,MD,primary-care,,Chicago,IL,60663,42.075508,-87.658170,18,76.8,1.22,3881,0.0061,0.0550,true
+P00585,Adrian,Turner,MD,cardiology,,Phoenix,AZ,85005,33.355494,-112.135249,4,64.5,1.29,2843,0.0273,0.1265,false
+P00586,Jason,Taylor,MD,cardiology,,Denver,CO,80287,39.799129,-105.032761,2,71.2,0.87,3831,0.0351,0.1079,false
+P00587,Jonathan,Murphy,MD,oncology,,Boston,MA,02129,42.469797,-71.278980,10,76.2,0.93,579,0.0360,0.1045,true
+P00588,Adrian,Burgess,MD,psychiatry,,Boston,MA,02168,42.296980,-71.107104,8,87.5,1.41,913,0.0022,0.0678,true
+P00589,Gregory,James,MD,primary-care,Adolescent Medicine,Phoenix,AZ,85028,33.467775,-111.927752,10,81.2,0.90,874,0.0068,0.0580,true
+P00590,Jane,Mason,MD,pulmonology,,Chicago,IL,60649,41.731409,-87.719403,25,55.3,0.89,643,0.0437,0.1735,true
+P00591,Martha,Drake,MD,dermatology,,San Francisco,CA,94177,37.852248,-122.431143,6,75.1,1.14,3917,0.0036,0.0062,true
+P00592,Charles,Hensley,MD,cardiology,Heart Failure,Los Angeles,CA,90092,34.191027,-118.372532,18,56.0,1.05,2481,0.0561,0.1763,true
+P00593,Bobby,Smith,DO,primary-care,Geriatrics,Atlanta,GA,30306,33.879076,-84.187762,13,56.5,1.08,1682,0.0121,0.0853,true
+P00594,Samantha,Atkins,MD,primary-care,,Los Angeles,CA,90052,34.115780,-118.195560,12,81.0,1.14,3268,0.0053,0.0528,true
+P00595,Barbara,Berry,MD,oncology,,Paterson,NJ,07577,40.772061,-74.382907,29,67.8,1.06,620,0.1010,0.1970,true
+P00596,Jenna,Butler,MD,primary-care,Adolescent Medicine,Atlanta,GA,30387,33.828781,-84.151363,12,72.0,1.23,1811,0.0084,0.0597,true
+P00597,Darius,Smith,MD,primary-care,,Denver,CO,80287,39.794329,-105.246640,30,91.0,1.28,4457,0.0032,0.0308,false
+P00598,Mark,Solis,MD,primary-care,,New York,NY,10007,40.780691,-73.895601,13,91.1,1.49,1545,0.0066,0.0555,true
+P00599,Christine,Collier,MD,gastroenterology,,Houston,TX,77048,29.836419,-95.269747,9,73.5,0.76,1461,0.0177,0.0722,false
+P00600,Samantha,Davis,MD,psychiatry,,Pittsburgh,PA,15206,40.575316,-80.124359,13,62.1,0.91,537,0.0050,0.1111,true
+P00601,Megan,Sanchez,MD,psychiatry,Child and Adolescent Psychiatry,New York,NY,10078,40.877683,-74.181169,13,80.1,0.75,636,0.0031,0.0919,true
+P00602,Brianna,Warren,MD,psychiatry,,Chicago,IL,60690,41.808334,-87.696669,11,70.1,1.11,374,0.0033,0.0921,true
+P00603,Randy,Collins,MD,cardiology,Interventional Cardiology,Dallas,TX,75262,32.781456,-96.849487,26,87.1,0.67,2433,0.0321,0.0819,true
+P00604,Matthew,Cook,MD,dermatology,,Miami,FL,33166,25.864340,-80.291634,20,77.8,0.86,3083,0.0040,0.0044,true
+P00605,Gary,Dixon,MD,primary-care,,Los Angeles,CA,90026,33.984930,-118.300328,21,94.3,1.16,2335,0.0044,0.0413,false
+P00606,Daniel,Hicks,MD,orthopedics,,Pittsburgh,PA,15208,40.462660,-79.930020,28,80.0,0.92,1148,0.0341,0.0497,true
+P00607,Rebecca,Bailey,MD,primary-care,Sports Medicine,Houston,TX,77000,29.842023,-95.412078,20,61.4,1.10,1964,0.0093,0.0967,true
+P00608,Jessica,Fuentes,MD,gastroenterology,,Los Angeles,CA,90062,33.928309,-118.113882,8,65.3,1.32,1090,0.0242,0.0862,true
+P00609,Lisa,Young,MD,endocrinology,,Phoenix,AZ,85005,33.442166,-111.912014,28,74.7,1.02,1847,0.0049,0.0544,true
+P00610,Dwayne,Gonzalez,MD,primary-care,Sports Medicine,Chicago,IL,60672,41.817828,-87.473812,25,61.9,1.14,5877,0.0137,0.0923,true
+P00611,Carrie,Wolf,MD,orthopedics,,New York,NY,10027,40.658077,-73.786338,3,76.2,0.69,2875,0.0385,0.0471,true
+P00612,Diana,Thompson,MD,primary-care,,San Diego,CA,92162,32.829078,-116.973472,22,65.2,1.14,6215,0.0103,0.0655,true
+P00613,Kendra,Snyder,DO,psychiatry,,Atlanta,GA,30339,33.854534,-84.307392,12,82.6,1.35,419,0.0025,0.0600,true
+P00614,Karen,Wolf,MD,orthopedics,,New York,NY,10031,40.538052,-73.859504,11,64.8,0.82,1393,0.0667,0.0818,true
+P00615,Shane,Glass,MD,psychiatry,,San Diego,CA,92110,32.788467,-117.229144,12,96.9,0.85,522,0.0014,0.0465,false
+P00616,Anne,Reid,MD,endocrinology,,Denver,CO,80221,39.689226,-105.039250,14,70.5,1.26,1725,0.0081,0.0579,true
+P00617,Claudia,Lin,MD,dermatology,,Phoenix,AZ,85004,33.430275,-111.924426,16,94.2,1.16,6743,0.0030,0.0033,false
+P00618,Courtney,Hernandez,MD,neurology,,Orlando,FL,32870,28.580790,-81.602383,21,65.5,0.79,1711,0.0166,0.0891,false
+P00619,Carlos,Ramos,MD,gastroenterology,,New York,NY,10001,40.671337,-73.950232,29,81.1,0.58,897,0.0176,0.0641,false
+P00620,Kevin,Hill,MD,cardiology,Echocardiography,New York,NY,10029,40.898986,-74.128520,29,79.8,0.91,3795,0.0320,0.1288,true
+P00621,Brian,Romero,MD,primary-care,,Los Angeles,CA,90015,34.112630,-118.255641,34,69.8,0.87,2571,0.0092,0.0733,true
+P00622,Lance,Hayes,MD,orthopedics,,Philadelphia,PA,19120,39.959869,-74.999177,17,94.3,0.84,1711,0.0196,0.0264,true
+P00623,Brian,Decker,MD,endocrinology,Thyroid Disorders,Houston,TX,77038,29.567514,-95.472777,8,71.0,1.03,915,0.0075,0.0712,true
+P00624,Chase,Lin,MD,endocrinology,,Chicago,IL,60646,42.025967,-87.833243,7,81.4,1.06,1361,0.0069,0.0531,true
+P00625,Melissa,Gilbert,MD,cardiology,,Chicago,IL,60655,41.992987,-87.674507,14,58.0,0.99,2405,0.0412,0.1559,false
+P00626,William,Ford,MD,gastroenterology,,Chicago,IL,60615,41.869284,-87.598782,27,75.7,0.92,1257,0.0154,0.0591,true
+P00627,Angela,Conner,MD,dermatology,,Denver,CO,80235,39.891291,-105.115899,9,78.7,0.94,2342,0.0031,0.0039,true
+P00628,Paula,Cole,MD,gastroenterology,Hepatology,Philadelphia,PA,19110,40.078429,-75.300360,33,59.6,1.08,1639,0.0236,0.1083,true
+P00629,Lisa,Pearson,MD,dermatology,Pediatric Dermatology,Houston,TX,77040,29.816604,-95.497398,17,62.5,1.33,2237,0.0057,0.0056,true
+P00630,Marc,Alvarez,MD,primary-care,Sports Medicine,Los Angeles,CA,90003,33.975201,-118.152059,1,71.7,0.96,2387,0.0103,0.0525,true
+P00631,Edward,Brown,MD,cardiology,Interventional Cardiology,Philadelphia,PA,19141,39.921589,-75.308330,18,62.7,0.82,1621,0.0340,0.1334,true
+P00632,Dale,Nolan,DO,neurology,,Miami,FL,33117,25.718734,-80.195315,2,72.1,1.19,1551,0.0165,0.0653,true
+P00633,Matthew,Klein,MD,primary-care,,Houston,TX,77033,29.837136,-95.239552,1,80.3,1.16,2463,0.0060,0.0552,true
+P00634,William,Thompson,MD,neurology,Headache Medicine,Chicago,IL,60605,41.740855,-87.488706,16,64.1,0.85,1330,0.0185,0.1212,false
+P00635,John,Kim,MD,primary-care,Sports Medicine,Seattle,WA,98132,47.569147,-122.059903,12,59.0,0.92,3265,0.0111,0.1015,true
+P00636,Scott,Mills,MD,gastroenterology,,Austin,TX,78775,30.329563,-97.519373,10,58.6,1.20,1001,0.0313,0.1501,true
+P00637,Erik,Watson,MD,primary-care,,Dallas,TX,75276,32.598891,-96.739813,26,56.5,1.16,8706,0.0094,0.0838,false
+P00638,Justin,Ortiz,MD,psychiatry,Child and Adolescent Psychiatry,Seattle,WA,98154,47.518233,-122.212041,14,66.4,0.82,400,0.0035,0.1098,true
+P00639,Matthew,Harper,MD,orthopedics,Sports Medicine,Houston,TX,77030,29.816435,-95.605233,2,80.9,1.09,1753,0.0328,0.0371,true
+P00640,Kristina,Holland,MD,primary-care,,New York,NY,10008,40.786808,-74.182934,29,57.0,1.26,2316,0.0165,0.1558,true
+P00641,Cameron,Davis,MD,gastroenterology,,Phoenix,AZ,85091,33.406346,-112.095130,7,80.7,0.90,1239,0.0134,0.0660,true
+P00642,Erika,Mitchell,MD,endocrinology,Obesity Medicine,Boston,MA,02163,42.286233,-70.988069,18,61.1,0.92,991,0.0127,0.0713,true
+P00643,Jennifer,Douglas,MD,primary-care,,San Francisco,CA,94188,37.881418,-122.208051,11,67.7,1.03,3735,0.0069,0.0632,true
+P00644,Rebecca,Marks,MD,primary-care,,Boston,MA,02144,42.221030,-70.867328,12,83.2,1.05,1305,0.0052,0.0395,true
+P00645,Mathew,Aguilar,DO,psychiatry,,Dallas,TX,75224,32.780999,-96.939874,22,70.8,0.87,647,0.0032,0.0909,true
+P00646,Donald,Bailey,DO,primary-care,,New York,NY,10081,40.619928,-73.821722,21,65.1,1.00,2433,0.0094,0.0868,true
+P00647,Tammy,Hale,MD,primary-care,,Atlanta,GA,30311,33.664599,-84.621121,16,76.8,0.95,2705,0.0061,0.0803,true
+P00648,Philip,Larson,MD,primary-care,,New York,NY,10023,40.563256,-74.136892,14,64.9,0.63,2824,0.0080,0.0695,true
+P00649,Sharon,Collins,MD,dermatology,,Boston,MA,02199,42.400559,-70.978445,11,75.3,0.85,1594,0.0035,0.0050,false
+P00650,Nicholas,Conner,MD,orthopedics,,Austin,TX,78767,30.072156,-97.836889,19,66.2,1.02,1310,0.0687,0.0809,true
+P00651,Lisa,Santiago,MD,dermatology,,Denver,CO,80220,39.633492,-104.892352,6,93.2,0.76,3100,0.0019,0.0027,true
+P00652,Maria,Rodgers,MD,primary-care,Geriatrics,Paterson,NJ,07585,40.972586,-74.089821,15,71.1,0.72,4038,0.0077,0.0785,true
+P00653,Gina,Fox,MD,primary-care,Sports Medicine,Jersey City,NJ,07318,40.632607,-74.081952,3,59.2,1.39,1957,0.0109,0.1012,true
+P00654,Debbie,Henderson,MD,gastroenterology,Inflammatory Bowel Disease,New York,NY,10028,40.615822,-73.906469,30,77.7,1.18,1400,0.0199,0.0587,true
+P00655,Michael,Cox,MD,primary-care,,New York,NY,10005,40.566796,-73.896116,11,54.8,0.94,3185,0.0138,0.1014,true
+P00656,Henry,Lewis,MD,oncology,,Atlanta,GA,30360,33.688081,-84.591801,10,80.9,1.04,716,0.0273,0.0810,false
+P00657,Stacey,Tucker,MD,primary-care,Preventive Medicine,Boston,MA,02124,42.415054,-71.203574,15,62.7,0.82,1073,0.0096,0.1098,true
+P00658,Jeremy,Taylor,MD,endocrinology,,Pittsburgh,PA,15247,40.352539,-80.077772,10,66.1,0.85,2089,0.0088,0.0706,true
+P00659,Chris,Richard,MD,cardiology,,Orlando,FL,32853,28.428766,-81.375329,11,84.0,1.06,1936,0.0233,0.0890,true
+P00660,Craig,Wise,MD,cardiology,Interventional Cardiology,Los Angeles,CA,90043,34.116038,-118.190655,7,77.9,0.92,1500,0.0368,0.1487,true
+P00661,Mary,Stephenson,MD,primary-care,Sports Medicine,Miami,FL,33194,25.849695,-80.212755,24,54.6,1.12,1331,0.0106,0.1078,true
+P00662,Benjamin,Rogers,MD,cardiology,Interventional Cardiology,Philadelphia,PA,19152,39.846779,-75.240548,11,63.0,1.13,1125,0.0399,0.1385,true
+P00663,Katie,Anderson,MD,neurology,Epilepsy,New York,NY,10089,40.594864,-73.874106,18,64.7,0.96,981,0.0169,0.1198,true
+P00664,Nicholas,Martin,MD,psychiatry,Geriatric Psychiatry,Dallas,TX,75248,32.677127,-96.950311,22,90.8,0.97,673,0.0017,0.0614,true
+P00665,Marie,Wise,MD,pulmonology,Critical Care Medicine,Houston,TX,77020,29.822276,-95.549820,1,92.9,1.28,1328,0.0115,0.1078,true
+P00666,Lisa,Martin,MD,orthopedics,,New York,NY,10094,40.565716,-74.189812,9,58.6,0.65,2341,0.0780,0.1201,true
+P00667,Samuel,Jenkins,MD,primary-care,Geriatrics,Miami,FL,33121,25.651877,-80.060375,26,77.8,0.74,1714,0.0074,0.0614,true
+P00668,Erica,Young,MD,pulmonology,Critical Care Medicine,Tampa,FL,33677,27.920397,-82.274217,22,72.2,0.94,1006,0.0186,0.1130,true
+P00669,Sean,Mitchell,DO,gastroenterology,Advanced Endoscopy,Los Angeles,CA,90038,33.913613,-118.247008,16,60.4,0.95,2666,0.0408,0.1412,true
+P00670,Kaitlyn,Cole,DO,pulmonology,Critical Care Medicine,Miami,FL,33132,25.650266,-80.359726,22,65.1,0.91,1212,0.0185,0.1448,true
+P00671,Amanda,Collins,MD,oncology,Thoracic Oncology,Chicago,IL,60605,42.034998,-87.811427,13,82.2,0.99,316,0.0517,0.1895,true
+P00672,Lindsey,Harrison,MD,dermatology,,New York,NY,10079,40.612165,-74.023671,17,80.3,1.25,4256,0.0036,0.0031,true
+P00673,Mary,Richardson,MD,endocrinology,,San Francisco,CA,94192,37.830089,-122.433582,12,79.4,1.11,1138,0.0056,0.0424,true
+P00674,Stacey,Joyce,MD,psychiatry,,Newark,NJ,07126,40.593322,-74.065628,11,76.1,1.16,571,0.0026,0.0837,true
+P00675,Steven,Campbell,MD,cardiology,,Los Angeles,CA,90071,33.899199,-118.409830,14,83.1,1.22,1367,0.0188,0.0726,true
+P00676,Patrick,Rose,MD,oncology,Thoracic Oncology,Philadelphia,PA,19132,39.886553,-74.904629,11,99.0,0.67,493,0.0219,0.0558,false
+P00677,Tammy,Montoya,DO,primary-care,,Chicago,IL,60684,41.752634,-87.704545,22,72.9,1.24,3055,0.0089,0.0692,true
+P00678,Laurie,Taylor,MD,orthopedics,,Trenton,NJ,08636,40.017315,-74.746114,13,85.2,0.88,3197,0.0239,0.0347,true
+P00679,John,Davidson,MD,orthopedics,Sports Medicine,Los Angeles,CA,90022,34.240494,-118.343351,3,79.4,1.39,1503,0.0486,0.0472,true
+P00680,Morgan,Spencer,MD,pulmonology,,Boston,MA,02121,42.322932,-71.087723,15,91.7,1.00,695,0.0123,0.1134,true
+P00681,Curtis,Singleton,MD,pulmonology,Sleep Medicine,New York,NY,10085,40.522384,-74.029506,16,67.2,0.74,1619,0.0230,0.1975,false
+P00682,Melissa,Mitchell,MD,primary-care,,Dallas,TX,75292,32.815538,-96.779122,12,82.1,1.15,3260,0.0069,0.0530,true
+P00683,Kathryn,Nelson,MD,neurology,Headache Medicine,Chicago,IL,60650,41.999643,-87.577887,2,83.5,0.92,479,0.0111,0.0531,true
+P00684,Rebecca,Hernandez,DO,oncology,,Los Angeles,CA,90025,34.180886,-118.034412,12,76.8,1.25,287,0.0397,0.0978,true
+P00685,Samuel,Potts,MD,gastroenterology,,Phoenix,AZ,85050,33.506758,-111.980354,1,73.4,1.09,572,0.0184,0.1190,false
+P00686,Jeffrey,Hayes,DO,cardiology,,Boston,MA,02177,42.263313,-71.192975,6,66.8,1.14,1097,0.0311,0.1505,false
+P00687,Michael,Johnson,DO,oncology,Hematologic Oncology,New York,NY,10035,40.731041,-73.870985,10,66.8,1.47,351,0.0466,0.1094,true
+P00688,Brian,Shaw,MD,gastroenterology,,Atlanta,GA,30354,33.588778,-84.226999,10,76.1,0.80,1864,0.0191,0.0718,false
+P00689,Joe,Vang,MD,cardiology,,Seattle,WA,98100,47.489660,-122.379067,15,69.8,1.41,1708,0.0385,0.1468,true
+P00690,Nicholas,Johnson,MD,orthopedics,Joint Replacement,Dallas,TX,75232,32.875888,-96.728865,8,72.9,0.85,619,0.0335,0.0543,true
+P00691,Sarah,Combs,MD,cardiology,,Los Angeles,CA,90008,34.097817,-118.014062,28,83.8,1.22,1839,0.0263,0.1062,true
+P00692,Debra,Moody,MD,orthopedics,,San Francisco,CA,94140,37.760371,-122.450279,22,66.8,1.30,1494,0.0508,0.0705,true
+P00693,Devin,Mitchell,MD,gastroenterology,Inflammatory Bowel Disease,Houston,TX,77017,29.655623,-95.398410,17,67.0,1.26,757,0.0169,0.0865,true
+P00694,Maria,Horton,MD,orthopedics,Spine Surgery,New York,NY,10040,40.633307,-74.022560,14,70.2,0.64,1331,0.0510,0.0756,false
+P00695,Dominic,Thornton,DO,psychiatry,,Atlanta,GA,30339,33.882381,-84.495288,13,73.1,1.07,475,0.0034,0.0988,false
+P00696,Shane,Smith,MD,cardiology,,Orlando,FL,32842,28.646550,-81.281120,34,87.7,1.17,3567,0.0234,0.0800,true
+P00697,Christian,Scott,MD,psychiatry,Geriatric Psychiatry,New York,NY,10055,40.689703,-73.801166,1,78.2,0.82,918,0.0024,0.0885,true
+P00698,Mary,Dunn,MD,oncology,Hematologic Oncology,Houston,TX,77082,29.912065,-95.394348,19,57.4,0.76,280,0.0596,0.1975,true
+P00699,Jessica,Rose,MD,orthopedics,,Jersey City,NJ,07313,40.528008,-74.169442,4,60.4,0.73,2046,0.0657,0.0874,false
+P00700,Daniel,Roberts,DO,pulmonology,Sleep Medicine,New York,NY,10055,40.764118,-73.840578,1,60.1,0.99,956,0.0300,0.1813,true
+P00701,Kevin,Williams,MD,orthopedics,,Philadelphia,PA,19182,40.093790,-75.149194,5,75.2,1.22,1867,0.0353,0.0564,true
+P00702,Robert,Bauer,MD,orthopedics,,Denver,CO,80234,39.881016,-105.071705,25,87.4,0.91,1212,0.0440,0.0479,true
+P00703,Stephen,Rodriguez,MD,primary-care,,Los Angeles,CA,90061,34.135393,-118.231278,1,74.7,0.78,2575,0.0075,0.0865,true
+P00704,Rebecca,Carlson,MD,oncology,,Houston,TX,77063,29.667567,-95.159563,9,79.3,1.02,1135,0.0403,0.1288,true
+P00705,Allen,Robertson,MD,primary-care,,New York,NY,10035,40.749255,-73.764630,20,73.1,1.40,1348,0.0073,0.0617,true
+P00706,John,Thomas,MD,primary-care,Preventive Medicine,Houston,TX,77012,29.941353,-95.361455,2,86.6,1.20,2875,0.0052,0.0550,true
+P00707,Ruben,Mendez,MD,cardiology,,Houston,TX,77025,29.755381,-95.333711,21,76.0,0.93,1496,0.0264,0.1179,true
+P00708,John,Butler,MD,orthopedics,,New York,NY,10053,40.509505,-73.961462,16,87.0,0.90,2456,0.0366,0.0480,false
+P00709,Elizabeth,Miller,MD,orthopedics,,Phoenix,AZ,85035,33.303860,-112.151804,13,79.9,1.14,2561,0.0309,0.0568,true
+P00710,Theresa,Jones,MD,gastroenterology,,New York,NY,10083,40.708674,-74.072202,12,47.0,0.79,1049,0.0321,0.1390,true
+P00711,Alicia,Romero,MD,primary-care,Sports Medicine,New York,NY,10005,40.850665,-73.900376,15,60.6,0.79,3484,0.0074,0.0780,true
+P00712,Vanessa,Spencer,MD,primary-care,Geriatrics,Dallas,TX,75292,32.663279,-96.578075,16,77.0,1.51,2673,0.0073,0.0648,true
+P00713,Peter,Harrison,MD,primary-care,Preventive Medicine,New York,NY,10064,40.881885,-74.050642,17,73.5,0.92,1487,0.0073,0.0490,true
+P00714,Cynthia,Zavala,MD,orthopedics,,Miami,FL,33105,25.798253,-80.357622,25,67.3,0.91,1720,0.0475,0.0767,true
+P00715,Jon,Smith,MD,primary-care,,Trenton,NJ,08621,40.210345,-74.650683,24,74.1,1.04,1855,0.0080,0.0783,false
+P00716,Kristina,Cooper,MD,cardiology,Interventional Cardiology,Philadelphia,PA,19193,39.986404,-75.122483,27,56.8,0.99,4417,0.0471,0.1841,true
+P00717,Jessica,Fuller,MD,dermatology,,Dallas,TX,75285,32.710595,-96.739993,3,64.5,0.87,1755,0.0040,0.0069,true
+P00718,Kelsey,Moss,MD,primary-care,,New York,NY,10037,40.840505,-74.066238,12,68.8,0.96,2200,0.0085,0.0698,true
+P00719,Marvin,Williams,DO,primary-care,,Pittsburgh,PA,15202,40.566461,-80.188698,14,47.6,0.91,1290,0.0155,0.1494,false
+P00720,Amy,Li,MD,primary-care,Sports Medicine,Boston,MA,02197,42.285036,-71.180015,16,81.5,1.02,1976,0.0066,0.0519,true
+P00721,Gregory,Maxwell,MD,cardiology,,San Diego,CA,92175,32.687274,-117.345171,5,80.0,1.00,2237,0.0224,0.0696,true
+P00722,Steven,Dominguez,MD,gastroenterology,,Boston,MA,02101,42.228531,-71.015315,16,64.3,1.10,1526,0.0313,0.1258,false
+P00723,Crystal,Cain,MD,primary-care,,Dallas,TX,75200,32.753230,-96.667348,15,81.5,0.92,1647,0.0058,0.0779,true
+P00724,Bryan,Parsons,MD,pulmonology,,Houston,TX,77003,29.887942,-95.249822,22,64.3,0.97,825,0.0199,0.0968,true
+P00725,Stephen,Carter,MD,dermatology,,Boston,MA,02168,42.358127,-70.977555,19,82.6,1.32,4453,0.0025,0.0027,true
+P00726,Bradley,Gonzalez,MD,orthopedics,,New York,NY,10026,40.903347,-73.977415,18,75.7,1.20,2222,0.0377,0.0428,true
+P00727,Bobby,Mahoney,MD,cardiology,,Buffalo,NY,14273,42.967538,-78.961692,29,65.0,0.98,2922,0.0468,0.1581,true
+P00728,Zachary,Hays,MD,neurology,Movement Disorders,San Francisco,CA,94127,37.967479,-122.442264,8,74.1,1.08,1628,0.0131,0.0741,true
+P00729,Amy,King,MD,psychiatry,,San Diego,CA,92132,32.702155,-117.097404,7,49.0,1.31,486,0.0048,0.1453,true
+P00730,Karen,Lee,MD,orthopedics,,Miami,FL,33198,25.653755,-80.330641,14,63.4,0.89,1567,0.0543,0.0765,true
+P00731,Michael,Norman,MD,oncology,,San Francisco,CA,94115,37.598889,-122.274184,1,58.6,1.40,433,0.0696,0.2185,true
+P00732,Michelle,Rivera,MD,neurology,,Houston,TX,77002,29.638875,-95.562505,10,87.5,0.87,430,0.0104,0.0554,true
+P00733,David,Richardson,DO,primary-care,Geriatrics,New York,NY,10027,40.859631,-73.876662,12,64.2,0.93,2507,0.0112,0.0940,true
+P00734,Pamela,Paul,MD,pulmonology,,Miami,FL,33105,25.842948,-80.069174,8,61.9,0.66,558,0.0388,0.2022,true
+P00735,Patricia,Hughes,MD,primary-care,,New York,NY,10008,40.782381,-74.221509,36,57.6,1.05,3361,0.0115,0.1004,true
+P00736,Terri,Crawford,MD,gastroenterology,,Atlanta,GA,30347,33.857592,-84.524158,12,86.2,0.74,1982,0.0119,0.0555,true
+P00737,Tyler,Glass,DO,primary-care,,Boston,MA,02106,42.495511,-70.938919,6,88.3,0.84,2134,0.0061,0.0522,false
+P00738,April,Owen,DO,psychiatry,,Chicago,IL,60686,42.011186,-87.718036,17,69.8,1.11,838,0.0029,0.1077,true
+P00739,Jessica,Miller,MD,orthopedics,,Los Angeles,CA,90074,33.855419,-118.312841,27,66.3,0.94,2176,0.0554,0.0683,true
+P00740,Carrie,Short,MD,orthopedics,,Philadelphia,PA,19185,39.884589,-75.148522,19,67.4,1.42,1530,0.0463,0.0466,false
+P00741,Amy,Morris,MD,dermatology,,Seattle,WA,98156,47.479844,-122.423692,30,62.3,1.10,5248,0.0057,0.0063,true
+P00742,Christopher,Guerrero,MD,primary-care,,Los Angeles,CA,90015,33.865790,-118.233574,5,62.4,0.61,2677,0.0091,0.0910,true
+P00743,Kirk,Morrison,MD,gastroenterology,Advanced Endoscopy,Chicago,IL,60650,41.833503,-87.722627,22,72.9,0.80,938,0.0257,0.0705,true
+P00744,Ronald,Norris,MD,cardiology,Heart Failure,San Francisco,CA,94179,37.675326,-122.325508,19,56.5,1.01,1505,0.0613,0.2307,true
+P00745,Michael,Williams,MD,pulmonology,,Los Angeles,CA,90077,34.013826,-118.460981,40,68.5,1.01,2438,0.0187,0.1183,true
+P00746,Molly,Gomez,MD,dermatology,Dermatopathology,San Francisco,CA,94148,37.631093,-122.393675,10,48.0,1.34,1028,0.0075,0.0106,true
+P00747,Whitney,Hill,MD,primary-care,,Newark,NJ,07123,40.945945,-74.104309,10,63.6,0.88,1234,0.0111,0.0710,false
+P00748,Tina,Gould,MD,primary-care,,New York,NY,10034,40.800452,-73.801328,13,77.0,0.92,6169,0.0072,0.0687,false
+P00749,Charles,Walsh,MD,primary-care,,Austin,TX,78773,30.316124,-97.967410,10,78.8,1.09,2035,0.0063,0.0614,false
+P00750,Michael,Owen,MD,orthopedics,,Denver,CO,80264,39.704268,-105.115182,26,69.4,0.96,2611,0.0506,0.0652,false
+P00751,Erin,Cisneros,MD,gastroenterology,,Philadelphia,PA,19173,40.063533,-75.158271,28,73.9,1.38,2379,0.0244,0.1009,false
+P00752,Douglas,Lawson,MD,cardiology,,Chicago,IL,60627,41.994009,-87.533240,20,70.2,0.95,1283,0.0326,0.1226,true
+P00753,Kimberly,Johnson,MD,endocrinology,Thyroid Disorders,Houston,TX,77067,29.828650,-95.395152,14,74.6,1.06,1285,0.0098,0.0643,true
+P00754,Carlos,Osborne,MD,pulmonology,Sleep Medicine,Los Angeles,CA,90041,33.935676,-118.046295,20,78.3,0.90,768,0.0163,0.1160,false
+P00755,Michael,Reyes,MD,psychiatry,Addiction Psychiatry,Atlanta,GA,30378,33.671524,-84.489832,7,69.8,0.86,868,0.0032,0.0971,true
+P00756,Ashley,Jacobs,MD,cardiology,,Orlando,FL,32814,28.555177,-81.229591,11,70.1,0.95,795,0.0424,0.1677,true
+P00757,Erika,Rush,MD,neurology,,Atlanta,GA,30388,33.632237,-84.261376,1,46.9,0.96,1015,0.0246,0.2375,true
+P00758,Nathan,Hines,MD,neurology,,Los Angeles,CA,90022,34.144281,-118.047714,21,65.4,1.13,626,0.0135,0.0855,true
+P00759,Audrey,Moreno,MD,endocrinology,,Atlanta,GA,30368,33.614084,-84.292721,16,67.6,1.01,2066,0.0076,0.0789,false
+P00760,Raymond,Banks,MD,primary-care,Geriatrics,Philadelphia,PA,19199,39.997615,-75.078960,15,73.7,0.90,1471,0.0086,0.0805,true
+P00761,John,Wilson,DO,primary-care,Sports Medicine,Rochester,NY,14603,43.188391,-77.412305,21,56.0,1.06,3271,0.0104,0.0930,false
+P00762,Jill,Porter,MD,gastroenterology,Hepatology,Houston,TX,77046,29.654748,-95.517319,27,72.2,1.26,1258,0.0205,0.0930,true
+P00763,Paul,Hoffman,MD,orthopedics,Hand Surgery,Orlando,FL,32892,28.647467,-81.426747,13,71.3,1.23,2733,0.0550,0.0737,true
+P00764,Jose,Green,MD,primary-care,,San Diego,CA,92117,32.875834,-117.281034,10,66.2,1.18,1843,0.0098,0.0910,true
+P00765,Sean,Davies,MD,oncology,Thoracic Oncology,Miami,FL,33187,25.569106,-80.258182,33,85.2,1.00,387,0.0353,0.1222,true
+P00766,Justin,Hendricks,MD,dermatology,,Los Angeles,CA,90002,34.114830,-118.484093,9,87.0,1.03,3906,0.0032,0.0035,true
+P00767,Travis,Martinez,MD,cardiology,Interventional Cardiology,New York,NY,10025,40.742714,-74.220033,4,64.5,1.09,1730,0.0341,0.1184,true
+P00768,Melissa,Hayes,MD,cardiology,Interventional Cardiology,Phoenix,AZ,85089,33.527318,-112.044277,20,79.3,1.09,1692,0.0384,0.1287,true
+P00769,Rachel,Wallace,MD,oncology,,New York,NY,10067,40.779663,-73.922039,6,70.7,0.78,161,0.0527,0.1526,true
+P00770,Christopher,Fleming,MD,primary-care,,Los Angeles,CA,90012,34.128320,-118.471317,12,73.5,1.03,2515,0.0056,0.0649,false
+P00771,Megan,Flores,MD,oncology,Breast Oncology,New York,NY,10008,40.780832,-73.762000,1,92.9,1.17,211,0.0248,0.1069,true
+P00772,Michael,Brown,MD,psychiatry,Addiction Psychiatry,New York,NY,10016,40.611629,-73.936905,22,66.6,0.96,698,0.0038,0.1169,true
+P00773,Amber,Vance,MD,primary-care,,Los Angeles,CA,90036,34.210655,-118.129738,21,50.6,0.84,2180,0.0125,0.0977,false
+P00774,Melissa,Joseph,MD,endocrinology,,Philadelphia,PA,19198,40.029412,-75.065214,3,53.3,1.19,915,0.0151,0.1043,true
+P00775,Sara,Little,MD,psychiatry,Child and Adolescent Psychiatry,Philadelphia,PA,19198,40.082385,-74.967951,7,81.2,0.86,881,0.0029,0.0632,true
+P00776,Laura,Hicks,MD,dermatology,Dermatopathology,Denver,CO,80257,39.604423,-104.899532,16,77.8,0.95,4194,0.0045,0.0052,true
+P00777,David,Harris,MD,primary-care,,Paterson,NJ,07538,40.975346,-74.147784,10,79.8,0.86,3458,0.0077,0.0586,true
+P00778,Dominic,Tyler,MD,primary-care,,Newark,NJ,07120,40.653851,-73.987031,16,94.0,0.98,1117,0.0041,0.0431,false
+P00779,Anthony,Spencer,MD,cardiology,Echocardiography,Philadelphia,PA,19139,40.001536,-75.248959,16,80.9,0.81,1593,0.0267,0.1100,false
+P00780,Miguel,Lara,MD,primary-care,,San Francisco,CA,94134,37.966590,-122.308766,1,65.2,1.19,1840,0.0086,0.0850,true
+P00781,Andrea,Salazar,MD,dermatology,,Tampa,FL,33682,28.128240,-82.553148,24,65.3,0.98,3881,0.0046,0.0077,true
+P00782,Christopher,Parker,MD,psychiatry,Child and Adolescent Psychiatry,New York,NY,10055,40.857297,-74.064719,17,61.7,1.07,1101,0.0067,0.1024,true
+P00783,Yvonne,Higgins,MD,orthopedics,,Los Angeles,CA,90069,33.936745,-118.463592,18,84.1,0.84,1395,0.0287,0.0357,true
+P00784,Alicia,Hammond,DO,neurology,,Dallas,TX,75214,32.606983,-96.813436,15,44.2,1.00,1476,0.0366,0.2869,true
+P00785,Madeline,Jones,MD,pulmonology,Interventional Pulmonology,Pittsburgh,PA,15229,40.444522,-80.101835,22,48.5,1.00,970,0.0395,0.2359,false
+P00786,Teresa,Day,MD,neurology,Headache Medicine,Dallas,TX,75282,32.860863,-96.584210,27,72.2,1.01,595,0.0136,0.0699,true
+P00787,Shannon,Frazier,MD,primary-care,,Phoenix,AZ,85015,33.241169,-112.038159,11,66.4,1.17,4818,0.0091,0.0848,false
+P00788,Melvin,Humphrey,MD,primary-care,,Orlando,FL,32884,28.564310,-81.197774,8,68.5,0.94,1621,0.0074,0.0667,true
+P00789,Kimberly,Bowman,MD,oncology,Breast Oncology,Philadelphia,PA,19145,40.042424,-74.999835,18,64.0,1.06,398,0.0586,0.1762,false
+P00790,Hunter,Burch,DO,primary-care,,Los Angeles,CA,90096,34.176379,-118.384150,21,71.7,1.05,2396,0.0072,0.0549,true
+P00791,Ryan,Bartlett,MD,pulmonology,Sleep Medicine,Boston,MA,02189,42.567009,-70.979578,27,74.0,1.19,1269,0.0197,0.1423,true
+P00792,Brian,Martinez,MD,primary-care,,Atlanta,GA,30394,33.722035,-84.172478,7,65.7,1.40,2493,0.0081,0.0707,true
+P00793,Eric,Martin,MD,psychiatry,Addiction Psychiatry,Austin,TX,78713,30.070941,-97.687489,15,69.5,1.60,282,0.0026,0.0789,true
+P00794,Marcus,Fletcher,MD,endocrinology,,San Francisco,CA,94175,37.653820,-122.425864,10,57.8,1.06,1864,0.0101,0.0779,true
+P00795,Michael,Everett,MD,psychiatry,,Philadelphia,PA,19193,40.112962,-75.340697,17,83.7,1.05,807,0.0027,0.0710,true
+P00796,Patty,Singleton,MD,neurology,,San Diego,CA,92138,32.849192,-117.153428,18,81.3,0.87,1108,0.0088,0.0646,false
+P00797,John,Reid,MD,gastroenterology,Inflammatory Bowel Disease,Philadelphia,PA,19103,39.959144,-75.198041,25,61.8,0.92,1213,0.0236,0.1163,false
+P00798,Andrea,Martinez,MD,dermatology,,Miami,FL,33143,25.670685,-80.122661,19,67.7,0.95,2722,0.0041,0.0052,true
+P00799,Kevin,Ferguson,MD,dermatology,,Phoenix,AZ,85097,33.273817,-111.972833,7,82.7,0.69,3143,0.0021,0.0025,true
+P00800,Wayne,Jackson,MD,primary-care,Adolescent Medicine,Phoenix,AZ,85001,33.297893,-112.067814,14,68.7,0.67,2143,0.0104,0.0634,true
+P00801,Shelly,Moore,MD,orthopedics,,Philadelphia,PA,19196,40.091749,-75.326711,24,61.8,0.77,1585,0.0661,0.1039,false
+P00802,Donna,Le,MD,primary-care,,Dallas,TX,75204,32.729533,-96.685864,32,69.7,0.91,2009,0.0075,0.0633,true
+P00803,Cassie,Kirby,MD,orthopedics,,Newark,NJ,07162,40.944613,-74.199026,27,67.0,1.11,1076,0.0385,0.0718,true
+P00804,Anne,Bryan,MD,primary-care,Preventive Medicine,New York,NY,10001,40.522543,-74.096250,20,66.8,1.31,2314,0.0084,0.0861,true
+P00805,Anthony,Williams,MD,oncology,Hematologic Oncology,Phoenix,AZ,85029,33.350678,-111.844893,11,54.4,1.41,410,0.0678,0.2523,true
+P00806,Darlene,Ray,MD,psychiatry,Geriatric Psychiatry,Philadelphia,PA,19168,39.899798,-75.290286,21,71.5,0.98,414,0.0027,0.1132,true
+P00807,Debra,Wang,MD,primary-care,,Phoenix,AZ,85075,33.442933,-111.887857,14,55.6,1.04,2174,0.0127,0.0918,true
+P00808,Robert,Fowler,MD,oncology,Breast Oncology,New York,NY,10016,40.704181,-74.090941,7,64.7,1.12,269,0.0795,0.2473,true
+P00809,Tyler,Burton,DO,psychiatry,,Houston,TX,77066,29.640918,-95.258851,1,87.9,1.16,263,0.0023,0.0728,true
+P00810,Keith,Frye,MD,dermatology,Mohs Surgery,Atlanta,GA,30380,33.739070,-84.419095,22,57.4,1.08,2011,0.0039,0.0059,true
+P00811,Timothy,Ballard,MD,pulmonology,,Pittsburgh,PA,15235,40.445136,-79.834815,12,78.6,1.36,1451,0.0144,0.1008,false
+P00812,Gail,Evans,DO,orthopedics,Spine Surgery,Miami,FL,33195,25.776111,-80.218747,19,63.1,1.11,1315,0.0656,0.0676,true
+P00813,Charles,Brown,DO,psychiatry,,Chicago,IL,60636,41.967017,-87.761330,2,72.4,0.91,524,0.0039,0.0748,true
+P00814,Scott,Washington,MD,oncology,,San Francisco,CA,94177,37.849430,-122.304005,14,58.7,0.87,449,0.0541,0.1965,true
+P00815,James,Lawson,MD,oncology,Thoracic Oncology,San Diego,CA,92116,32.627339,-117.129569,21,83.4,0.93,484,0.0440,0.1107,false
+P00816,Larry,Higgins,MD,psychiatry,Child and Adolescent Psychiatry,San Francisco,CA,94146,37.790465,-122.426687,11,77.9,1.30,769,0.0019,0.0762,true
+P00817,Jessica,Valencia,DO,primary-care,Preventive Medicine,Miami,FL,33155,25.730294,-80.258089,6,78.2,1.06,2867,0.0062,0.0575,true
+P00818,Theresa,Anderson,MD,psychiatry,Addiction Psychiatry,New York,NY,10016,40.644800,-74.199189,28,64.0,1.00,683,0.0033,0.1140,true
+P00819,Mitchell,Hoffman,MD,primary-care,Adolescent Medicine,Newark,NJ,07135,40.781754,-74.258864,17,67.6,1.12,2539,0.0100,0.0772,true
+P00820,Luis,Owens,DO,oncology,Breast Oncology,Denver,CO,80282,39.796935,-105.251229,23,60.9,0.74,192,0.0779,0.1846,false
+P00821,Joseph,Wright,MD,neurology,,Chicago,IL,60672,42.058775,-87.561377,33,57.0,0.94,1557,0.0199,0.1274,true
+P00822,Colin,Roberts,MD,endocrinology,,Paterson,NJ,07552,40.967837,-74.392669,15,58.8,0.88,2164,0.0135,0.0986,true
+P00823,Patrick,Gilbert,MD,gastroenterology,Inflammatory Bowel Disease,New York,NY,10084,40.680691,-74.274584,19,76.8,0.83,1289,0.0145,0.0951,true
+P00824,John,Grimes,MD,pulmonology,Sleep Medicine,New York,NY,10075,40.581679,-73.889721,27,58.6,1.31,857,0.0145,0.1224,true
+P00825,Erik,Murphy,MD,psychiatry,,San Francisco,CA,94157,37.892882,-122.367607,1,78.5,0.93,400,0.0023,0.0747,false
+P00826,Becky,Edwards,MD,psychiatry,,Boston,MA,02129,42.329237,-71.102757,18,72.5,0.93,675,0.0038,0.0852,true
+P00827,Kathryn,Jimenez,DO,endocrinology,Diabetes,Chicago,IL,60610,41.921270,-87.758356,10,84.8,1.21,1058,0.0054,0.0391,false
+P00828,Xavier,Jimenez,MD,orthopedics,,Jersey City,NJ,07333,40.792740,-73.821048,1,83.0,0.92,1876,0.0336,0.0368,true
+P00829,Kyle,Johnson,MD,psychiatry,,Dallas,TX,75201,32.665441,-96.649386,17,82.4,1.07,585,0.0022,0.0911,true
+P00830,Sierra,Wagner,MD,neurology,,Denver,CO,80269,39.555927,-104.875562,15,54.8,0.85,2008,0.0200,0.1110,true
+P00831,Tammy,Lewis,MD,gastroenterology,Hepatology,Philadelphia,PA,19162,39.831465,-75.235913,23,73.0,1.08,1289,0.0125,0.0778,false
+P00832,Michael,Williams,MD,oncology,,Los Angeles,CA,90016,34.071809,-118.375930,1,96.3,1.12,145,0.0216,0.0824,false
+P00833,Troy,Khan,MD,primary-care,,Chicago,IL,60609,41.987985,-87.405291,22,57.1,0.94,2789,0.0080,0.0835,true
+P00834,Destiny,Ruiz,MD,primary-care,Geriatrics,San Francisco,CA,94104,37.811944,-122.181483,24,68.4,0.83,2112,0.0060,0.0500,true
+P00835,Amanda,Boone,MD,pulmonology,Interventional Pulmonology,New York,NY,10058,40.586472,-73.945021,4,71.7,1.10,1977,0.0157,0.1119,true
+P00836,Ryan,Khan,MD,neurology,Epilepsy,Chicago,IL,60618,41.935683,-87.746697,24,52.6,0.88,1434,0.0329,0.1398,true
+P00837,Jessica,Gallagher,DO,cardiology,,Boston,MA,02112,42.340276,-71.174089,14,62.7,1.05,1140,0.0488,0.1299,true
+P00838,Michael,Morales,MD,oncology,Thoracic Oncology,Miami,FL,33172,25.798554,-80.025759,24,63.2,0.97,264,0.0762,0.2169,true
+P00839,Ashley,Lee,MD,primary-care,,Miami,FL,33174,25.875646,-80.348816,26,94.9,1.00,2851,0.0047,0.0267,true
+P00840,Angela,Jones,MD,orthopedics,,New York,NY,10084,40.591842,-74.146408,13,59.7,0.84,1482,0.0843,0.0888,true
+P00841,William,Duran,MD,psychiatry,,Denver,CO,80216,39.698537,-105.198123,3,70.1,1.08,560,0.0040,0.1228,true
+P00842,Joshua,Hays,MD,oncology,,Newark,NJ,07150,40.747406,-74.443565,16,63.6,1.17,798,0.0703,0.1846,false
+P00843,Erin,Wilson,MD,primary-care,Geriatrics,Jersey City,NJ,07348,40.640691,-74.272425,1,55.1,1.39,1973,0.0151,0.1156,false
+P00844,Theresa,Long,MD,pulmonology,,Austin,TX,78725,30.446780,-97.650003,19,71.4,0.78,969,0.0267,0.1444,false
+P00845,Laura,Morgan,MD,psychiatry,Addiction Psychiatry,New York,NY,10004,40.590742,-73.879304,22,62.6,1.04,743,0.0036,0.1237,true
+P00846,Sheila,Fischer,MD,oncology,,Los Angeles,CA,90094,34.220554,-118.117189,15,76.3,1.09,724,0.0455,0.1438,false
+P00847,James,Hicks,MD,psychiatry,,San Diego,CA,92191,32.862501,-117.037255,10,69.3,1.08,744,0.0039,0.1277,true
+P00848,Vincent,Williams,DO,psychiatry,Child and Adolescent Psychiatry,Albany,NY,12204,42.775350,-73.692876,15,66.1,1.26,450,0.0033,0.1204,true
+P00849,Derrick,Cook,DO,neurology,,Los Angeles,CA,90081,34.183490,-118.367001,9,73.0,1.29,1407,0.0092,0.0700,true
+P00850,Thomas,Bryant,MD,orthopedics,,Philadelphia,PA,19179,39.918821,-75.098879,24,66.5,0.82,1462,0.0588,0.0632,true
+P00851,Catherine,Robertson,MD,pulmonology,Sleep Medicine,Rochester,NY,14675,43.169457,-77.334407,23,48.2,0.59,1151,0.0399,0.4852,false
+P00852,Mark,Austin,MD,gastroenterology,,Pittsburgh,PA,15298,40.396279,-79.846349,13,69.5,1.15,1529,0.0178,0.0794,true
+P00853,Francisco,Ewing,MD,endocrinology,,Los Angeles,CA,90094,33.857551,-118.331385,22,72.5,0.62,1148,0.0076,0.0544,true
+P00854,Jodi,Evans,MD,gastroenterology,,Atlanta,GA,30341,33.782509,-84.154931,19,59.5,1.42,1788,0.0258,0.1167,true
+P00855,Matthew,Clayton,MD,neurology,,Los Angeles,CA,90008,34.261949,-118.184675,11,80.8,1.07,1583,0.0138,0.0587,true
+P00856,Amanda,Erickson,MD,psychiatry,,Newark,NJ,07192,40.666246,-74.261016,20,74.2,1.07,688,0.0030,0.1009,true
+P00857,Kevin,Cabrera,MD,orthopedics,,New York,NY,10022,40.784047,-74.225276,28,77.8,0.97,1810,0.0530,0.0475,true
+P00858,Micheal,Nunez,MD,oncology,,Los Angeles,CA,90023,33.842064,-118.194686,18,71.1,0.95,621,0.0540,0.1100,true
+P00859,Tina,Silva,MD,primary-care,,Tampa,FL,33641,27.912698,-82.613433,34,67.6,0.70,3342,0.0090,0.0738,true
+P00860,Laura,Swanson,MD,endocrinology,,Dallas,TX,75279,32.891353,-96.961713,36,86.6,0.96,1683,0.0046,0.0518,true
+P00861,Hailey,Johnson,DO,dermatology,Dermatopathology,Dallas,TX,75298,32.897214,-96.686283,26,76.7,0.74,4735,0.0034,0.0048,true
+P00862,Thomas,Coffey,MD,endocrinology,,Miami,FL,33147,25.742492,-80.145308,9,65.1,0.93,2306,0.0133,0.0782,true
+P00863,Krista,Parsons,MD,endocrinology,Thyroid Disorders,San Diego,CA,92117,32.672553,-117.054108,14,65.4,1.00,1411,0.0100,0.0731,true
+P00864,Becky,Griffith,MD,psychiatry,,Houston,TX,77009,29.625416,-95.438767,17,71.8,0.99,904,0.0026,0.0834,true
+P00865,Brandy,Jackson,DO,primary-care,,Chicago,IL,60688,41.809328,-87.737616,28,75.0,0.94,3390,0.0089,0.0588,true
+P00866,Cristina,Harvey,MD,cardiology,Heart Failure,New York,NY,10058,40.744048,-74.069113,6,74.8,0.98,1193,0.0260,0.1060,true
+P00867,Maureen,Hernandez,MD,pulmonology,Sleep Medicine,New York,NY,10052,40.565019,-73.836061,27,63.3,0.90,1738,0.0230,0.1566,true
+P00868,Erin,Johnson,MD,cardiology,Heart Failure,Houston,TX,77092,29.874112,-95.216425,10,73.5,0.77,1728,0.0302,0.1357,true
+P00869,Stacy,Rodriguez,MD,psychiatry,,Houston,TX,77055,29.613396,-95.449247,24,67.0,1.21,1898,0.0036,0.1323,true
+P00870,Andrew,Edwards,MD,psychiatry,Addiction Psychiatry,San Diego,CA,92173,32.724425,-116.937427,1,72.6,0.86,296,0.0032,0.0870,true
+P00871,Edward,Vaughn,MD,primary-care,,New York,NY,10066,40.682011,-74.246057,28,66.5,0.86,1775,0.0124,0.0583,true
+P00872,Robert,Hampton,MD,gastroenterology,,Los Angeles,CA,90043,34.123178,-118.359298,22,62.0,1.14,1744,0.0231,0.0964,true
+P00873,Samantha,Salas,MD,primary-care,Preventive Medicine,Tampa,FL,33650,27.944060,-82.549326,20,71.9,1.04,1798,0.0074,0.0697,false
+P00874,Jill,Brown,MD,psychiatry,,New York,NY,10089,40.745037,-73.793230,22,84.4,0.85,905,0.0017,0.0566,false
+P00875,Devin,Clark,MD,psychiatry,Child and Adolescent Psychiatry,Austin,TX,78702,30.267526,-97.697105,23,67.1,1.12,1126,0.0032,0.0788,true
+P00876,Mark,Bates,DO,gastroenterology,Advanced Endoscopy,Phoenix,AZ,85019,33.405475,-112.277500,9,86.8,0.97,954,0.0133,0.0599,true
+P00877,Alicia,Edwards,MD,dermatology,,Miami,FL,33150,25.949231,-80.263579,30,79.2,0.67,5000,0.0033,0.0036,true
+P00878,Glen,Barr,MD,orthopedics,Joint Replacement,New York,NY,10052,40.850125,-74.015698,34,74.9,1.20,1973,0.0340,0.0565,false
+P00879,Matthew,Gomez,MD,orthopedics,Spine Surgery,Los Angeles,CA,90026,34.052993,-118.448341,34,72.4,0.88,2661,0.0465,0.0683,false
+P00880,Kelsey,Le,MD,dermatology,,Seattle,WA,98194,47.791174,-122.248961,14,63.9,0.76,1252,0.0058,0.0074,true
+P00881,Dawn,Steele,MD,gastroenterology,,Dallas,TX,75260,32.764787,-96.550261,9,76.4,0.93,867,0.0192,0.0735,true
+P00882,Chelsea,Lee,MD,neurology,,San Francisco,CA,94108,37.914487,-122.515976,27,82.0,1.14,1837,0.0100,0.0781,true
+P00883,John,Grant,MD,primary-care,Geriatrics,Los Angeles,CA,90058,34.221111,-118.137462,20,75.2,1.09,2538,0.0075,0.0627,false
+P00884,Jeffrey,Dudley,DO,pulmonology,Interventional Pulmonology,Los Angeles,CA,90079,34.105662,-118.452227,11,84.3,1.12,1522,0.0146,0.0860,true
+P00885,Kenneth,Roberts,MD,endocrinology,Diabetes,Philadelphia,PA,19148,40.019809,-74.972672,18,88.9,0.89,825,0.0046,0.0328,true
+P00886,Jared,Bush,MD,primary-care,,Orlando,FL,32898,28.522780,-81.361357,2,66.9,1.12,1809,0.0078,0.0687,true
+P00887,Logan,Bailey,MD,oncology,,Philadelphia,PA,19102,39.806600,-75.162821,21,62.2,0.95,712,0.0556,0.1503,true
+P00888,Sarah,Pope,MD,orthopedics,,Boston,MA,02185,42.542122,-71.177214,17,68.3,0.96,1098,0.0477,0.0593,true
+P00889,Joshua,Martinez,MD,oncology,Hematologic Oncology,Boston,MA,02128,42.250021,-71.072366,7,60.5,0.82,235,0.0473,0.1773,true
+P00890,Erica,James,MD,pulmonology,,New York,NY,10091,40.752125,-74.261611,21,64.6,0.97,1365,0.0205,0.1549,false
+P00891,Tina,Cardenas,MD,primary-care,,Philadelphia,PA,19105,39.830261,-75.032585,15,89.3,1.00,1946,0.0037,0.0440,true
+P00892,Stephanie,Ballard,MD,neurology,Movement Disorders,Austin,TX,78755,30.240037,-97.934526,29,75.9,1.06,1081,0.0146,0.0908,true
+P00893,Kelly,Roberts,MD,psychiatry,,Seattle,WA,98197,47.711852,-122.517683,13,70.3,1.23,790,0.0027,0.0775,true
+P00894,Jennifer,Reed,MD,cardiology,Interventional Cardiology,Atlanta,GA,30325,33.888849,-84.365709,11,69.6,0.85,1041,0.0378,0.1274,true
+P00895,Scott,Scott,MD,pulmonology,,San Francisco,CA,94184,37.769070,-122.409927,1,64.7,0.78,483,0.0221,0.1622,false
+P00896,Timothy,Harris,MD,pulmonology,,Los Angeles,CA,90095,33.956781,-118.462768,12,80.1,0.72,1267,0.0132,0.1041,false
+P00897,Amanda,Fitzpatrick,MD,oncology,,Pittsburgh,PA,15228,40.631958,-79.994600,18,76.7,1.43,367,0.0423,0.1155,false
+P00898,Heather,Taylor,MD,neurology,,Denver,CO,80205,39.681761,-105.220653,27,49.4,0.91,1744,0.0351,0.1548,true
+P00899,Christina,Matthews,MD,dermatology,,New York,NY,10045,40.652057,-74.069466,15,80.9,1.36,2747,0.0031,0.0042,true
+P00900,John,Santiago,MD,endocrinology,,Chicago,IL,60612,41.957031,-87.848856,13,58.2,0.89,1896,0.0094,0.0851,true
+P00901,Amanda,Little,MD,primary-care,Adolescent Medicine,New York,NY,10018,40.669791,-73.823769,30,85.4,0.79,1908,0.0048,0.0421,true
+P00902,Brian,Gutierrez,MD,neurology,,Houston,TX,77038,29.624318,-95.264345,21,86.0,0.89,1685,0.0124,0.0624,true
+P00903,Jennifer,Garcia,MD,gastroenterology,,Los Angeles,CA,90001,34.007068,-118.120274,11,72.5,0.89,1773,0.0165,0.0793,true
+P00904,Kelli,Smith,MD,orthopedics,,Los Angeles,CA,90024,33.943942,-118.260255,16,77.1,0.93,960,0.0485,0.0503,true
+P00905,Andrea,Hickman,MD,cardiology,Heart Failure,Seattle,WA,98197,47.506356,-122.175970,16,71.6,0.95,1523,0.0473,0.0977,true
+P00906,Richard,Donovan,MD,gastroenterology,,Albany,NY,12264,42.513693,-73.806304,1,89.7,1.44,533,0.0110,0.0471,false
+P00907,Natalie,Woods,MD,primary-care,Adolescent Medicine,Newark,NJ,07176,40.685224,-74.333982,18,83.3,0.90,2192,0.0048,0.0649,true
+P00908,James,Maynard,MD,orthopedics,,Miami,FL,33154,25.824386,-80.235901,10,64.1,1.13,1169,0.0642,0.0771,false
+P00909,Manuel,Brewer,MD,neurology,Headache Medicine,Seattle,WA,98112,47.577364,-122.159969,8,78.4,1.02,607,0.0132,0.0848,true
+P00910,Rebecca,Davis,DO,orthopedics,,Tampa,FL,33608,28.143697,-82.376235,7,77.7,0.69,1085,0.0586,0.0833,true
+P00911,Audrey,Nichols,MD,primary-care,Adolescent Medicine,Dallas,TX,75240,32.720962,-96.666574,28,79.8,1.00,3172,0.0059,0.0521,true
+P00912,Jennifer,Zuniga,MD,cardiology,,Pittsburgh,PA,15245,40.377948,-79.968168,26,68.5,1.17,1426,0.0456,0.1052,true
+P00913,Robin,Thompson,MD,dermatology,Mohs Surgery,Tampa,FL,33627,28.114730,-82.413576,27,66.2,0.85,4928,0.0042,0.0041,true
+P00914,Nicole,Thompson,MD,primary-care,,Atlanta,GA,30336,33.565670,-84.470047,20,70.3,0.94,1783,0.0096,0.0907,true
+P00915,Samantha,Osborn,MD,endocrinology,Thyroid Disorders,Los Angeles,CA,90024,33.857864,-118.261168,23,80.2,1.00,3270,0.0051,0.0463,true
+P00916,Randy,Simpson,MD,gastroenterology,Inflammatory Bowel Disease,New York,NY,10075,40.705215,-73.783537,27,53.1,1.07,1214,0.0243,0.1125,true
+P00917,Sharon,Hayden,MD,pulmonology,,Dallas,TX,75236,32.881338,-96.712070,22,85.2,1.13,1566,0.0142,0.0666,true
+P00918,Sara,Mcdowell,MD,gastroenterology,,Atlanta,GA,30375,33.717951,-84.532908,25,67.1,0.96,1761,0.0241,0.0805,false
+P00919,Albert,Bradley,MD,primary-care,,Albany,NY,12267,42.760304,-73.934026,10,77.8,1.55,6327,0.0064,0.0634,false
+P00920,Daniel,Bird,MD,orthopedics,,New York,NY,10078,40.626696,-73.831695,20,65.3,1.02,1599,0.0750,0.0764,false
+P00921,Justin,Hays,MD,primary-care,,Atlanta,GA,30347,33.570077,-84.493773,2,80.7,0.96,3477,0.0062,0.0664,true
+P00922,Amy,Snyder,MD,gastroenterology,,Los Angeles,CA,90095,34.074139,-118.468947,11,72.6,1.10,2050,0.0221,0.1185,true
+P00923,Sheena,Rosales,MD,dermatology,Dermatopathology,Chicago,IL,60605,41.817452,-87.835034,26,65.9,0.87,3809,0.0041,0.0062,false
+P00924,Taylor,Lee,MD,cardiology,Interventional Cardiology,Dallas,TX,75280,32.651031,-96.904806,13,64.0,1.06,2369,0.0409,0.1369,true
+P00925,Daniel,Martin,MD,neurology,,Miami,FL,33165,25.707915,-80.135636,39,76.4,0.77,1188,0.0183,0.0880,true
+P00926,Stephen,Scott,MD,cardiology,,Orlando,FL,32889,28.583177,-81.493461,13,60.9,1.05,2202,0.0281,0.1185,false
+P00927,Jacob,Doyle,MD,orthopedics,,San Francisco,CA,94117,37.767323,-122.418822,23,78.1,0.72,1414,0.0397,0.0491,true
+P00928,Krystal,Bradley,DO,psychiatry,,San Diego,CA,92177,32.873818,-117.106523,16,59.9,1.01,387,0.0037,0.1392,true
+P00929,Katherine,Thompson,MD,dermatology,Pediatric Dermatology,Tampa,FL,33602,27.949447,-82.598085,21,50.8,1.04,2274,0.0073,0.0091,true
+P00930,Melissa,Prince,MD,psychiatry,,San Diego,CA,92145,32.869543,-117.292232,16,68.0,0.87,561,0.0037,0.0937,false
+P00931,Margaret,Robertson,DO,primary-care,,Houston,TX,77023,29.829928,-95.395002,32,74.7,0.80,2623,0.0092,0.0539,true
+P00932,Christopher,Caldwell,MD,primary-care,Geriatrics,Dallas,TX,75263,32.650854,-96.760447,17,86.0,0.85,1242,0.0052,0.0477,true
+P00933,Jack,Taylor,MD,primary-care,,Houston,TX,77075,29.715035,-95.428502,28,81.6,0.84,1697,0.0058,0.0729,true
+P00934,Marcus,Wright,MD,psychiatry,,Tampa,FL,33622,28.026671,-82.255863,17,89.2,0.86,665,0.0014,0.0563,true
+P00935,Jose,Young,MD,cardiology,Echocardiography,Seattle,WA,98108,47.793989,-122.275493,30,60.6,0.75,1846,0.0446,0.1539,true
+P00936,Karen,Finley,MD,cardiology,,Los Angeles,CA,90013,34.196238,-118.133951,14,74.1,1.08,3561,0.0330,0.1211,true
+P00937,Kevin,Sharp,MD,gastroenterology,Inflammatory Bowel Disease,Philadelphia,PA,19121,39.901890,-75.420862,25,58.1,0.98,1137,0.0148,0.1072,true
+P00938,Alexander,Valdez,MD,orthopedics,,New York,NY,10018,40.886732,-73.983673,21,76.7,0.76,1309,0.0384,0.0740,false
+P00939,Heather,Brown,MD,oncology,,Houston,TX,77038,29.779678,-95.231017,23,78.8,0.91,442,0.0418,0.1249,true
+P00940,David,Parker,MD,primary-care,,Tampa,FL,33668,27.869460,-82.413919,1,97.5,1.09,1756,0.0046,0.0316,true
+P00941,Richard,Shaw,MD,psychiatry,,Los Angeles,CA,90011,33.943790,-118.206790,18,90.4,0.82,595,0.0019,0.0515,true
+P00942,Paula,Padilla,MD,primary-care,Sports Medicine,Dallas,TX,75241,32.847286,-96.965073,1,96.5,0.88,2065,0.0030,0.0415,true
+P00943,Larry,Wilson,MD,psychiatry,Child and Adolescent Psychiatry,Chicago,IL,60693,41.921532,-87.488619,15,62.2,0.89,624,0.0031,0.0918,true
+P00944,Sabrina,Phillips,MD,dermatology,,New York,NY,10015,40.697791,-74.008017,9,56.1,1.19,2843,0.0075,0.0089,true
+P00945,Christina,Robinson,MD,orthopedics,,Los Angeles,CA,90005,33.960207,-118.455180,12,80.5,1.11,2123,0.0449,0.0404,false
+P00946,Dennis,Hernandez,MD,cardiology,Interventional Cardiology,Seattle,WA,98192,47.799357,-122.382399,15,61.9,1.19,760,0.0498,0.1605,true
+P00947,Julie,Obrien,MD,psychiatry,Addiction Psychiatry,Boston,MA,02197,42.439717,-70.789734,33,71.1,0.81,1074,0.0038,0.0869,true
+P00948,Robert,Dunn,DO,endocrinology,Obesity Medicine,New York,NY,10088,40.695438,-73.794755,15,61.9,1.10,1332,0.0067,0.0536,false
+P00949,Thomas,Medina,MD,primary-care,Adolescent Medicine,Los Angeles,CA,90024,34.047824,-118.174564,20,67.5,1.22,2947,0.0084,0.0757,true
+P00950,Elizabeth,Robinson,MD,psychiatry,,San Francisco,CA,94141,37.655669,-122.467236,1,62.4,1.60,550,0.0041,0.1214,true
+P00951,John,Fischer,MD,oncology,Thoracic Oncology,New York,NY,10022,40.654090,-74.037517,15,63.7,1.04,1016,0.0717,0.2125,false
+P00952,Morgan,Miller,MD,gastroenterology,Advanced Endoscopy,Jersey City,NJ,07339,40.869628,-74.206776,8,81.6,1.29,687,0.0136,0.0641,true
+P00953,Sean,Padilla,MD,cardiology,,Trenton,NJ,08619,40.195203,-74.928417,1,80.4,0.86,2244,0.0325,0.1062,false
+P00954,Christian,Elliott,MD,primary-care,,Tampa,FL,33616,27.812119,-82.323417,27,62.5,1.22,3267,0.0089,0.0876,false
+P00955,Bryan,Kelley,MD,primary-care,,Houston,TX,77061,29.887525,-95.335571,15,87.5,0.85,2367,0.0068,0.0672,true
+P00956,William,Armstrong,MD,orthopedics,Spine Surgery,Boston,MA,02122,42.455964,-71.254422,7,62.8,1.34,1527,0.0642,0.0848,true
+P00957,Edward,Murphy,MD,primary-care,,New York,NY,10064,40.730936,-73.772986,29,76.5,1.01,1559,0.0079,0.0547,false
+P00958,Abigail,Wilson,MD,psychiatry,Geriatric Psychiatry,Rochester,NY,14603,43.219377,-77.691627,28,69.5,0.80,890,0.0035,0.1058,false
+P00959,Jamie,Aguilar,DO,orthopedics,,New York,NY,10006,40.856086,-73.858891,22,60.6,1.14,2412,0.0766,0.0857,true
+P00960,Christopher,Dixon,DO,pulmonology,,Miami,FL,33106,25.875691,-80.003687,15,80.8,1.04,803,0.0179,0.0960,true
+P00961,Lindsey,Chavez,MD,psychiatry,Geriatric Psychiatry,Boston,MA,02156,42.423782,-70.911442,23,79.9,0.81,640,0.0024,0.0554,true
+P00962,William,Bryant,MD,gastroenterology,,Los Angeles,CA,90049,34.188060,-118.069130,28,75.9,0.86,2691,0.0168,0.0779,true
+P00963,Brian,Ford,MD,primary-care,,Dallas,TX,75283,32.653933,-96.634519,31,59.6,0.67,6493,0.0119,0.1162,true
+P00964,Lindsay,Cummings,MD,cardiology,Echocardiography,Phoenix,AZ,85056,33.462427,-112.275269,10,52.1,0.94,1204,0.0612,0.2788,false
+P00965,Randy,Velasquez,MD,cardiology,,New York,NY,10025,40.671391,-73.831793,19,67.1,1.23,4296,0.0262,0.0910,true
+P00966,Julie,Lane,MD,cardiology,Electrophysiology,Pittsburgh,PA,15212,40.377261,-79.953598,13,72.4,0.99,1956,0.0359,0.0963,true
+P00967,Brandon,Cooper,MD,pulmonology,Critical Care Medicine,Houston,TX,77035,29.714527,-95.236244,16,76.2,1.10,883,0.0149,0.1262,true
+P00968,Bryce,Mcknight,DO,dermatology,Pediatric Dermatology,Boston,MA,02142,42.520892,-71.189103,23,82.4,1.13,2632,0.0028,0.0037,true
+P00969,Sarah,Jones,MD,orthopedics,,Austin,TX,78735,30.258763,-97.709992,31,63.6,0.84,2288,0.0498,0.0695,true
+P00970,Sarah,Johnson,MD,primary-care,Sports Medicine,Houston,TX,77099,29.707138,-95.472788,18,77.9,1.00,3795,0.0064,0.0632,true
+P00971,Robert,Mack,MD,primary-care,,Chicago,IL,60654,41.798659,-87.595820,10,54.2,1.08,2494,0.0143,0.1409,true
+P00972,Katie,Good,MD,psychiatry,,Chicago,IL,60660,41.968539,-87.485664,12,63.2,1.06,447,0.0034,0.1487,true
+P00973,Debbie,Fisher,MD,gastroenterology,,Miami,FL,33160,25.698418,-80.091062,18,85.3,1.06,2274,0.0179,0.0516,true
+P00974,Victoria,Reyes,MD,primary-care,,San Diego,CA,92103,32.679445,-117.331342,20,69.1,0.62,5221,0.0066,0.0806,true
+P00975,Molly,Knox,MD,orthopedics,Hand Surgery,Dallas,TX,75283,32.720248,-96.881759,16,70.5,0.79,1216,0.0495,0.0708,true
+P00976,Nicholas,Vega,MD,oncology,,San Francisco,CA,94122,37.792470,-122.375251,22,83.7,1.16,1053,0.0338,0.1297,true
+P00977,Dorothy,Ryan,MD,pulmonology,,Miami,FL,33143,25.833640,-80.409052,26,88.1,0.92,507,0.0123,0.0930,true
+P00978,Desiree,Bailey,MD,pulmonology,,Los Angeles,CA,90072,34.085108,-118.436326,19,69.2,1.20,1230,0.0265,0.1789,true
+P00979,Gregory,Medina,MD,primary-care,Geriatrics,New York,NY,10028,40.894256,-74.019125,16,58.8,0.98,2769,0.0101,0.1087,true
+P00980,Allison,Luna,MD,primary-care,,Pittsburgh,PA,15292,40.257954,-80.143757,31,78.4,0.90,2913,0.0072,0.0799,true
+P00981,Jeffrey,Smith,DO,cardiology,Interventional Cardiology,Dallas,TX,75299,32.844257,-96.817738,6,81.1,1.29,1206,0.0270,0.1152,false
+P00982,Andrew,Evans,DO,psychiatry,Addiction Psychiatry,Philadelphia,PA,19142,40.039757,-75.196418,19,66.1,0.88,1513,0.0027,0.1106,false
+P00983,Emily,Stephens,MD,endocrinology,,Newark,NJ,07120,40.751031,-74.296857,21,72.3,1.08,1310,0.0084,0.0563,true
+P00984,Amanda,Morrow,DO,cardiology,,Miami,FL,33115,25.614543,-80.061648,9,90.0,0.97,3795,0.0204,0.0893,true
+P00985,John,Reed,MD,orthopedics,,Miami,FL,33175,25.855495,-80.122941,25,77.9,0.84,2356,0.0367,0.0553,true
+P00986,Joshua,Pineda,MD,dermatology,,New York,NY,10003,40.650172,-74.265625,10,85.5,1.51,2869,0.0035,0.0036,true
+P00987,Jessica,Rodriguez,MD,endocrinology,Obesity Medicine,New York,NY,10012,40.827745,-74.189717,22,65.0,1.01,1355,0.0109,0.0648,true
+P00988,Lisa,Barnes,MD,pulmonology,,New York,NY,10069,40.649106,-74.030535,9,71.4,0.88,612,0.0181,0.1390,true
+P00989,Katie,Stephenson,MD,primary-care,Preventive Medicine,Phoenix,AZ,85085,33.565966,-111.977726,1,87.6,0.75,3252,0.0041,0.0348,true
+P00990,Alexis,Harris,MD,orthopedics,Spine Surgery,Miami,FL,33116,25.717081,-80.387185,17,58.1,0.57,902,0.0699,0.0690,true
+P00991,Craig,Johnson,MD,primary-care,,Buffalo,NY,14281,43.088546,-78.863389,20,71.4,1.31,3788,0.0063,0.0584,true
+P00992,Carla,Warner,MD,pulmonology,Critical Care Medicine,Buffalo,NY,14277,42.963620,-78.934657,22,81.9,0.72,785,0.0167,0.0968,true
+P00993,Brandon,Yang,MD,orthopedics,Sports Medicine,New York,NY,10031,40.592952,-74.214556,17,77.4,1.04,1963,0.0345,0.0567,true
+P00994,Richard,Young,DO,oncology,Hematologic Oncology,New York,NY,10095,40.559529,-73.956097,9,60.6,0.99,612,0.0627,0.1890,true
+P00995,Jeff,Shields,MD,primary-care,Geriatrics,Newark,NJ,07125,40.602824,-74.109018,18,67.4,1.24,2104,0.0092,0.1031,false
+P00996,Brian,Gordon,MD,neurology,,Atlanta,GA,30366,33.849356,-84.459075,21,67.7,0.92,2668,0.0148,0.0694,true
+P00997,Keith,Cabrera,MD,gastroenterology,Inflammatory Bowel Disease,Los Angeles,CA,90072,34.214772,-118.100628,15,71.4,0.92,2031,0.0193,0.1078,true
+P00998,Jessica,Flores,MD,gastroenterology,,Miami,FL,33137,25.644052,-80.082100,28,72.1,0.78,1156,0.0253,0.0860,true
+P00999,Carla,Chambers,DO,psychiatry,,New York,NY,10022,40.586419,-74.006899,32,66.6,0.69,999,0.0033,0.1049,true
+P01000,Malik,Turner,MD,dermatology,Pediatric Dermatology,Chicago,IL,60666,41.946272,-87.762245,5,61.0,0.92,3540,0.0070,0.0058,true
+P01001,Douglas,Keller,MD,pulmonology,Sleep Medicine,New York,NY,10089,40.581055,-74.025183,15,73.8,0.84,2123,0.0180,0.1096,true
+P01002,Jeffrey,Turner,MD,cardiology,,Atlanta,GA,30350,33.750254,-84.263366,25,66.6,0.96,2062,0.0423,0.1116,true
+P01003,Bruce,Fry,MD,psychiatry,,Houston,TX,77027,29.616311,-95.514567,6,69.9,1.19,540,0.0024,0.1014,true
+P01004,Nichole,Buck,MD,psychiatry,,New York,NY,10073,40.772746,-74.257043,3,64.3,1.07,934,0.0039,0.1125,true
+P01005,Connie,Simmons,MD,primary-care,,Los Angeles,CA,90086,34.089961,-118.082805,3,81.5,1.11,2105,0.0050,0.0528,true
+P01006,Tyler,Compton,MD,orthopedics,Sports Medicine,Dallas,TX,75239,32.802475,-97.048926,10,71.1,1.03,1287,0.0465,0.0727,true
+P01007,Shelly,Powers,MD,neurology,,Phoenix,AZ,85003,33.615536,-112.049570,31,73.9,0.82,1366,0.0151,0.0976,true
+P01008,Kristi,Flores,MD,primary-care,,Philadelphia,PA,19168,39.983167,-75.112602,6,85.9,0.91,3028,0.0074,0.0628,true
+P01009,Robert,Hernandez,MD,primary-care,,Philadelphia,PA,19100,40.120315,-75.284014,1,61.6,0.77,3258,0.0166,0.0849,true
+P01010,Nicholas,Webster,MD,cardiology,,Houston,TX,77067,29.735973,-95.404071,3,90.1,1.05,3637,0.0244,0.0610,false
+P01011,Thomas,Atkinson,MD,primary-care,,Houston,TX,77053,29.963879,-95.443829,28,73.8,1.03,2541,0.0052,0.0488,false
+P01012,Kevin,Zimmerman,MD,oncology,,New York,NY,10022,40.739195,-73.967235,17,90.1,1.57,448,0.0323,0.1095,false
+P01013,Linda,Melendez,MD,pulmonology,Critical Care Medicine,New York,NY,10047,40.712279,-74.035965,1,81.7,1.54,1602,0.0164,0.1098,true
+P01014,Anna,Faulkner,MD,psychiatry,Addiction Psychiatry,San Francisco,CA,94196,37.830749,-122.579349,9,68.8,1.06,813,0.0028,0.1154,true
+P01015,Angela,Anderson,MD,gastroenterology,,Miami,FL,33165,25.727565,-79.982493,17,77.5,1.31,1429,0.0179,0.0639,true
+P01016,John,Harris,MD,oncology,Hematologic Oncology,Chicago,IL,60674,41.723400,-87.789046,8,60.6,1.06,823,0.0646,0.1346,true
+P01017,Deborah,Nielsen,MD,cardiology,Heart Failure,Chicago,IL,60675,41.822033,-87.607277,11,92.2,1.06,1010,0.0291,0.0754,false
+P01018,Melanie,Davis,MD,pulmonology,,Chicago,IL,60638,41.839296,-87.832338,18,68.1,0.81,1387,0.0260,0.1436,true
+P01019,Jenny,Lee,MD,primary-care,Geriatrics,Austin,TX,78737,30.093200,-97.888165,20,73.2,1.10,4536,0.0058,0.0760,true
+P01020,Joseph,Nunez,MD,endocrinology,Diabetes,Houston,TX,77066,29.898197,-95.537678,4,72.2,0.74,805,0.0078,0.0615,true
+P01021,Carrie,Russo,MD,endocrinology,,Dallas,TX,75266,32.723933,-96.590785,17,87.4,0.82,1968,0.0045,0.0402,true
+P01022,Jacob,Gill,DO,primary-care,,Houston,TX,77004,29.831372,-95.403574,10,84.8,0.97,1247,0.0056,0.0417,true
+P01023,Jennifer,Hansen,DO,oncology,,New York,NY,10082,40.571071,-74.096471,15,80.9,1.17,413,0.0437,0.1117,true
+P01024,Timothy,Booth,MD,primary-care,,Los Angeles,CA,90021,34.152821,-118.410314,18,85.6,0.94,4389,0.0087,0.0715,true
+P01025,Mason,Krueger,MD,neurology,,Houston,TX,77005,29.598038,-95.501192,19,80.4,0.68,2260,0.0120,0.0918,true
+P01026,Alexis,Giles,MD,pulmonology,,Miami,FL,33109,25.873340,-80.137463,16,73.9,1.27,641,0.0244,0.1222,false
+P01027,Suzanne,Wilson,MD,orthopedics,Sports Medicine,San Francisco,CA,94145,37.760368,-122.258646,32,48.5,1.02,1840,0.0812,0.1018,false
+P01028,Yvonne,Mendoza,MD,dermatology,Mohs Surgery,Dallas,TX,75201,32.976135,-96.724851,17,60.0,0.88,2150,0.0091,0.0067,true
+P01029,John,Munoz,DO,primary-care,Adolescent Medicine,San Diego,CA,92169,32.788380,-117.024125,11,81.3,1.25,1938,0.0050,0.0443,true
+P01030,James,Herman,MD,cardiology,,Seattle,WA,98153,47.499627,-122.266573,5,56.7,0.66,1782,0.0476,0.1946,true
+P01031,Andrea,Rowe,MD,cardiology,,Dallas,TX,75236,32.753363,-96.881026,25,89.0,0.84,1745,0.0242,0.0805,true
+P01032,Oscar,Ferguson,MD,gastroenterology,,Philadelphia,PA,19186,40.087188,-75.016866,14,72.8,0.87,1445,0.0205,0.0838,true
+P01033,Michael,Green,MD,endocrinology,,Phoenix,AZ,85010,33.397733,-112.086299,6,84.0,0.96,1332,0.0048,0.0366,true
+P01034,William,Crawford,MD,orthopedics,Sports Medicine,Chicago,IL,60649,41.846619,-87.768736,7,56.3,0.79,1824,0.0933,0.0811,true
+P01035,Corey,Zavala,MD,oncology,,New York,NY,10011,40.587781,-73.933508,16,72.4,1.32,321,0.0448,0.1355,true
+P01036,Terrance,Franco,MD,psychiatry,,New York,NY,10088,40.592726,-74.194701,20,78.3,1.20,1551,0.0026,0.0711,false
+P01037,Robin,Wood,DO,primary-care,,Los Angeles,CA,90084,34.081545,-118.284910,21,47.1,0.85,5073,0.0153,0.0915,true
+P01038,Robert,Hart,MD,orthopedics,Joint Replacement,New York,NY,10036,40.680501,-74.216207,11,64.7,0.80,1018,0.0469,0.0662,true
+P01039,Jeffrey,Thomas,MD,oncology,,Trenton,NJ,08601,40.376865,-74.605488,18,64.9,0.83,987,0.0591,0.1711,true
+P01040,Jose,Donovan,DO,neurology,,New York,NY,10054,40.623278,-74.259565,19,76.8,0.96,1241,0.0117,0.0753,true
+P01041,Beth,Butler,MD,primary-care,,Pittsburgh,PA,15287,40.593836,-79.920914,21,68.8,1.33,1486,0.0119,0.0896,true
+P01042,Elijah,Rivera,MD,psychiatry,,Houston,TX,77054,29.615232,-95.297210,8,67.6,1.02,1148,0.0028,0.1093,true
+P01043,Noah,Whitaker,MD,cardiology,,Albany,NY,12231,42.649881,-73.901624,17,65.2,0.86,1028,0.0564,0.1719,true
+P01044,Victor,Pena,MD,orthopedics,Joint Replacement,Dallas,TX,75297,32.876259,-96.798273,20,67.7,0.76,2348,0.0510,0.0661,true
+P01045,Gail,Scott,MD,endocrinology,,Atlanta,GA,30300,33.916741,-84.326873,22,77.5,0.66,1854,0.0070,0.0584,true
+P01046,Lorraine,Levy,MD,cardiology,,Dallas,TX,75249,32.722649,-96.663020,25,97.1,0.88,2721,0.0203,0.0703,true
+P01047,Darlene,Henry,DO,endocrinology,,Chicago,IL,60692,41.881010,-87.474367,11,70.7,1.00,558,0.0094,0.0928,true
+P01048,Gary,Norton,MD,psychiatry,Addiction Psychiatry,Austin,TX,78742,30.279053,-97.783081,16,82.9,1.00,511,0.0020,0.0586,false
+P01049,Gary,Cortez,MD,dermatology,,Dallas,TX,75247,32.577223,-96.756824,5,72.4,1.08,2656,0.0026,0.0048,true
+P01050,Tracy,Stark,MD,dermatology,,San Diego,CA,92186,32.760126,-116.960548,15,59.9,1.02,3126,0.0064,0.0061,true
+P01051,Amber,May,MD,pulmonology,,San Diego,CA,92116,32.766711,-116.938290,2,79.4,0.89,322,0.0169,0.1100,true
+P01052,Brian,Johnson,MD,neurology,Headache Medicine,Philadelphia,PA,19189,39.981204,-74.894182,17,95.6,0.87,1138,0.0081,0.0512,false
+P01053,Melanie,Landry,MD,endocrinology,Diabetes,Austin,TX,78767,30.433757,-97.660624,15,56.6,1.23,881,0.0110,0.0880,true
+P01054,Elizabeth,Duran,MD,oncology,Thoracic Oncology,Los Angeles,CA,90054,33.877850,-118.395105,12,95.7,1.11,258,0.0249,0.0852,true
+P01055,Robert,Kirby,MD,orthopedics,,Chicago,IL,60616,41.918017,-87.715094,23,95.3,0.94,1750,0.0214,0.0357,false
+P01056,Jesse,Mann,MD,neurology,,Miami,FL,33100,25.639170,-80.009916,16,82.7,0.79,1404,0.0106,0.0822,true
+P01057,Albert,Wagner,MD,oncology,Thoracic Oncology,Chicago,IL,60660,41.948296,-87.492796,5,87.8,0.86,397,0.0269,0.0912,true
+P01058,Nathaniel,Williamson,MD,endocrinology,,Los Angeles,CA,90027,33.873974,-118.104121,20,81.3,0.95,1410,0.0046,0.0356,true
+P01059,Elizabeth,Jensen,MD,primary-care,,New York,NY,10073,40.589338,-74.197255,7,78.6,1.02,1967,0.0060,0.0703,true
+P01060,Timothy,Freeman,MD,neurology,Vascular Neurology,Miami,FL,33181,25.573694,-80.181502,14,99.0,1.60,1012,0.0056,0.0361,true
+P01061,Adam,Arnold,MD,orthopedics,Sports Medicine,Houston,TX,77067,29.694407,-95.475232,13,67.6,0.93,1040,0.0442,0.0567,true
+P01062,Alexander,Moreno,MD,primary-care,Geriatrics,Los Angeles,CA,90008,34.019331,-118.070536,19,59.1,1.01,2486,0.0125,0.0914,true
+P01063,Joshua,Madden,MD,endocrinology,Thyroid Disorders,Orlando,FL,32882,28.435175,-81.434876,27,76.6,1.32,2303,0.0069,0.0544,true
+P01064,Andre,Li,MD,endocrinology,,Chicago,IL,60667,41.800038,-87.696566,5,70.4,0.76,900,0.0118,0.0938,false
+P01065,Emily,Drake,MD,primary-care,,San Diego,CA,92160,32.686554,-117.142178,20,79.2,0.88,3808,0.0055,0.0671,true
+P01066,Renee,Rodriguez,MD,primary-care,Preventive Medicine,San Francisco,CA,94140,37.969339,-122.443605,9,56.3,1.28,3820,0.0107,0.0808,true
+P01067,Cole,Hernandez,MD,primary-care,,New York,NY,10070,40.599719,-73.846743,15,89.7,1.01,3351,0.0036,0.0402,false
+P01068,James,Fox,MD,oncology,,New York,NY,10070,40.663027,-74.077262,14,74.5,0.78,311,0.0541,0.1302,true
+P01069,Lisa,Adams,MD,gastroenterology,,New York,NY,10015,40.910094,-73.994440,24,64.2,0.68,1897,0.0275,0.1128,true
+P01070,Randy,Watson,MD,primary-care,,Houston,TX,77078,29.900563,-95.321476,13,67.2,1.10,3113,0.0093,0.0699,true
+P01071,Richard,Cunningham,MD,primary-care,Adolescent Medicine,Austin,TX,78705,30.368738,-97.929133,1,57.9,0.82,1157,0.0098,0.1160,true
+P01072,Veronica,Perez,DO,dermatology,Pediatric Dermatology,Boston,MA,02183,42.150874,-71.126449,18,76.8,0.87,2798,0.0034,0.0041,true
+P01073,Gabriella,Abbott,MD,gastroenterology,,Miami,FL,33168,25.754868,-80.378631,11,70.5,1.29,1874,0.0236,0.1218,true
+P01074,Desiree,Garrison,MD,endocrinology,,Chicago,IL,60697,41.995546,-87.608170,25,44.7,1.19,1540,0.0174,0.1087,true
+P01075,Katherine,Davis,MD,dermatology,,Los Angeles,CA,90071,34.083952,-118.497837,18,68.5,0.93,4850,0.0041,0.0044,true
+P01076,Nicholas,Tran,MD,primary-care,,Philadelphia,PA,19149,39.854063,-75.107602,30,57.0,0.88,1716,0.0124,0.1456,true
+P01077,Brian,Smith,MD,endocrinology,,Seattle,WA,98109,47.455245,-122.217851,19,61.8,1.02,1421,0.0110,0.0695,false
+P01078,George,Porter,MD,oncology,,Atlanta,GA,30394,33.742913,-84.168867,11,63.1,1.08,423,0.0638,0.2603,false
+P01079,Ryan,Mueller,MD,psychiatry,Child and Adolescent Psychiatry,Houston,TX,77024,29.758965,-95.615995,10,55.4,1.29,706,0.0044,0.1319,false
+P01080,Ariel,Hodge,MD,gastroenterology,,Tampa,FL,33626,27.925551,-82.542441,28,72.9,1.16,588,0.0150,0.0752,true
+P01081,Cody,Rice,MD,primary-care,Adolescent Medicine,Philadelphia,PA,19138,39.931447,-74.987439,17,83.1,0.97,1251,0.0074,0.0527,true
+P01082,Brad,Lewis,MD,cardiology,,San Diego,CA,92197,32.697880,-117.383596,1,60.2,1.10,1917,0.0636,0.1479,true
+P01083,Miranda,Clay,MD,psychiatry,,Phoenix,AZ,85093,33.249463,-112.147293,16,77.8,0.85,458,0.0023,0.0754,false
+P01084,Thomas,Williams,MD,primary-care,,Philadelphia,PA,19187,39.950746,-75.028397,23,60.5,0.86,2844,0.0115,0.0984,true
+P01085,Charles,Frost,MD,pulmonology,,New York,NY,10024,40.701549,-73.975586,27,77.1,0.96,1436,0.0238,0.1469,true
+P01086,Rachel,Elliott,DO,primary-care,Geriatrics,Boston,MA,02101,42.359523,-70.774309,21,55.7,1.02,2748,0.0100,0.0888,true
+P01087,Antonio,Mcfarland,MD,oncology,Thoracic Oncology,San Francisco,CA,94133,37.898702,-122.222582,21,63.0,1.28,858,0.0638,0.2575,false
+P01088,Leonard,Ali,MD,psychiatry,,New York,NY,10013,40.808940,-73.918974,21,69.4,1.19,837,0.0048,0.0988,true
+P01089,Brenda,Goodwin,MD,orthopedics,,Atlanta,GA,30322,33.861201,-84.360895,32,67.2,1.05,2104,0.0522,0.0649,true
+P01090,Jennifer,Sanders,DO,dermatology,Pediatric Dermatology,Pittsburgh,PA,15214,40.523236,-79.915811,22,73.5,1.10,2544,0.0042,0.0043,true
+P01091,Chase,Martin,MD,primary-care,Preventive Medicine,Pittsburgh,PA,15234,40.290026,-80.157858,16,71.7,0.73,2816,0.0074,0.0632,false
+P01092,John,Davenport,MD,primary-care,,Houston,TX,77022,29.670396,-95.351317,25,84.5,0.85,2683,0.0073,0.0662,true
+P01093,Paul,Mosley,MD,psychiatry,,Chicago,IL,60647,41.808707,-87.613692,16,83.5,1.24,1197,0.0023,0.0586,true
+P01094,Martin,Campos,MD,orthopedics,Sports Medicine,Newark,NJ,07110,40.741857,-74.445721,29,57.1,1.02,2634,0.0721,0.1436,true
+P01095,Donald,Hinton,MD,primary-care,,Chicago,IL,60677,41.869719,-87.721895,25,79.9,1.10,1393,0.0081,0.0656,true
+P01096,Jennifer,Mason,MD,pulmonology,,Los Angeles,CA,90048,33.958650,-118.216177,16,79.8,1.45,1373,0.0210,0.1169,true
+P01097,Terri,Brown,MD,primary-care,,New York,NY,10056,40.925762,-74.043326,20,63.9,0.92,3221,0.0073,0.0718,true
+P01098,Samuel,Roberson,MD,primary-care,Sports Medicine,Los Angeles,CA,90073,33.890576,-118.358940,4,76.3,0.85,4799,0.0085,0.0532,true
+P01099,Matthew,Mack,MD,primary-care,,Dallas,TX,75249,32.883428,-96.903526,24,76.3,0.90,3415,0.0069,0.0638,true
+P01100,Stephanie,Sanders,DO,dermatology,,Phoenix,AZ,85035,33.535959,-112.133803,21,60.2,0.73,3035,0.0056,0.0060,true
+P01101,Kim,Johnson,MD,primary-care,,New York,NY,10090,40.894496,-74.161377,21,75.6,0.78,1918,0.0077,0.0445,false
+P01102,Joshua,Riddle,MD,dermatology,Dermatopathology,New York,NY,10019,40.773537,-73.754993,16,58.3,0.85,2982,0.0061,0.0068,true
+P01103,Tracy,Kelly,MD,cardiology,Electrophysiology,Boston,MA,02112,42.452385,-71.219898,5,82.2,1.35,1358,0.0241,0.0760,true
+P01104,Shelley,Reynolds,MD,neurology,,Seattle,WA,98147,47.792993,-122.190181,13,74.9,0.95,1187,0.0127,0.0971,true
+P01105,Erin,Guerrero,MD,orthopedics,,San Diego,CA,92130,32.715987,-117.023045,23,80.5,0.92,2052,0.0313,0.0366,true
+P01106,Christopher,Montgomery,MD,dermatology,Mohs Surgery,Boston,MA,02181,42.320656,-70.951302,5,69.5,0.98,3813,0.0038,0.0044,true
+P01107,Lauren,Marquez,MD,primary-care,,Denver,CO,80255,39.834444,-104.942665,25,53.9,1.18,3635,0.0094,0.1052,false
+P01108,Christopher,Moore,MD,primary-care,Geriatrics,Chicago,IL,60684,41.832868,-87.717172,17,73.3,0.86,2760,0.0098,0.0732,true
+P01109,Jennifer,Walters,MD,primary-care,,Miami,FL,33107,25.831204,-80.189301,11,93.9,1.11,829,0.0037,0.0326,true
+P01110,Jodi,Stewart,MD,orthopedics,Joint Replacement,Atlanta,GA,30368,33.861274,-84.224392,20,74.9,0.88,2364,0.0495,0.0540,true
+P01111,Daniel,Smith,MD,cardiology,,Miami,FL,33131,25.673027,-80.268435,22,78.7,0.75,2072,0.0212,0.0802,true
+P01112,Kyle,Ward,MD,primary-care,Adolescent Medicine,Los Angeles,CA,90036,34.126159,-118.151315,12,58.4,0.93,1713,0.0112,0.1012,true
+P01113,Joseph,Anderson,MD,dermatology,Mohs Surgery,San Francisco,CA,94186,37.728934,-122.180817,13,70.8,1.07,2414,0.0058,0.0048,true
+P01114,Jacob,Cole,MD,cardiology,,Tampa,FL,33651,28.091944,-82.566263,23,49.7,1.24,1859,0.0927,0.2112,true
+P01115,Angela,Russell,MD,primary-care,,Austin,TX,78719,30.108754,-97.880994,21,52.0,0.97,2404,0.0115,0.0889,true
+P01116,Anthony,Gomez,MD,oncology,Thoracic Oncology,Atlanta,GA,30338,33.722941,-84.319632,17,63.5,0.87,349,0.0639,0.1726,true
+P01117,Christopher,George,MD,dermatology,,Pittsburgh,PA,15236,40.249626,-79.994166,12,78.1,0.86,2212,0.0033,0.0048,true
+P01118,Mark,Cruz,MD,orthopedics,Hand Surgery,Boston,MA,02174,42.435371,-71.163411,11,68.3,1.27,1282,0.0524,0.0792,true
+P01119,Kelly,Hughes,MD,primary-care,Sports Medicine,Boston,MA,02128,42.253745,-70.882824,9,90.4,1.29,2385,0.0037,0.0506,true
+P01120,Christopher,Santana,MD,cardiology,,Pittsburgh,PA,15298,40.495878,-79.909279,22,78.7,1.15,2290,0.0332,0.0926,true
+P01121,Rebecca,Spence,MD,psychiatry,Child and Adolescent Psychiatry,Orlando,FL,32899,28.723418,-81.417854,20,80.7,0.74,541,0.0028,0.0824,true
+P01122,Ashley,Jackson,MD,primary-care,Geriatrics,Houston,TX,77023,29.754413,-95.378821,27,79.5,1.10,2014,0.0057,0.0602,true
+P01123,Oscar,Taylor,MD,dermatology,Pediatric Dermatology,Philadelphia,PA,19159,39.924680,-75.412541,15,70.6,1.12,3452,0.0030,0.0048,true
+P01124,Kevin,Snyder,DO,primary-care,Preventive Medicine,Denver,CO,80254,39.682508,-105.140838,12,76.7,0.93,2128,0.0074,0.0610,true
+P01125,Bryan,Hamilton,MD,gastroenterology,,New York,NY,10092,40.693149,-74.086156,26,64.9,0.79,1406,0.0200,0.1076,true
+P01126,Robert,Washington,MD,orthopedics,Joint Replacement,Philadelphia,PA,19181,39.918526,-75.265914,22,75.5,1.01,1641,0.0388,0.0475,true
+P01127,Chase,King,MD,cardiology,,New York,NY,10089,40.533142,-73.935001,33,62.5,1.08,2712,0.0487,0.1934,true
+P01128,John,Weber,MD,gastroenterology,,Los Angeles,CA,90009,33.942141,-118.236097,11,57.7,0.83,1116,0.0355,0.1354,true
+P01129,Brittney,Gonzalez,MD,orthopedics,,Los Angeles,CA,90018,33.945549,-118.184276,2,73.0,0.92,1532,0.0412,0.0369,true
+P01130,Daniel,Torres,MD,primary-care,Adolescent Medicine,Phoenix,AZ,85015,33.345106,-112.026200,25,73.2,0.97,2892,0.0077,0.0722,true
+P01131,Stacy,Cook,MD,pulmonology,,Miami,FL,33189,25.895311,-80.338890,11,74.7,1.12,1110,0.0260,0.1103,true
+P01132,Christine,Brock,MD,pulmonology,,Houston,TX,77088,29.840816,-95.151151,9,79.6,1.14,802,0.0209,0.1109,false
+P01133,Mark,Cook,DO,orthopedics,,Houston,TX,77018,29.891815,-95.268685,20,57.9,1.46,1285,0.0616,0.0671,true
+P01134,Lisa,Villarreal,MD,oncology,,Austin,TX,78766,30.274872,-97.717340,6,61.5,1.11,414,0.0770,0.1572,false
+P01135,Terri,Taylor,MD,gastroenterology,,Miami,FL,33148,25.819806,-79.976406,16,85.9,1.02,1660,0.0157,0.0527,true
+P01136,Malik,Valentine,MD,pulmonology,Interventional Pulmonology,Atlanta,GA,30314,33.915161,-84.357540,14,95.7,1.17,913,0.0121,0.0743,true
+P01137,James,Edwards,MD,cardiology,,Atlanta,GA,30382,33.839452,-84.298195,32,67.6,0.83,2857,0.0406,0.1701,true
+P01138,Tamara,Novak,MD,primary-care,,New York,NY,10027,40.715485,-73.935097,23,67.6,1.05,2141,0.0086,0.0823,true
+P01139,Kelly,Neal,MD,cardiology,,Houston,TX,77057,29.703154,-95.323990,12,79.9,0.82,1674,0.0284,0.0886,false
+P01140,Travis,Johnston,MD,cardiology,Echocardiography,Chicago,IL,60649,41.692128,-87.501557,1,75.5,1.09,1889,0.0286,0.1083,true
+P01141,John,Bennett,MD,pulmonology,,Boston,MA,02154,42.416597,-70.778305,24,72.6,1.02,2073,0.0275,0.1026,true
+P01142,Lisa,Long,MD,oncology,Breast Oncology,New York,NY,10034,40.737511,-74.199265,17,63.1,0.96,379,0.0994,0.2215,true
+P01143,Daniel,Elliott,MD,orthopedics,,Tampa,FL,33608,27.952839,-82.561082,21,55.7,1.08,964,0.0724,0.0966,false
+P01144,Brittany,Gardner,MD,gastroenterology,,Denver,CO,80258,39.755614,-105.002729,14,76.9,0.89,1108,0.0187,0.0681,false
+P01145,Erin,Pierce,MD,endocrinology,,Houston,TX,77009,29.826571,-95.142079,13,74.8,1.14,1451,0.0076,0.0662,true
+P01146,Stephanie,Murray,DO,pulmonology,,Dallas,TX,75215,32.634175,-96.764331,1,70.6,0.99,589,0.0187,0.1084,true
+P01147,Jeanette,Gonzales,DO,primary-care,Adolescent Medicine,Trenton,NJ,08686,40.208807,-74.608030,18,83.1,0.84,3932,0.0054,0.0544,true
+P01148,Kelly,Schwartz,MD,gastroenterology,,Philadelphia,PA,19106,40.123461,-75.146504,18,87.5,1.24,1068,0.0173,0.0606,true
+P01149,Lori,Flynn,MD,oncology,Thoracic Oncology,Tampa,FL,33685,28.034937,-82.451843,16,66.3,0.91,705,0.0446,0.1592,true
+P01150,Robert,Porter,MD,primary-care,,New York,NY,10090,40.693019,-73.884982,23,57.2,1.32,2644,0.0105,0.0872,true
+P01151,Cynthia,Allen,DO,gastroenterology,Advanced Endoscopy,Chicago,IL,60692,41.901473,-87.803134,23,76.2,1.25,1613,0.0163,0.0646,true
+P01152,Donna,Espinoza,MD,primary-care,Sports Medicine,Chicago,IL,60614,41.902702,-87.609964,18,84.1,1.08,3582,0.0050,0.0581,false
+P01153,Kristina,Jones,MD,gastroenterology,,New York,NY,10070,40.703736,-74.074056,10,59.8,1.26,1513,0.0325,0.1148,false
+P01154,Vicki,Mendoza,MD,neurology,Vascular Neurology,Atlanta,GA,30381,33.820749,-84.204987,5,62.4,0.87,1244,0.0209,0.1432,true
+P01155,Richard,Hunter,MD,primary-care,,Los Angeles,CA,90032,34.086027,-118.297729,7,81.6,1.07,1059,0.0065,0.0632,true
+P01156,Samantha,Holt,MD,psychiatry,,Austin,TX,78703,30.195496,-97.698973,45,76.0,1.18,665,0.0026,0.0751,true
+P01157,Amy,Gibbs,MD,oncology,,Los Angeles,CA,90020,33.941384,-118.077213,23,80.5,1.04,534,0.0297,0.1105,false
+P01158,Michael,Woodard,MD,primary-care,,Chicago,IL,60691,42.089193,-87.648575,21,63.8,0.97,2310,0.0088,0.0871,true
+P01159,Amanda,Little,DO,primary-care,Sports Medicine,Los Angeles,CA,90047,34.193362,-118.271246,8,81.8,0.75,2039,0.0091,0.0758,true
+P01160,Christopher,Mack,MD,primary-care,,Denver,CO,80239,39.636582,-104.888956,5,74.8,1.20,2199,0.0089,0.0664,true
+P01161,Diane,Kelly,MD,primary-care,Sports Medicine,Atlanta,GA,30302,33.624079,-84.352538,18,83.6,0.74,4016,0.0077,0.0610,false
+P01162,Deborah,Williams,MD,orthopedics,Joint Replacement,Miami,FL,33152,25.744346,-80.222825,13,61.5,1.04,986,0.0528,0.0715,true
+P01163,Tonya,Byrd,MD,gastroenterology,,Seattle,WA,98194,47.450811,-122.212277,32,62.4,1.09,672,0.0245,0.0709,false
+P01164,Reginald,Goodwin,MD,primary-care,Adolescent Medicine,Seattle,WA,98147,47.585763,-122.492048,13,61.5,0.81,3448,0.0094,0.1064,true
+P01165,Tammy,Jordan,MD,orthopedics,,Pittsburgh,PA,15220,40.465356,-79.752406,13,85.3,1.24,854,0.0348,0.0480,true
+P01166,Alex,Green,MD,dermatology,,Miami,FL,33131,25.785103,-80.384485,12,71.1,0.74,1806,0.0040,0.0071,true
+P01167,William,Stone,MD,gastroenterology,Hepatology,New York,NY,10057,40.757995,-73.893663,15,86.5,1.04,2840,0.0138,0.0466,true
+P01168,Beverly,Johnston,MD,psychiatry,,New York,NY,10081,40.637722,-74.044519,23,78.9,1.03,669,0.0030,0.1378,true
+P01169,Sean,Myers,MD,primary-care,Sports Medicine,Tampa,FL,33673,28.060470,-82.390092,1,80.7,0.85,2715,0.0111,0.0655,true
+P01170,Kelsey,Chapman,MD,neurology,,Dallas,TX,75243,32.619665,-96.792208,14,62.5,1.10,1078,0.0212,0.1383,true
+P01171,Vincent,Cooper,MD,orthopedics,,Los Angeles,CA,90025,34.055772,-118.289820,20,76.3,1.38,2256,0.0425,0.0465,true
+P01172,Angel,Garcia,MD,orthopedics,,Chicago,IL,60675,41.724525,-87.663343,15,53.5,1.02,1438,0.0803,0.0919,true
+P01173,Robert,Nixon,MD,psychiatry,,Los Angeles,CA,90069,34.194303,-118.176523,28,68.5,0.97,1208,0.0043,0.0813,false
+P01174,Darren,Shepard,MD,neurology,Movement Disorders,Boston,MA,02146,42.244635,-71.296075,13,75.8,1.08,1384,0.0161,0.1070,true
+P01175,Donald,Collins,MD,orthopedics,,Houston,TX,77010,29.725172,-95.297390,8,51.8,1.06,1358,0.0763,0.0829,false
+P01176,Stanley,Clark,DO,primary-care,Geriatrics,San Diego,CA,92159,32.649776,-117.322474,17,70.3,1.14,1979,0.0089,0.0716,false
+P01177,Timothy,Alvarez,MD,orthopedics,Sports Medicine,Houston,TX,77031,29.738112,-95.583896,17,46.7,1.17,2710,0.0731,0.0904,true
+P01178,Samuel,Horton,MD,primary-care,,Dallas,TX,75210,32.635061,-96.732934,33,65.1,0.89,3581,0.0146,0.0839,true
+P01179,Luis,Evans,MD,primary-care,,Atlanta,GA,30357,33.680205,-84.178498,18,70.2,1.05,2253,0.0110,0.0752,true
+P01180,Lisa,Wilson,MD,dermatology,Mohs Surgery,New York,NY,10070,40.823746,-73.813750,5,72.8,0.93,1848,0.0036,0.0048,true
+P01181,Melinda,Wong,MD,dermatology,,Houston,TX,77009,29.785856,-95.468367,30,84.3,1.03,2302,0.0029,0.0036,false
+P01182,Erica,Martin,MD,primary-care,,Dallas,TX,75282,32.760543,-97.053214,10,58.4,0.86,2451,0.0100,0.0711,false
+P01183,Tonya,Sanchez,MD,oncology,,Philadelphia,PA,19123,39.988512,-75.329846,3,76.2,0.84,413,0.0512,0.1160,true
+P01184,Greg,Moore,MD,psychiatry,Child and Adolescent Psychiatry,Chicago,IL,60663,41.767217,-87.763850,23,70.3,1.47,788,0.0033,0.0863,true
+P01185,Anita,Mullen,MD,oncology,Hematologic Oncology,New York,NY,10063,40.778358,-74.165683,12,82.0,1.10,515,0.0332,0.1145,false
+P01186,Jesse,Sullivan,MD,primary-care,Preventive Medicine,Seattle,WA,98122,47.560278,-122.059629,18,66.5,0.88,2576,0.0085,0.0722,true
+P01187,Jack,Davidson,MD,orthopedics,,Dallas,TX,75226,32.739121,-96.645452,28,77.1,0.96,1377,0.0379,0.0621,false
+P01188,Ryan,Johnson,DO,oncology,,San Francisco,CA,94129,37.987714,-122.414327,22,68.4,1.03,564,0.0666,0.1441,true
+P01189,Christina,Gonzalez,MD,primary-care,Sports Medicine,New York,NY,10010,40.733695,-73.843813,24,89.7,1.01,2536,0.0047,0.0411,true
+P01190,Brittany,Price,MD,primary-care,,Phoenix,AZ,85093,33.578105,-112.019676,9,73.2,1.25,2241,0.0061,0.0569,true
+P01191,Janet,Harris,MD,orthopedics,,Philadelphia,PA,19168,40.002851,-75.418610,15,74.6,0.85,522,0.0373,0.0343,false
+P01192,Karen,Stokes,MD,orthopedics,,New York,NY,10096,40.879265,-74.032312,22,62.2,0.90,2103,0.0448,0.0734,true
+P01193,Bryan,Garcia,MD,oncology,Hematologic Oncology,Phoenix,AZ,85063,33.533135,-112.042823,3,69.1,1.07,707,0.0520,0.2208,true
+P01194,Monica,Lopez,MD,primary-care,,Atlanta,GA,30331,33.639190,-84.458776,13,69.7,0.94,2514,0.0070,0.0689,true
+P01195,Mark,Ellis,MD,primary-care,,Philadelphia,PA,19113,39.804807,-75.311942,32,81.5,1.41,3312,0.0059,0.0574,false
+P01196,Jose,Huffman,MD,psychiatry,Geriatric Psychiatry,New York,NY,10073,40.787826,-73.787043,31,75.9,0.85,561,0.0025,0.0653,true
+P01197,Allison,Fowler,MD,dermatology,,Atlanta,GA,30383,33.590187,-84.522494,14,50.5,0.60,2133,0.0056,0.0075,true
+P01198,Candice,Carr,MD,primary-care,,Rochester,NY,14611,43.085768,-77.598681,10,68.9,0.84,2973,0.0091,0.0652,false
+P01199,Brenda,Bailey,MD,primary-care,Sports Medicine,Dallas,TX,75234,32.718411,-97.042219,20,78.9,0.65,3543,0.0056,0.0779,true
+P01200,Megan,Williamson,MD,psychiatry,Geriatric Psychiatry,New York,NY,10034,40.617571,-74.175772,23,75.6,0.62,1684,0.0028,0.1166,true
+P01201,Lisa,Mccarthy,MD,primary-care,Preventive Medicine,Phoenix,AZ,85079,33.427272,-111.908018,8,56.0,1.26,1981,0.0096,0.1219,true
+P01202,Kenneth,Mendez,MD,primary-care,Sports Medicine,Tampa,FL,33640,28.070266,-82.386911,7,84.3,0.88,1929,0.0045,0.0523,false
+P01203,Christopher,Anderson,MD,dermatology,,Chicago,IL,60686,42.014663,-87.508401,23,94.6,0.67,3405,0.0028,0.0035,false
+P01204,David,Torres,MD,orthopedics,,Austin,TX,78730,30.307814,-97.621182,3,77.0,1.01,2208,0.0320,0.0439,true
+P01205,Isaac,Steele,MD,endocrinology,,Rochester,NY,14602,43.354865,-77.707542,13,60.1,1.32,1143,0.0134,0.0678,false
+P01206,William,Barnes,MD,dermatology,Mohs Surgery,Newark,NJ,07166,40.825282,-74.360548,17,63.6,1.07,3368,0.0051,0.0078,false
+P01207,Devin,Reyes,MD,primary-care,,Los Angeles,CA,90013,33.916233,-118.190438,13,51.7,1.41,2982,0.0131,0.0912,true
+P01208,Jacob,Reid,MD,cardiology,,Miami,FL,33150,25.748498,-79.976919,12,83.4,0.97,1811,0.0215,0.0726,true
+P01209,Heather,Brewer,DO,dermatology,Dermatopathology,Atlanta,GA,30373,33.799524,-84.180877,1,62.2,1.23,2561,0.0043,0.0075,true
+P01210,Zoe,Peters,MD,cardiology,Electrophysiology,Tampa,FL,33657,27.933582,-82.245340,26,84.8,1.17,4054,0.0371,0.0986,true
+P01211,Tracy,Taylor,MD,orthopedics,,Chicago,IL,60682,41.680988,-87.653347,4,74.8,1.41,1899,0.0431,0.0641,true
+P01212,Leonard,Hayes,MD,pulmonology,,New York,NY,10097,40.597252,-73.858415,36,56.5,1.14,3195,0.0347,0.1618,true
+P01213,Brian,Howard,MD,oncology,Thoracic Oncology,New York,NY,10065,40.628224,-73.946973,30,72.4,1.10,353,0.0529,0.1571,false
+P01214,Albert,Taylor,MD,primary-care,,New York,NY,10038,40.704234,-74.247743,22,91.1,0.98,3841,0.0038,0.0292,true
+P01215,Lisa,Maynard,MD,primary-care,,Seattle,WA,98147,47.442337,-122.520963,9,70.5,1.44,1568,0.0080,0.0711,true
+P01216,William,Simpson,MD,oncology,,Chicago,IL,60645,42.025923,-87.598253,15,78.2,0.94,579,0.0598,0.1611,true
+P01217,Gail,Perry,MD,gastroenterology,Inflammatory Bowel Disease,Houston,TX,77019,29.788175,-95.413224,1,70.9,0.91,1798,0.0272,0.0808,true
+P01218,Mary,Burns,MD,pulmonology,,New York,NY,10004,40.851365,-74.024649,1,56.9,1.26,1043,0.0315,0.1773,true
+P01219,Christopher,Johnson,MD,primary-care,,San Diego,CA,92127,32.661651,-117.011329,21,83.0,1.25,1700,0.0071,0.0563,true
+P01220,Kathleen,Carter,MD,cardiology,,Dallas,TX,75218,32.618706,-96.680641,1,62.4,0.96,1446,0.0330,0.2012,true
+P01221,Joshua,Medina,MD,cardiology,,Dallas,TX,75236,32.711370,-96.998727,16,80.4,1.39,1368,0.0259,0.0890,false
+P01222,Gary,Ellis,MD,neurology,,Jersey City,NJ,07370,40.668474,-73.988310,18,81.8,0.95,1114,0.0100,0.0708,true
+P01223,Julia,Cannon,MD,primary-care,,Philadelphia,PA,19161,39.974992,-75.187229,12,71.6,1.29,1313,0.0078,0.0547,false
+P01224,Andrea,Wilson,DO,psychiatry,Addiction Psychiatry,Seattle,WA,98153,47.578709,-122.411161,16,82.1,0.85,368,0.0020,0.0598,true
+P01225,Danny,Hampton,DO,primary-care,Geriatrics,Boston,MA,02170,42.430748,-71.317008,20,87.8,0.95,2483,0.0060,0.0573,false
+P01226,Madeline,Richardson,DO,neurology,Movement Disorders,Miami,FL,33108,25.604837,-80.245586,13,74.8,0.90,562,0.0123,0.0772,true
+P01227,Lynn,Williams,MD,primary-care,,Austin,TX,78765,30.275945,-97.866384,20,82.8,0.90,3943,0.0067,0.0544,true
+P01228,Jennifer,Payne,MD,neurology,Epilepsy,Atlanta,GA,30368,33.657710,-84.158204,17,80.8,1.37,1688,0.0152,0.0736,true
+P01229,Veronica,Garcia,MD,oncology,Thoracic Oncology,Tampa,FL,33623,27.949889,-82.618759,41,60.4,0.93,520,0.0747,0.1903,true
+P01230,Maria,Potter,MD,psychiatry,Geriatric Psychiatry,Seattle,WA,98181,47.792809,-122.363293,24,65.9,0.97,1006,0.0047,0.0899,true
+P01231,Kenneth,Kidd,MD,neurology,Movement Disorders,Houston,TX,77024,29.778354,-95.470978,6,75.5,1.37,769,0.0123,0.0721,true
+P01232,Shannon,Bailey,DO,orthopedics,Hand Surgery,New York,NY,10034,40.876587,-73.936876,21,68.5,1.10,1377,0.0454,0.0667,true
+P01233,Lisa,Gonzales,DO,psychiatry,Child and Adolescent Psychiatry,Orlando,FL,32866,28.663192,-81.382913,5,79.6,0.73,825,0.0024,0.0820,true
+P01234,Victoria,Rowe,MD,pulmonology,,Atlanta,GA,30374,33.855933,-84.425746,31,57.5,1.04,1438,0.0329,0.2947,true
+P01235,Joel,Cochran,MD,primary-care,,Chicago,IL,60648,41.913647,-87.372474,12,57.0,1.39,3983,0.0116,0.0938,true
+P01236,Brianna,Bell,MD,orthopedics,,Seattle,WA,98148,47.803475,-122.289299,18,79.1,1.15,1663,0.0403,0.0387,true
+P01237,Jennifer,Chen,MD,cardiology,,Boston,MA,02193,42.336426,-71.312956,7,79.6,1.10,2097,0.0345,0.1063,true
+P01238,Gabriel,Taylor,MD,primary-care,Geriatrics,San Francisco,CA,94142,37.898141,-122.561242,14,81.6,1.15,1995,0.0062,0.0467,true
+P01239,Jamie,Clark,MD,oncology,,Houston,TX,77020,29.843764,-95.202804,1,73.2,1.01,373,0.0456,0.1121,true
+P01240,Brian,Bell,MD,primary-care,,Chicago,IL,60602,41.800630,-87.855543,7,74.6,0.89,1764,0.0060,0.0600,true
+P01241,Juan,Ryan,MD,orthopedics,,Paterson,NJ,07576,41.067872,-74.059690,19,44.6,1.13,856,0.0722,0.1088,true
+P01242,Mario,Padilla,MD,psychiatry,Geriatric Psychiatry,Chicago,IL,60678,42.062270,-87.749355,19,61.0,0.93,465,0.0031,0.1323,true
+P01243,Keith,Adams,MD,primary-care,Sports Medicine,Los Angeles,CA,90064,34.065128,-118.041516,1,68.8,1.19,1891,0.0085,0.0730,false
+P01244,Michele,Duke,MD,gastroenterology,,Miami,FL,33180,25.775711,-80.302482,10,59.7,1.05,1360,0.0317,0.1173,true
+P01245,Erin,Davis,MD,gastroenterology,Advanced Endoscopy,Newark,NJ,07167,40.854551,-74.167454,9,67.3,0.94,2807,0.0164,0.0771,false
+P01246,Sydney,Floyd,MD,cardiology,,Atlanta,GA,30317,33.732452,-84.207362,1,75.0,1.17,1724,0.0333,0.1178,true
+P01247,Samantha,Riddle,MD,neurology,,New York,NY,10083,40.868907,-74.201335,9,98.6,1.00,882,0.0068,0.0456,false
+P01248,Michelle,Martinez,MD,oncology,,Houston,TX,77061,29.759201,-95.499011,16,85.6,1.22,389,0.0320,0.0991,true
+P01249,Michelle,Wright,MD,primary-care,Geriatrics,Dallas,TX,75235,32.808641,-96.932990,13,65.4,1.40,2044,0.0075,0.0789,true
+P01250,Jennifer,Poole,MD,oncology,,Boston,MA,02190,42.155784,-71.026559,22,68.4,0.69,998,0.0476,0.1681,true
+P01251,Kathleen,Lowe,MD,pulmonology,,Philadelphia,PA,19114,40.088453,-75.298436,18,45.7,0.99,1532,0.0431,0.2721,true
+P01252,Tracy,Ray,MD,pulmonology,,Miami,FL,33161,25.747873,-80.003464,2,64.9,0.93,1262,0.0272,0.1949,false
+P01253,Joseph,Perry,DO,pulmonology,,Chicago,IL,60644,41.827024,-87.745887,31,76.3,1.14,999,0.0162,0.0896,true
+P01254,Shannon,Schultz,MD,oncology,,New York,NY,10052,40.875340,-74.142583,9,74.5,1.41,534,0.0435,0.1280,true
+P01255,Nicole,Davis,MD,primary-care,,New York,NY,10037,40.527568,-73.994815,8,61.1,0.92,2997,0.0151,0.1116,true
+P01256,Zachary,Ramirez,MD,orthopedics,,New York,NY,10005,40.583385,-73.862043,17,83.2,0.79,1052,0.0266,0.0392,true
+P01257,Sharon,Wood,MD,neurology,,New York,NY,10070,40.827413,-73.779351,7,73.1,0.96,446,0.0150,0.1537,true
+P01258,Stephanie,Murphy,MD,cardiology,,New York,NY,10044,40.636865,-74.027693,31,78.7,1.04,1142,0.0336,0.1292,false
+P01259,Aaron,Schroeder,MD,dermatology,,Chicago,IL,60608,41.905688,-87.393553,18,58.0,1.17,2780,0.0081,0.0074,true
+P01260,Jessica,Simon,MD,gastroenterology,,Chicago,IL,60693,41.893907,-87.588676,11,70.5,0.72,1573,0.0238,0.0815,false
+P01261,Stephen,Beck,MD,primary-care,Sports Medicine,Denver,CO,80210,39.836329,-104.772082,29,75.4,1.22,2226,0.0086,0.0672,true
+P01262,Michael,Brown,DO,primary-care,Adolescent Medicine,Philadelphia,PA,19114,39.888236,-75.422592,28,71.3,1.19,2568,0.0067,0.0459,true
+P01263,Amanda,Robinson,MD,neurology,Headache Medicine,New York,NY,10099,40.616237,-74.176470,13,62.8,0.87,1750,0.0266,0.1508,true
+P01264,Russell,Lewis,MD,primary-care,Sports Medicine,Philadelphia,PA,19149,39.941134,-75.026430,17,76.4,0.97,2529,0.0082,0.0569,true
+P01265,Joseph,Clayton,MD,primary-care,,Los Angeles,CA,90053,34.069069,-117.986237,17,63.1,0.79,1526,0.0112,0.0788,true
+P01266,Matthew,Lane,MD,oncology,Breast Oncology,San Francisco,CA,94132,37.809529,-122.457539,8,63.9,0.73,309,0.0517,0.1865,false
+P01267,Ashlee,Washington,MD,gastroenterology,,Philadelphia,PA,19138,40.142272,-75.112691,10,62.6,1.10,2418,0.0321,0.1284,false
+P01268,Matthew,Fleming,DO,psychiatry,,New York,NY,10008,40.843068,-74.056638,17,61.3,0.96,436,0.0047,0.0830,true
+P01269,Brandon,Garcia,MD,orthopedics,,San Francisco,CA,94118,37.981570,-122.377728,6,75.2,0.69,727,0.0456,0.0709,true
+P01270,Kristen,Stevens,MD,oncology,,Los Angeles,CA,90027,33.957816,-118.025164,20,80.3,1.11,252,0.0495,0.1042,true
+P01271,David,Mathews,MD,neurology,Headache Medicine,Denver,CO,80263,39.574486,-104.966288,6,55.6,0.95,1361,0.0333,0.1779,true
+P01272,Scott,Smith,MD,cardiology,Electrophysiology,Chicago,IL,60671,41.896062,-87.416697,7,63.2,0.92,3218,0.0337,0.1673,true
+P01273,Susan,Harris,MD,dermatology,,Boston,MA,02185,42.242597,-71.295327,4,73.3,1.08,1397,0.0044,0.0061,true
+P01274,Haley,Anderson,MD,psychiatry,Addiction Psychiatry,Boston,MA,02156,42.298101,-70.813576,27,69.2,0.95,508,0.0030,0.1073,true
+P01275,Debra,Moore,MD,gastroenterology,,Chicago,IL,60657,41.936126,-87.567287,19,36.7,0.93,2439,0.0576,0.2403,true
+P01276,Sarah,Hill,MD,dermatology,,Boston,MA,02187,42.270396,-71.316948,4,66.9,0.93,4568,0.0039,0.0045,false
+P01277,Diamond,Wright,MD,cardiology,,Miami,FL,33126,25.627127,-80.133476,19,51.4,0.95,1297,0.0423,0.1777,false
+P01278,Nathan,Mckee,DO,psychiatry,,New York,NY,10083,40.571441,-73.902876,31,81.6,0.88,591,0.0027,0.0705,true
+P01279,Gabriel,Sanders,MD,dermatology,,Chicago,IL,60633,41.953694,-87.867935,5,85.0,1.06,1501,0.0019,0.0036,true
+P01280,Kevin,Lyons,MD,orthopedics,,Boston,MA,02171,42.436430,-71.234986,18,79.1,1.14,2489,0.0456,0.0571,true
+P01281,Jim,Rios,MD,neurology,,Phoenix,AZ,85038,33.245436,-112.119357,16,83.3,1.20,1119,0.0151,0.0540,true
+P01282,Jane,Smith,DO,cardiology,,Dallas,TX,75211,32.879912,-96.577030,20,67.4,0.91,1207,0.0320,0.1264,true
+P01283,Thomas,Anderson,MD,orthopedics,Spine Surgery,Atlanta,GA,30352,33.819547,-84.551427,9,73.0,0.98,2871,0.0438,0.0697,true
+P01284,Jeremy,Frazier,MD,primary-care,,New York,NY,10002,40.771615,-73.985367,15,64.9,1.29,2987,0.0136,0.1056,true
+P01285,Albert,Dominguez,MD,primary-care,,Houston,TX,77059,29.701812,-95.561134,22,88.9,1.14,4811,0.0037,0.0440,true
+P01286,Lisa,Mcneil,MD,cardiology,Interventional Cardiology,Los Angeles,CA,90047,34.001999,-118.022431,10,44.6,0.83,1657,0.0629,0.2099,true
+P01287,Robert,Anderson,MD,orthopedics,,Los Angeles,CA,90012,33.994135,-118.359769,28,59.2,1.04,2917,0.0872,0.0739,true
+P01288,Chad,Reyes,MD,neurology,Movement Disorders,San Francisco,CA,94119,37.801940,-122.467538,28,85.3,1.06,1245,0.0100,0.0700,true
+P01289,Jessica,Garcia,MD,psychiatry,Geriatric Psychiatry,Houston,TX,77010,29.701921,-95.233005,23,79.0,0.65,814,0.0035,0.0710,false
+P01290,Lawrence,Ibarra,MD,oncology,Breast Oncology,Chicago,IL,60660,41.990051,-87.547308,13,78.2,1.26,327,0.0428,0.1043,false
+P01291,Derrick,Ayala,MD,primary-care,,Boston,MA,02160,42.455480,-71.156980,15,72.7,0.84,4304,0.0094,0.0804,true
+P01292,Karen,Anderson,MD,dermatology,,Los Angeles,CA,90003,34.043571,-118.209354,27,67.5,1.13,2012,0.0041,0.0056,false
+P01293,Victoria,Thomas,DO,primary-care,Adolescent Medicine,Seattle,WA,98180,47.626409,-122.480441,28,82.3,1.07,2449,0.0078,0.0956,true
+P01294,Alyssa,Smith,MD,dermatology,,Phoenix,AZ,85016,33.336369,-112.138722,1,83.1,0.88,1819,0.0027,0.0041,true
+P01295,Debra,Alexander,DO,gastroenterology,,Houston,TX,77031,29.912951,-95.479066,17,61.2,0.84,1426,0.0347,0.0987,true
+P01296,Jennifer,Fuller,MD,cardiology,Heart Failure,Newark,NJ,07152,40.903732,-74.150116,22,99.0,0.93,2621,0.0144,0.0550,true
+P01297,Edward,Jenkins,MD,psychiatry,,Rochester,NY,14655,43.068779,-77.522127,16,62.9,0.90,686,0.0044,0.0999,true
+P01298,Glenda,Heath,MD,pulmonology,Sleep Medicine,Austin,TX,78728,30.384894,-97.897725,3,74.6,0.85,1215,0.0211,0.1181,true
+P01299,Christopher,Garcia,MD,orthopedics,,Paterson,NJ,07572,40.984774,-74.304206,28,79.2,1.12,1694,0.0339,0.0515,true
+P01300,Karen,Lawrence,MD,orthopedics,,Tampa,FL,33663,28.002561,-82.584783,16,72.7,1.09,1911,0.0580,0.0815,true
+P01301,Patrick,Richmond,MD,cardiology,,Houston,TX,77062,29.668434,-95.260306,20,79.7,0.85,1601,0.0417,0.0905,true
+P01302,Leonard,Taylor,MD,endocrinology,,Boston,MA,02188,42.553504,-71.179274,14,78.9,1.22,1389,0.0055,0.0365,true
+P01303,Joshua,Miller,MD,cardiology,,Miami,FL,33146,25.697980,-80.147250,13,79.2,0.91,1172,0.0329,0.1118,true
+P01304,Angela,Greene,MD,dermatology,,New York,NY,10058,40.621589,-74.193812,16,65.0,1.21,2364,0.0040,0.0077,true
+P01305,Cathy,Maxwell,MD,cardiology,,Philadelphia,PA,19165,39.931929,-75.409644,4,76.5,1.01,1476,0.0243,0.1342,true
+P01306,Hannah,Abbott,MD,primary-care,,New York,NY,10053,40.502355,-73.958831,14,64.0,0.95,2328,0.0094,0.0854,true
+P01307,Dominique,Turner,MD,primary-care,,New York,NY,10086,40.665738,-74.277956,16,68.4,0.96,1244,0.0069,0.0719,true
+P01308,April,Hicks,MD,gastroenterology,,Houston,TX,77032,29.550285,-95.400974,9,58.7,1.03,1829,0.0309,0.1049,true
+P01309,Julie,Phillips,MD,primary-care,,Dallas,TX,75238,32.908994,-96.724789,10,55.5,1.29,2593,0.0134,0.1023,true
+P01310,Brian,Hurst,MD,psychiatry,Addiction Psychiatry,Houston,TX,77097,29.850827,-95.417276,16,75.3,0.98,450,0.0028,0.0811,true
+P01311,Stephanie,Simpson,MD,pulmonology,Interventional Pulmonology,New York,NY,10047,40.598141,-73.987392,30,86.3,0.85,1154,0.0162,0.0929,false
+P01312,Daniel,Porter,MD,primary-care,,San Francisco,CA,94139,37.831452,-122.522545,22,60.1,1.12,3504,0.0109,0.1143,true
+P01313,Brittney,Rice,MD,neurology,,Houston,TX,77072,29.785879,-95.175310,18,82.0,0.92,970,0.0095,0.0523,true
+P01314,Tiffany,Hatfield,MD,orthopedics,Sports Medicine,Boston,MA,02136,42.291802,-70.884346,16,75.1,0.94,1760,0.0493,0.0607,true
+P01315,Sarah,Anderson,MD,cardiology,Echocardiography,Los Angeles,CA,90005,34.075971,-118.449555,15,48.4,1.15,889,0.0766,0.2635,true
+P01316,Michelle,Carroll,MD,primary-care,,Orlando,FL,32836,28.473553,-81.237858,18,57.7,0.85,3177,0.0120,0.1269,true
+P01317,Michael,Vega,MD,dermatology,Dermatopathology,New York,NY,10019,40.732133,-73.834354,24,86.1,1.03,4247,0.0024,0.0032,true
+P01318,Kathryn,Best,MD,primary-care,Sports Medicine,Miami,FL,33148,25.695670,-80.192426,12,80.4,0.85,2042,0.0061,0.0659,true
+P01319,Kaylee,Smith,MD,dermatology,,New York,NY,10081,40.715107,-74.093403,16,67.6,1.08,3103,0.0045,0.0062,false
+P01320,Carlos,Baker,MD,primary-care,,Los Angeles,CA,90012,33.926735,-118.317792,19,69.4,0.98,5226,0.0087,0.0717,false
+P01321,Bill,Brown,MD,primary-care,,Denver,CO,80234,39.699201,-104.893134,14,88.1,1.32,2570,0.0053,0.0578,true
+P01322,Kristina,Hunter,DO,cardiology,,Paterson,NJ,07509,41.104529,-74.173555,22,74.4,0.86,1932,0.0386,0.1104,false
+P01323,Courtney,Mason,MD,psychiatry,,Chicago,IL,60637,41.911308,-87.703692,31,99.0,0.91,769,0.0011,0.0405,true
+P01324,Robert,Miles,MD,pulmonology,Critical Care Medicine,Chicago,IL,60683,41.728451,-87.746441,15,64.3,0.91,2252,0.0292,0.1395,true
+P01325,Christopher,Herrera,MD,primary-care,,New York,NY,10004,40.900094,-73.881880,25,84.1,1.19,2981,0.0050,0.0687,false
+P01326,Christina,Ramirez,DO,dermatology,,Paterson,NJ,07547,40.740942,-74.199615,4,66.3,1.33,2393,0.0046,0.0050,true
+P01327,Kyle,Dixon,MD,primary-care,,Miami,FL,33194,25.637433,-80.069909,21,60.0,0.99,1801,0.0070,0.0980,false
+P01328,James,Morton,MD,endocrinology,,Seattle,WA,98184,47.603846,-122.474634,13,63.6,1.39,2372,0.0091,0.0864,true
+P01329,Amanda,Myers,MD,primary-care,Geriatrics,Miami,FL,33171,25.557738,-80.165553,10,60.8,0.88,1654,0.0097,0.0858,true
+P01330,Cynthia,Davenport,MD,gastroenterology,,San Francisco,CA,94168,37.842220,-122.502664,7,70.5,0.84,911,0.0248,0.0776,true
+P01331,Erin,Jones,MD,endocrinology,,Philadelphia,PA,19195,39.926094,-75.262222,14,86.0,0.87,1224,0.0051,0.0357,true
+P01332,Holly,Blair,MD,cardiology,Heart Failure,New York,NY,10053,40.801823,-74.260780,3,68.5,0.88,1984,0.0447,0.1990,true
+P01333,Meghan,Brown,MD,pulmonology,,New York,NY,10048,40.545653,-74.086807,28,85.6,1.30,762,0.0173,0.0808,true
+P01334,Christopher,Hamilton,MD,cardiology,,Philadelphia,PA,19180,40.031255,-75.062587,1,69.1,1.08,1488,0.0643,0.2327,true
+P01335,Shawn,Lynch,MD,orthopedics,Joint Replacement,New York,NY,10019,40.564564,-73.859842,26,70.5,0.73,2362,0.0431,0.0589,true
+P01336,Kyle,Harmon,MD,oncology,,New York,NY,10022,40.729267,-73.866238,14,70.9,0.83,428,0.0468,0.1457,true
+P01337,Joy,Wilson,MD,psychiatry,Geriatric Psychiatry,Chicago,IL,60698,41.843144,-87.489599,14,53.8,1.02,364,0.0052,0.1431,true
+P01338,Jean,Miles,MD,dermatology,Dermatopathology,Houston,TX,77086,29.693240,-95.207009,16,64.5,1.08,1784,0.0038,0.0058,true
+P01339,Frank,Benton,MD,primary-care,Sports Medicine,New York,NY,10050,40.890715,-74.075138,13,82.1,0.85,2556,0.0055,0.0605,true
+P01340,Alexandra,Logan,MD,primary-care,Preventive Medicine,Paterson,NJ,07540,41.043762,-74.268621,11,59.9,0.87,2049,0.0113,0.0958,true
+P01341,Jennifer,Jackson,MD,orthopedics,,Los Angeles,CA,90046,34.000852,-118.164043,13,85.9,1.15,1396,0.0334,0.0437,true
+P01342,David,Norman,MD,primary-care,,Phoenix,AZ,85005,33.286547,-112.087741,35,80.3,1.01,2042,0.0077,0.0723,true
+P01343,Joseph,Tanner,MD,orthopedics,Hand Surgery,New York,NY,10086,40.785841,-73.964930,17,75.5,0.76,2087,0.0360,0.0729,true
+P01344,Kelsey,Johnson,MD,neurology,Vascular Neurology,Dallas,TX,75298,32.805903,-96.806624,14,73.8,0.97,1451,0.0140,0.0831,true
+P01345,Lindsay,Nelson,MD,orthopedics,Spine Surgery,Houston,TX,77058,29.731490,-95.485248,23,73.6,0.81,2174,0.0317,0.0483,true
+P01346,Caleb,Joseph,MD,dermatology,,Chicago,IL,60631,41.693801,-87.506561,24,62.4,0.65,3318,0.0055,0.0067,true
+P01347,Barbara,Jones,MD,primary-care,,Philadelphia,PA,19138,39.858143,-74.946081,17,86.8,1.13,5364,0.0066,0.0538,true
+P01348,Spencer,Ward,MD,primary-care,,Phoenix,AZ,85047,33.431451,-112.240505,11,74.3,0.74,3062,0.0111,0.0655,true
+P01349,Victor,Bradley,MD,primary-care,Preventive Medicine,Trenton,NJ,08643,40.207419,-75.032019,11,90.6,1.03,1304,0.0048,0.0418,true
+P01350,Michael,Scott,MD,primary-care,,Los Angeles,CA,90056,33.965092,-118.206129,13,59.1,1.22,4102,0.0148,0.0836,true
+P01351,Dakota,Berry,MD,gastroenterology,,New York,NY,10084,40.845200,-74.145633,26,60.8,0.86,971,0.0289,0.0911,true
+P01352,Jennifer,Perez,DO,gastroenterology,,Phoenix,AZ,85056,33.480321,-111.844778,1,70.2,1.22,1003,0.0203,0.1053,true
+P01353,William,Williams,MD,primary-care,,Phoenix,AZ,85000,33.463732,-112.183333,29,79.0,0.96,2490,0.0085,0.0669,true
+P01354,Michelle,Sanchez,MD,dermatology,,Seattle,WA,98176,47.603168,-122.609134,4,71.7,1.21,3044,0.0040,0.0054,true
+P01355,Thomas,Reyes,DO,endocrinology,,Atlanta,GA,30378,33.881008,-84.532751,23,73.0,0.91,1448,0.0059,0.0470,true
+P01356,Edward,Velazquez,MD,primary-care,,Los Angeles,CA,90035,33.951546,-118.312790,6,56.3,1.06,3963,0.0124,0.0931,false
+P01357,Meredith,Tran,MD,primary-care,Sports Medicine,Tampa,FL,33657,28.073941,-82.297641,1,63.6,0.82,708,0.0155,0.0985,true
+P01358,Robin,Yang,DO,psychiatry,,Houston,TX,77046,29.748517,-95.601595,19,55.3,1.00,610,0.0042,0.1190,true
+P01359,Robert,Morris,MD,primary-care,,Phoenix,AZ,85056,33.413059,-111.960140,20,89.6,1.11,2243,0.0049,0.0394,false
+P01360,Robert,Cortez,MD,primary-care,Adolescent Medicine,New York,NY,10030,40.743609,-73.805934,13,70.5,1.04,1923,0.0105,0.0780,true
+P01361,Joseph,Miller,MD,psychiatry,,Dallas,TX,75215,32.822228,-96.644509,18,62.7,0.79,938,0.0045,0.1668,true
+P01362,Nathan,Shaw,DO,pulmonology,,San Diego,CA,92119,32.643969,-116.961115,24,69.9,0.99,1309,0.0215,0.1665,false
+P01363,Rachel,White,MD,orthopedics,,New York,NY,10093,40.713332,-73.793398,13,69.7,0.97,1451,0.0479,0.0600,true
+P01364,Linda,Jarvis,MD,neurology,Vascular Neurology,Pittsburgh,PA,15243,40.392833,-80.169543,17,70.9,1.00,1138,0.0126,0.0784,false
+P01365,Stephanie,Jones,MD,oncology,Thoracic Oncology,Phoenix,AZ,85094,33.315354,-112.190554,33,72.3,0.89,372,0.0542,0.1455,false
+P01366,Steven,Campbell,MD,orthopedics,,San Francisco,CA,94182,37.705638,-122.276030,17,80.8,0.95,1366,0.0432,0.0535,false
+P01367,Megan,Murphy,MD,oncology,,Los Angeles,CA,90096,34.118225,-118.173808,19,72.5,1.60,355,0.0571,0.1562,true
+P01368,Angela,Smith,MD,pulmonology,Interventional Pulmonology,Jersey City,NJ,07318,40.798611,-73.875534,15,68.8,0.98,1047,0.0176,0.1221,true
+P01369,James,Elliott,MD,pulmonology,,Denver,CO,80203,39.757987,-104.924291,27,90.9,1.18,928,0.0155,0.1293,true
+P01370,Kevin,Dean,MD,cardiology,,San Francisco,CA,94188,37.860447,-122.643202,1,53.2,0.98,816,0.0457,0.1794,true
+P01371,Steven,Vargas,MD,endocrinology,,Philadelphia,PA,19178,39.832608,-75.133459,13,67.1,0.91,1295,0.0095,0.0637,true
+P01372,Trevor,Barton,MD,dermatology,,Los Angeles,CA,90049,34.054820,-118.234760,17,57.1,1.02,2033,0.0080,0.0088,true
+P01373,James,Mccullough,MD,orthopedics,Spine Surgery,San Diego,CA,92147,32.783498,-117.082222,30,78.3,0.72,1391,0.0431,0.0462,true
+P01374,Kathleen,Sanchez,MD,cardiology,,Dallas,TX,75246,32.723595,-96.962573,3,77.0,1.18,2361,0.0419,0.1213,true
+P01375,Adam,Ortiz,MD,endocrinology,,San Diego,CA,92108,32.800264,-117.019404,11,88.4,1.06,2190,0.0071,0.0519,true
+P01376,Jesse,Reed,MD,orthopedics,,Dallas,TX,75204,32.861027,-96.630692,3,83.6,0.91,2550,0.0454,0.0492,true
+P01377,Mary,Wiley,MD,primary-care,Adolescent Medicine,Miami,FL,33121,25.708589,-80.041015,11,76.5,0.90,2519,0.0071,0.0547,true
+P01378,Stephanie,Smith,MD,psychiatry,Geriatric Psychiatry,Phoenix,AZ,85087,33.577067,-112.241958,1,73.3,0.69,404,0.0021,0.0998,false
+P01379,Diane,Sweeney,MD,neurology,,Houston,TX,77075,29.567910,-95.399122,10,60.9,0.92,827,0.0186,0.1177,true
+P01380,Jessica,Garcia,MD,primary-care,,San Francisco,CA,94113,37.769573,-122.293992,8,74.4,1.06,2587,0.0075,0.0595,true
+P01381,Alyssa,Allen,MD,oncology,Hematologic Oncology,Chicago,IL,60645,41.731609,-87.698937,16,82.7,1.00,312,0.0411,0.0992,true
+P01382,Travis,Brown,DO,pulmonology,,New York,NY,10001,40.693951,-73.741843,35,55.3,1.02,1812,0.0239,0.1773,false
+P01383,Wendy,Dawson,MD,orthopedics,,New York,NY,10039,40.674876,-73.761666,15,77.0,1.49,1971,0.0424,0.0457,true
+P01384,Christopher,Morse,MD,dermatology,,New York,NY,10023,40.664981,-73.900943,18,72.5,1.32,4423,0.0026,0.0040,true
+P01385,Phyllis,Meyer,DO,primary-care,,Atlanta,GA,30317,33.933883,-84.435646,17,71.2,1.08,1502,0.0111,0.0691,true
+P01386,Jaclyn,Watson,MD,psychiatry,Child and Adolescent Psychiatry,Phoenix,AZ,85067,33.447027,-111.875612,9,80.8,1.06,775,0.0023,0.0590,true
+P01387,Terri,Miller,MD,primary-care,,Chicago,IL,60603,41.822868,-87.863053,35,71.3,0.93,2236,0.0073,0.0710,true
+P01388,Cody,Anderson,MD,pulmonology,,Phoenix,AZ,85081,33.516729,-112.146320,4,60.3,0.90,750,0.0207,0.2016,true
+P01389,Lori,Jones,MD,orthopedics,,Dallas,TX,75250,32.864082,-96.945295,12,58.1,1.20,1833,0.0679,0.0749,true
+P01390,Ashley,Graham,MD,endocrinology,,Pittsburgh,PA,15209,40.595028,-79.958792,8,71.5,1.02,923,0.0100,0.0794,false
+P01391,Tamara,Young,MD,primary-care,Sports Medicine,Atlanta,GA,30310,33.865556,-84.607421,15,79.2,0.76,1266,0.0042,0.0452,true
+P01392,Jose,Edwards,DO,psychiatry,,Newark,NJ,07195,40.630544,-74.045023,19,60.4,0.95,649,0.0035,0.1008,true
+P01393,Lauren,Haynes,DO,orthopedics,,Los Angeles,CA,90000,33.855390,-118.164785,23,68.2,0.90,2381,0.0397,0.0521,false
+P01394,Jill,Stewart,MD,orthopedics,,Denver,CO,80232,39.765220,-105.085933,7,76.5,0.90,2011,0.0400,0.0706,true
+P01395,Joseph,Jones,MD,primary-care,,Orlando,FL,32893,28.711108,-81.483102,18,91.1,0.58,2390,0.0039,0.0425,true
+P01396,James,Chan,MD,primary-care,Preventive Medicine,Pittsburgh,PA,15236,40.371339,-79.982481,10,49.0,0.87,3305,0.0149,0.0901,true
+P01397,Brenda,Moore,MD,primary-care,Sports Medicine,Seattle,WA,98109,47.553009,-122.477646,16,67.1,1.02,2373,0.0072,0.0808,true
+P01398,Frank,Owens,DO,pulmonology,,Philadelphia,PA,19153,40.110867,-75.247123,10,59.7,0.94,1637,0.0334,0.2191,true
+P01399,Richard,Herrera,MD,endocrinology,,Philadelphia,PA,19154,39.741529,-75.163129,10,77.3,1.31,1266,0.0069,0.0493,true
+P01400,Tami,Clark,MD,orthopedics,,Philadelphia,PA,19165,39.862606,-74.939448,17,67.1,0.91,1387,0.0442,0.0608,true
+P01401,Kyle,Baker,MD,neurology,Headache Medicine,San Francisco,CA,94190,37.986665,-122.376119,32,57.4,0.91,1024,0.0266,0.1065,false
+P01402,David,Moore,MD,primary-care,,New York,NY,10099,40.872586,-74.166048,32,75.7,0.95,2396,0.0060,0.0392,true
+P01403,Gina,Mckenzie,MD,primary-care,,Dallas,TX,75249,32.890801,-96.743153,31,77.8,0.99,1276,0.0067,0.0500,true
+P01404,Heidi,Williams,MD,neurology,Vascular Neurology,Atlanta,GA,30389,33.832181,-84.429709,2,76.9,1.12,1322,0.0114,0.0654,true
+P01405,Mary,Murphy,MD,psychiatry,,Chicago,IL,60636,41.978831,-87.400932,17,67.4,1.31,493,0.0043,0.1082,true
+P01406,Christopher,Wright,MD,cardiology,Heart Failure,Phoenix,AZ,85025,33.470972,-112.157532,1,72.6,1.13,3015,0.0407,0.1117,true
+P01407,Michael,Palmer,MD,gastroenterology,,New York,NY,10010,40.785917,-73.990132,19,75.3,0.63,1539,0.0173,0.0725,true
+P01408,Erica,Green,MD,primary-care,Geriatrics,Dallas,TX,75275,32.703872,-96.973163,24,71.2,1.07,2853,0.0075,0.0865,false
+P01409,Vicki,Johnson,MD,dermatology,,Los Angeles,CA,90008,33.889975,-118.099322,19,81.4,1.15,2827,0.0026,0.0037,true
+P01410,Richard,Chavez,MD,dermatology,,Newark,NJ,07155,40.742944,-74.286210,15,84.5,0.85,3221,0.0032,0.0034,false
+P01411,Kaitlin,Wright,DO,orthopedics,Hand Surgery,New York,NY,10064,40.709639,-74.181878,17,73.5,1.31,1357,0.0326,0.0635,true
+P01412,Steven,Lara,MD,pulmonology,,Newark,NJ,07176,40.832219,-74.308963,17,87.9,0.92,501,0.0160,0.0929,true
+P01413,Donald,Smith,DO,cardiology,,New York,NY,10035,40.535471,-74.039827,16,71.5,0.89,1176,0.0300,0.1476,true
+P01414,Maria,Haas,MD,pulmonology,,San Francisco,CA,94100,37.830231,-122.232811,12,78.9,0.89,714,0.0162,0.0922,true
+P01415,David,Colon,DO,psychiatry,Child and Adolescent Psychiatry,New York,NY,10066,40.841427,-73.857265,12,67.2,0.85,339,0.0036,0.1145,true
+P01416,Nathan,Mccoy,MD,orthopedics,Spine Surgery,Philadelphia,PA,19135,39.951155,-75.128330,23,66.2,1.21,1599,0.0384,0.0655,true
+P01417,Deanna,Aguilar,MD,cardiology,Heart Failure,Boston,MA,02113,42.177571,-71.184522,16,74.6,0.92,2807,0.0319,0.1397,true
+P01418,Jonathan,Hess,MD,cardiology,,San Francisco,CA,94166,37.748734,-122.330954,7,86.1,1.42,1278,0.0184,0.0873,true
+P01419,Andrew,Brown,MD,psychiatry,,Chicago,IL,60611,42.045848,-87.745116,8,99.0,1.16,526,0.0012,0.0653,false
+P01420,Rachel,Ramos,MD,cardiology,Echocardiography,Phoenix,AZ,85028,33.615590,-111.941678,12,89.6,1.34,1603,0.0212,0.0642,true
+P01421,David,Stein,DO,primary-care,,Houston,TX,77074,29.950222,-95.452907,28,65.5,1.17,3089,0.0074,0.1035,true
+P01422,Maria,Rivera,MD,oncology,Thoracic Oncology,Dallas,TX,75271,32.862604,-96.879925,14,71.2,0.82,984,0.0400,0.1344,true
+P01423,Brad,Murray,DO,primary-care,Geriatrics,Chicago,IL,60696,41.877155,-87.785474,20,61.4,1.10,1258,0.0087,0.0953,true
+P01424,Gary,Berry,MD,oncology,,Seattle,WA,98139,47.762041,-122.529230,13,65.6,0.77,504,0.0465,0.1450,true
+P01425,Lorraine,Foster,MD,dermatology,Mohs Surgery,Austin,TX,78759,30.233758,-97.934878,3,57.1,0.82,1886,0.0034,0.0067,true
+P01426,Anthony,Vega,MD,primary-care,,New York,NY,10040,40.662686,-73.739306,3,55.6,1.16,1121,0.0127,0.1194,true
+P01427,Gerald,Lewis,DO,psychiatry,Addiction Psychiatry,New York,NY,10060,40.799057,-74.070246,20,65.7,1.01,686,0.0036,0.0736,false
+P01428,Jacob,Ramirez,MD,primary-care,Preventive Medicine,San Diego,CA,92110,32.651694,-117.117123,26,99.0,1.16,2031,0.0043,0.0319,false
+P01429,Nicole,Johnson,MD,orthopedics,Joint Replacement,Austin,TX,78792,30.077728,-97.765436,12,52.9,1.12,608,0.0667,0.0772,true
+P01430,Christine,Sanchez,MD,neurology,,Buffalo,NY,14220,43.001926,-78.639619,1,72.2,1.05,687,0.0127,0.0775,true
+P01431,Kenneth,Jenkins,MD,oncology,,Seattle,WA,98152,47.416265,-122.421950,27,72.5,1.06,944,0.0553,0.1601,false
+P01432,Andrea,Brown,MD,pulmonology,,Miami,FL,33180,25.959236,-80.162395,18,72.7,0.90,1068,0.0149,0.1003,true
+P01433,Joshua,Taylor,MD,dermatology,Pediatric Dermatology,Los Angeles,CA,90087,33.973681,-118.421921,6,69.7,0.77,3919,0.0042,0.0076,false
+P01434,James,Wilkerson,MD,oncology,,Dallas,TX,75261,32.723600,-96.841699,20,74.2,0.78,461,0.0465,0.1320,true
+P01435,Alicia,Mccoy,MD,cardiology,,New York,NY,10056,40.615625,-74.216865,11,79.7,1.12,1811,0.0283,0.0750,true
+P01436,Leah,Norton,MD,neurology,Movement Disorders,Houston,TX,77081,29.668939,-95.293051,17,56.7,0.66,722,0.0131,0.1265,true
+P01437,Veronica,Casey,MD,orthopedics,,Denver,CO,80228,39.836790,-104.791512,12,80.9,0.89,1544,0.0349,0.0455,true
+P01438,Michael,Stephens,MD,orthopedics,Joint Replacement,Newark,NJ,07125,40.940892,-74.113414,15,69.6,1.06,945,0.0465,0.0677,true
+P01439,Todd,Durham,MD,primary-care,,Atlanta,GA,30382,33.920215,-84.371577,18,56.8,1.07,1583,0.0132,0.0903,true
+P01440,Wayne,Price,MD,oncology,Breast Oncology,Chicago,IL,60669,41.813755,-87.400669,2,71.0,1.10,254,0.0589,0.1630,true
+P01441,Hector,Flores,MD,primary-care,,Philadelphia,PA,19158,39.742582,-75.210524,12,54.5,1.01,1679,0.0126,0.1306,true
+P01442,Jeffery,Huang,MD,oncology,,San Diego,CA,92116,32.889393,-117.208770,1,75.2,0.80,550,0.0391,0.1136,true
+P01443,Kimberly,Brown,MD,dermatology,,Pittsburgh,PA,15218,40.557259,-79.893444,27,64.7,1.39,2918,0.0054,0.0056,true
+P01444,Victoria,Moreno,MD,orthopedics,Hand Surgery,Boston,MA,02177,42.227630,-70.929750,11,80.9,1.03,2186,0.0301,0.0436,true
+P01445,Katie,Key,MD,primary-care,,Newark,NJ,07184,40.587416,-74.189061,19,77.1,0.99,4588,0.0075,0.0625,true
+P01446,Terri,Garcia,MD,primary-care,Preventive Medicine,Los Angeles,CA,90027,34.137543,-118.440803,29,78.6,1.05,2615,0.0055,0.0544,false
+P01447,Diane,Adams,MD,orthopedics,,Atlanta,GA,30380,33.717804,-84.292583,11,79.5,1.01,877,0.0310,0.0411,true
+P01448,Lisa,Stark,MD,primary-care,,Seattle,WA,98101,47.714740,-122.398684,3,66.6,1.41,4208,0.0064,0.0949,false
+P01449,Brian,Davies,MD,gastroenterology,,Atlanta,GA,30384,33.791242,-84.607489,13,78.2,0.81,2114,0.0189,0.0535,true
+P01450,Jeffrey,Bradford,MD,gastroenterology,Hepatology,Chicago,IL,60607,41.739261,-87.500451,22,69.8,1.37,1757,0.0234,0.0766,true
+P01451,Laura,Kelly,MD,gastroenterology,Hepatology,Paterson,NJ,07549,40.826523,-74.091510,43,58.6,0.99,2084,0.0296,0.1267,false
+P01452,Mary,Bruce,DO,psychiatry,,San Diego,CA,92115,32.663698,-117.152087,23,67.0,0.97,323,0.0034,0.1000,false
+P01453,Gregory,Watkins,DO,endocrinology,Obesity Medicine,Phoenix,AZ,85005,33.312932,-111.969401,16,56.4,0.78,1706,0.0162,0.1319,true
+P01454,Linda,Wolfe,MD,primary-care,,Boston,MA,02166,42.362639,-71.062917,23,88.8,1.16,2933,0.0061,0.0579,false
+P01455,Robin,Johnson,MD,primary-care,Adolescent Medicine,Miami,FL,33173,25.824925,-80.234335,6,66.7,1.13,3413,0.0129,0.0919,true
+P01456,Jackie,Meza,MD,cardiology,Heart Failure,New York,NY,10089,40.827468,-74.057442,13,69.8,0.77,2242,0.0422,0.1534,true
+P01457,Anne,Hart,MD,cardiology,,Atlanta,GA,30386,33.820968,-84.614166,17,83.4,1.00,2733,0.0303,0.1171,true
+P01458,Jacob,Travis,MD,cardiology,,Dallas,TX,75283,32.980861,-96.825200,7,86.8,0.96,1890,0.0206,0.0950,true
+P01459,Nicole,Vasquez,MD,cardiology,,Houston,TX,77029,29.889199,-95.478893,12,73.3,1.04,1170,0.0429,0.1363,true
+P01460,Kyle,Henry,MD,dermatology,,Miami,FL,33113,25.655630,-80.008732,22,63.4,1.19,1612,0.0052,0.0070,true
+P01461,Christopher,Hall,MD,cardiology,,New York,NY,10013,40.722627,-73.943967,21,69.2,1.12,1399,0.0480,0.1259,false
+P01462,Jeffery,Fox,MD,primary-care,,New York,NY,10072,40.719267,-74.061283,10,77.0,0.93,2196,0.0077,0.0490,false
+P01463,Aaron,Hardin,DO,endocrinology,,Los Angeles,CA,90044,33.936829,-118.180604,11,56.8,0.83,1267,0.0120,0.1043,true
+P01464,James,Anderson,MD,neurology,Vascular Neurology,Seattle,WA,98196,47.403119,-122.219964,19,62.8,1.05,1377,0.0220,0.1190,false
+P01465,Jennifer,Sellers,MD,primary-care,Preventive Medicine,Pittsburgh,PA,15257,40.581765,-80.149507,34,64.3,1.14,2862,0.0108,0.0768,true
+P01466,Megan,Morris,MD,orthopedics,,Orlando,FL,32805,28.407284,-81.425936,1,99.0,0.81,1807,0.0143,0.0243,true
+P01467,Andrew,Willis,MD,psychiatry,Child and Adolescent Psychiatry,Newark,NJ,07195,40.845879,-73.978083,21,75.0,1.03,674,0.0022,0.0781,true
+P01468,Samantha,Schroeder,MD,cardiology,,Denver,CO,80225,39.746525,-105.056770,16,81.7,0.85,1392,0.0270,0.0892,true
+P01469,Meghan,Valencia,MD,orthopedics,,Dallas,TX,75233,32.959611,-96.787915,19,79.0,1.42,1372,0.0508,0.0594,false
+P01470,Susan,Brooks,MD,primary-care,,Houston,TX,77019,29.558553,-95.343021,11,74.1,0.78,2662,0.0104,0.0619,false
+P01471,Sheri,Foster,MD,primary-care,,Phoenix,AZ,85059,33.270628,-112.168960,22,71.5,1.09,2482,0.0046,0.0643,true
+P01472,Craig,Turner,MD,gastroenterology,,Pittsburgh,PA,15240,40.287040,-80.038493,30,75.2,0.84,3195,0.0164,0.0710,true
+P01473,Derek,Moore,MD,cardiology,,Philadelphia,PA,19133,39.967952,-75.002148,10,67.2,0.94,1995,0.0384,0.1247,true
+P01474,Stacy,Conner,MD,cardiology,Heart Failure,Los Angeles,CA,90013,34.012306,-118.352923,3,74.3,0.88,2558,0.0278,0.0944,false
+P01475,Susan,Banks,DO,orthopedics,Hand Surgery,Houston,TX,77045,29.786158,-95.451882,26,90.8,1.18,1266,0.0210,0.0296,true
+P01476,Grant,Novak,MD,dermatology,,Orlando,FL,32803,28.583333,-81.606296,14,83.0,1.44,4235,0.0033,0.0048,true
+P01477,Heather,Mcfarland,MD,primary-care,Sports Medicine,Austin,TX,78773,30.398543,-97.643290,12,79.0,0.87,1863,0.0064,0.0497,true
+P01478,Kristin,Walker,MD,orthopedics,,Buffalo,NY,14257,42.803107,-78.963141,19,72.3,0.87,1999,0.0386,0.0628,true
+P01479,Brianna,Thompson,MD,oncology,,Chicago,IL,60691,41.894506,-87.920286,16,76.3,1.02,823,0.0544,0.1427,true
+P01480,Kurt,Barker,MD,pulmonology,,Los Angeles,CA,90033,33.855739,-118.299998,18,53.7,0.90,857,0.0375,0.1865,true
+P01481,David,Daniel,MD,primary-care,Adolescent Medicine,Chicago,IL,60643,41.681010,-87.703019,16,70.1,1.15,2296,0.0075,0.0674,true
+P01482,Stacy,Fry,MD,gastroenterology,,New York,NY,10010,40.688057,-74.217618,25,71.1,1.39,903,0.0187,0.0580,false
+P01483,Peter,Gamble,MD,primary-care,Preventive Medicine,Los Angeles,CA,90063,34.218214,-118.351820,33,78.8,0.96,4259,0.0057,0.0611,true
+P01484,Tammy,Johnson,MD,dermatology,,San Diego,CA,92138,32.746600,-116.967190,5,80.0,1.15,5069,0.0034,0.0042,false
+P01485,Carrie,Mccall,MD,cardiology,Electrophysiology,Jersey City,NJ,07332,40.692566,-73.955883,14,78.1,1.04,1766,0.0307,0.0813,true
+P01486,Tammy,Walker,MD,neurology,,Seattle,WA,98185,47.551861,-122.461441,18,83.4,0.97,1893,0.0113,0.0711,true
+P01487,Ariana,Zuniga,MD,primary-care,,Chicago,IL,60685,42.040238,-87.656105,4,92.7,0.87,1375,0.0044,0.0391,false
+P01488,Donald,Mcgee,MD,primary-care,,New York,NY,10000,40.616814,-74.257074,32,79.2,1.00,1807,0.0058,0.0568,true
+P01489,John,Haas,MD,primary-care,,Newark,NJ,07137,40.643277,-74.055915,12,96.2,0.96,1020,0.0041,0.0391,true
+P01490,Gary,Mcclure,MD,oncology,Breast Oncology,Atlanta,GA,30381,33.692316,-84.272546,21,56.1,0.82,728,0.0671,0.1997,true
+P01491,Christopher,Fletcher,MD,dermatology,,Miami,FL,33195,25.655099,-80.188199,15,67.2,1.39,2794,0.0040,0.0070,true
+P01492,Danielle,Tanner,MD,primary-care,,Chicago,IL,60677,41.928067,-87.427899,12,52.7,1.03,3183,0.0149,0.1766,true
+P01493,Sean,Baker,MD,cardiology,Interventional Cardiology,Atlanta,GA,30318,33.786771,-84.501279,1,62.8,1.23,2018,0.0374,0.1332,false
+P01494,John,Jones,MD,pulmonology,Interventional Pulmonology,Austin,TX,78733,30.331081,-97.844007,10,96.7,1.35,1465,0.0108,0.0619,false
+P01495,Jonathan,Rodriguez,MD,orthopedics,Hand Surgery,Los Angeles,CA,90066,34.067556,-118.296056,28,87.0,0.98,4109,0.0290,0.0412,true
+P01496,Aaron,Cruz,MD,dermatology,,Jersey City,NJ,07343,40.797499,-74.166924,26,68.4,0.82,3680,0.0052,0.0064,true
+P01497,Jessica,Costa,MD,gastroenterology,Hepatology,New York,NY,10030,40.748771,-74.074842,3,70.3,0.85,1005,0.0248,0.0980,true
+P01498,Nicole,Snyder,MD,cardiology,,Austin,TX,78788,30.351707,-97.802382,16,37.5,1.00,1738,0.0915,0.2610,true
+P01499,Nicholas,Payne,MD,cardiology,,New York,NY,10065,40.753523,-73.820355,13,65.1,0.84,1518,0.0543,0.1547,true
+P01500,Craig,Mendoza,MD,pulmonology,,Houston,TX,77064,29.610702,-95.385065,12,67.3,0.92,1906,0.0210,0.1813,false

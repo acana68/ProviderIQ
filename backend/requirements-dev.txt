@@ -2,3 +2,6 @@
 pytest==9.1.1
 httpx2==2.13.1
 ruff==0.16.9
+# Synthetic data generation only (scripts/generate_data.py). Pinned exactly: generated
+# names change between Faker releases, and the output must be reproducible.
+faker==40.39.0

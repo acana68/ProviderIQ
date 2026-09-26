@@ -1,0 +1,51 @@
+slug,name,specialties
+hypertension,Hypertension,cardiology;primary-care
+heart-failure,Heart Failure,cardiology
+coronary-artery-disease,Coronary Artery Disease,cardiology
+atrial-fibrillation,Atrial Fibrillation,cardiology
+hyperlipidemia,Hyperlipidemia,cardiology;primary-care
+heart-valve-disease,Heart Valve Disease,cardiology
+osteoarthritis,Osteoarthritis,orthopedics
+osteoporosis,Osteoporosis,orthopedics;endocrinology
+rotator-cuff-tear,Rotator Cuff Tear,orthopedics
+acl-tear,ACL Tear,orthopedics
+carpal-tunnel-syndrome,Carpal Tunnel Syndrome,orthopedics
+low-back-pain,Low Back Pain,orthopedics
+acne,Acne,dermatology
+psoriasis,Psoriasis,dermatology
+eczema,Eczema,dermatology
+rosacea,Rosacea,dermatology
+melanoma,Melanoma,dermatology;oncology
+basal-cell-carcinoma,Basal Cell Carcinoma,dermatology
+migraine,Migraine,neurology
+epilepsy,Epilepsy,neurology
+multiple-sclerosis,Multiple Sclerosis,neurology
+parkinsons-disease,Parkinson's Disease,neurology
+stroke,Stroke,neurology
+alzheimers-disease,Alzheimer's Disease,neurology
+breast-cancer,Breast Cancer,oncology
+lung-cancer,Lung Cancer,oncology;pulmonology
+colorectal-cancer,Colorectal Cancer,oncology;gastroenterology
+prostate-cancer,Prostate Cancer,oncology
+lymphoma,Lymphoma,oncology
+type-2-diabetes,Type 2 Diabetes,endocrinology;primary-care
+type-1-diabetes,Type 1 Diabetes,endocrinology
+hypothyroidism,Hypothyroidism,endocrinology
+obesity,Obesity,endocrinology;primary-care
+polycystic-ovary-syndrome,Polycystic Ovary Syndrome,endocrinology
+gerd,Gastroesophageal Reflux Disease (GERD),gastroenterology;primary-care
+irritable-bowel-syndrome,Irritable Bowel Syndrome,gastroenterology
+crohns-disease,Crohn's Disease,gastroenterology
+ulcerative-colitis,Ulcerative Colitis,gastroenterology
+cirrhosis,Cirrhosis,gastroenterology
+asthma,Asthma,pulmonology;primary-care
+copd,Chronic Obstructive Pulmonary Disease (COPD),pulmonology
+sleep-apnea,Sleep Apnea,pulmonology
+pulmonary-fibrosis,Pulmonary Fibrosis,pulmonology
+pneumonia,Pneumonia,pulmonology
+depression,Depression,psychiatry;primary-care
+anxiety-disorder,Anxiety Disorder,psychiatry
+bipolar-disorder,Bipolar Disorder,psychiatry
+schizophrenia,Schizophrenia,psychiatry
+adhd,Attention-Deficit/Hyperactivity Disorder (ADHD),psychiatry
+ptsd,Post-Traumatic Stress Disorder (PTSD),psychiatry
