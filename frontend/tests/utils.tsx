@@ -43,3 +43,10 @@ export function renderAppAt(path: string) {
     </MemoryRouter>,
   )
 }
+
+/** Each row of a table as the text of its cells, header cells included. */
+export function tableRows(table: HTMLElement): string[][] {
+  return Array.from(table.querySelectorAll('tr'), (row) =>
+    Array.from(row.querySelectorAll('th, td'), (cell) => cell.textContent ?? ''),
+  )
+}

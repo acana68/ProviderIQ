@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { DISCLAIMER_TEXT } from '../src/components/layout/Disclaimer'
-import { jsonResponse, mockFetch, renderAppAt } from './utils'
+import { errorBody, hangingFetch, jsonResponse, mockFetch, renderAppAt } from './utils'
 
 describe('routing', () => {
   it('renders NotFoundPage for an unknown URL, inside the layout', () => {
@@ -12,16 +12,23 @@ describe('routing', () => {
     expect(screen.getByRole('note')).toHaveTextContent(DISCLAIMER_TEXT)
   })
 
-  it('passes the provider id from the URL', () => {
+  it('passes the provider id from the URL', async () => {
+    const fetchSpy = mockFetch().mockImplementation(async () =>
+      jsonResponse(errorBody('NOT_FOUND', 'Provider not found'), { status: 404 }),
+    )
+
     renderAppAt('/providers/42')
 
-    expect(screen.getByRole('heading', { name: 'Provider 42' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Provider not found' })).toBeInTheDocument()
+    expect(fetchSpy).toHaveBeenCalledWith('/api/v1/providers/42', expect.anything())
   })
 
-  it.each([['/methodology', 'Methodology']])('renders %s', (path, heading) => {
-    renderAppAt(path)
+  it('renders /methodology', () => {
+    mockFetch().mockImplementation(hangingFetch)
 
-    expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
+    renderAppAt('/methodology')
+
+    expect(screen.getByRole('heading', { name: 'Methodology', level: 1 })).toBeInTheDocument()
   })
 
   it('renders /results', async () => {

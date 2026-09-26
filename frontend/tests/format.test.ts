@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { formatCostVsAverage, formatDistance, formatScore, pluralize } from '../src/utils/format'
+import {
+  formatCostVsAverage,
+  formatDistance,
+  formatFactorValue,
+  formatOrdinal,
+  formatRate,
+  formatScore,
+  formatWeight,
+  pluralize,
+} from '../src/utils/format'
+import type { ComponentName } from '../src/types/provider'
 import { pageItems } from '../src/utils/pagination'
 
 describe('format', () => {
@@ -21,6 +31,44 @@ describe('format', () => {
     expect(pluralize(1, 'provider')).toBe('1 provider')
     expect(pluralize(0, 'provider')).toBe('0 providers')
     expect(pluralize(1204, 'year')).toBe('1,204 years')
+  })
+})
+
+describe('detail formats', () => {
+  it.each([
+    [1, '1st'],
+    [2, '2nd'],
+    [3, '3rd'],
+    [4, '4th'],
+    [11, '11th'],
+    [12, '12th'],
+    [13, '13th'],
+    [21, '21st'],
+    [96, '96th'],
+    [100, '100th'],
+    [111, '111th'],
+  ])('ordinal %i -> %s', (n, text) => {
+    expect(formatOrdinal(n)).toBe(text)
+  })
+
+  it('formats rates and weights', () => {
+    expect(formatRate(0.0464)).toBe('4.6%')
+    expect(formatRate(0)).toBe('0.0%')
+    expect(formatWeight(0.35)).toBe('35%')
+    expect(formatWeight(0.6111)).toBe('61.1%')
+    expect(formatWeight(1)).toBe('100%')
+  })
+
+  it.each<[ComponentName, number, string]>([
+    ['quality', 88.4, '88.4 / 100'],
+    ['experience', 31, '31 years'],
+    ['experience', 1, '1 year'],
+    ['cost', 0.79, '21% below average'],
+    ['volume', 0.963, '96th percentile in specialty'],
+    ['volume', 0.29, '29th percentile in specialty'],
+    ['distance', 6.2, '6.2 mi'],
+  ])('%s %s -> %s', (name, raw, text) => {
+    expect(formatFactorValue({ name, raw, normalized: 0, weight: 0, contribution: 0 })).toBe(text)
   })
 })
 

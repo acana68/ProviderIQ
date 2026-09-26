@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { type ReactNode, useId } from 'react'
 import { Link } from 'react-router'
 import { useConditions, useSpecialties } from '../../hooks/useReferenceData'
 import type { SearchCriteria } from '../../types/search'
@@ -18,7 +18,7 @@ export function SearchSummary({ criteria, changeSearchTo }: SearchSummaryProps) 
   const conditions = useConditions()
   const headingId = useId()
 
-  const rows: [string, string][] = []
+  const rows: [string, ReactNode][] = []
   if (criteria.specialty) {
     const name = specialties.data?.find((s) => s.slug === criteria.specialty)?.name
     rows.push(['Specialty', name ?? humanize(criteria.specialty)])
@@ -29,9 +29,21 @@ export function SearchSummary({ criteria, changeSearchTo }: SearchSummaryProps) 
   }
   if (criteria.location) {
     const { city, state } = criteria.location
-    const radius =
-      criteria.radius_miles === undefined ? '' : ` (within ${criteria.radius_miles} mi)`
-    rows.push(['Location', `${city}, ${state}${radius}`])
+    rows.push([
+      'Location',
+      <>
+        {/* Each part wraps as a whole: never "(within 25 / mi)". */}
+        <span className={styles.nowrap}>
+          {city}, {state}
+        </span>
+        {criteria.radius_miles !== undefined && (
+          <>
+            {' '}
+            <span className={styles.nowrap}>(within {criteria.radius_miles} mi)</span>
+          </>
+        )}
+      </>,
+    ])
   }
   if (criteria.min_quality_score !== undefined) {
     rows.push(['Minimum quality score', String(criteria.min_quality_score)])

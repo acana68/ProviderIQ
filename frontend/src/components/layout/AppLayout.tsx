@@ -1,9 +1,12 @@
-import { Link, NavLink, Outlet } from 'react-router'
+import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import styles from './AppLayout.module.css'
 import { Disclaimer } from './Disclaimer'
+import { ErrorBoundary } from './ErrorBoundary'
 
 /** The frame around every page: header, the routed page, and the disclaimer footer. */
 export function AppLayout() {
+  // Changes on every navigation, even to the same path, so any navigation clears a crash.
+  const { key } = useLocation()
   return (
     <div className={styles.shell}>
       <header className={styles.header}>
@@ -24,7 +27,9 @@ export function AppLayout() {
         </div>
       </header>
       <main className={styles.main}>
-        <Outlet />
+        <ErrorBoundary resetKey={key}>
+          <Outlet />
+        </ErrorBoundary>
       </main>
       <footer className={styles.footer}>
         <Disclaimer />

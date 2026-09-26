@@ -7,6 +7,8 @@ export interface AsyncData<T> {
   error: ApiError | null
   /** Loads the same key again, e.g. from an error's "Try again" button. */
   retry: () => void
+  /** The last data loaded, for any key: lets a page keep showing it while it refetches. */
+  previous: T | null
 }
 
 export type Loader<T> = (signal: AbortSignal) => Promise<T>
@@ -45,6 +47,7 @@ export function useApiData<T>(key: string, load: Loader<T>): AsyncData<T> {
 
   const retry = useCallback(() => setAttempt((n) => n + 1), [])
 
-  if (result?.key !== requestKey) return { data: null, loading: true, error: null, retry }
-  return { data: result.data, loading: false, error: result.error, retry }
+  const previous = result?.data ?? null
+  if (result?.key !== requestKey) return { data: null, loading: true, error: null, retry, previous }
+  return { data: result.data, loading: false, error: result.error, retry, previous }
 }

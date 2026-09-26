@@ -405,6 +405,29 @@ Errors:
 }
 ```
 
+## `GET /ranking/weights`
+
+The weight profile for each priority, served straight from the ranking engine's
+`PROFILES` (`ranking/weights.py`), so it can't drift from how results are actually ranked.
+The methodology page renders its weight table from this. Each profile sums to 1, and no
+profile gives quality less than `min_quality_weight`.
+
+```json
+{
+  "profiles": {
+    "balanced": { "quality": 0.35, "experience": 0.2, "cost": 0.15, "volume": 0.15, "distance": 0.15 },
+    "quality": { "quality": 0.55, "experience": 0.2, "cost": 0.05, "volume": 0.1, "distance": 0.1 },
+    "cost": { "quality": 0.25, "experience": 0.1, "cost": 0.45, "volume": 0.05, "distance": 0.15 },
+    "experience": { "quality": 0.25, "experience": 0.45, "cost": 0.1, "volume": 0.1, "distance": 0.1 },
+    "distance": { "quality": 0.25, "experience": 0.1, "cost": 0.1, "volume": 0.05, "distance": 0.5 }
+  },
+  "min_quality_weight": 0.25
+}
+```
+
+These are the base weights. A search without a location drops distance and divides the
+rest by their sum; its `weights_used` shows the result (see [ranking.md](ranking.md)).
+
 ## `POST /ai/parse-query`
 
 Turns a natural-language query into search criteria. It never runs a search. The

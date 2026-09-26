@@ -1,7 +1,8 @@
 import { useId } from 'react'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import type { SearchResult } from '../../types/search'
 import { formatCostVsAverage, formatDistance, formatScore, pluralize } from '../../utils/format'
+import { backState } from '../../utils/navigation'
 import styles from './ProviderCard.module.css'
 import { ScoreBar } from './ScoreBar'
 
@@ -18,12 +19,14 @@ interface ProviderCardProps {
 export function ProviderCard({ result, to }: ProviderCardProps) {
   const { provider, score, distance_miles, explanation } = result
   const headingId = useId()
+  // The detail page's back link returns here, with the same sort and page.
+  const { pathname, search } = useLocation()
 
   return (
     <article className={styles.card} aria-labelledby={headingId}>
       <header className={styles.header}>
         <h2 id={headingId} className={styles.name}>
-          <Link to={to} className={styles.link}>
+          <Link to={to} state={backState(pathname + search)} className={styles.link}>
             {provider.display_name}
           </Link>
         </h2>
