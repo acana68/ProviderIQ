@@ -9,7 +9,14 @@ export const CLIENT_ERROR_CODES = {
   network: 'NETWORK_ERROR',
   timeout: 'TIMEOUT',
   unknown: 'UNKNOWN_ERROR',
+  /** 429, whether or not the body had the API's error shape (the API says RATE_LIMITED too). */
+  rateLimited: 'RATE_LIMITED',
+  /** 502/503/504 without an API error body, e.g. from a proxy while the backend restarts. */
+  unavailable: 'SERVICE_UNAVAILABLE',
 } as const
+
+export const UNAVAILABLE_MESSAGE = "Can't reach the server right now. Please try again in a moment."
+const GATEWAY_STATUSES = new Set([502, 503, 504])
 
 interface ApiErrorInit {
   /** HTTP status, or 0 when no response arrived (network failure, timeout). */
@@ -18,6 +25,7 @@ interface ApiErrorInit {
   message: string
   requestId?: string | null
   details?: ErrorDetail[]
+  retryAfterSeconds?: number | null
 }
 
 /** Every failed API call rejects with one of these (except caller cancellation). */
@@ -26,14 +34,24 @@ export class ApiError extends Error {
   readonly code: string
   readonly requestId: string | null
   readonly details: ErrorDetail[]
+  /** From Retry-After on a 429: how long to wait before trying again. */
+  readonly retryAfterSeconds: number | null
 
-  constructor({ status, code, message, requestId = null, details = [] }: ApiErrorInit) {
+  constructor({
+    status,
+    code,
+    message,
+    requestId = null,
+    details = [],
+    retryAfterSeconds = null,
+  }: ApiErrorInit) {
     super(message)
     this.name = 'ApiError'
     this.status = status
     this.code = code
     this.requestId = requestId
     this.details = details
+    this.retryAfterSeconds = retryAfterSeconds
   }
 }
 
@@ -147,22 +165,55 @@ async function errorFromResponse(response: Response): Promise<ApiError> {
   } catch {
     // Not JSON: e.g. an HTML error page from a proxy in front of the API.
   }
-  if (isErrorResponse(body)) {
-    const { code, message, request_id, details } = body.error
+  const apiError = isErrorResponse(body) ? body.error : null
+  const common = {
+    status: response.status,
+    requestId: apiError?.request_id ?? headerRequestId,
+    details: apiError?.details ?? [],
+  }
+
+  if (response.status === 429) {
+    const retryAfterSeconds = parseRetryAfter(response.headers.get('Retry-After'))
     return new ApiError({
-      status: response.status,
-      code,
-      message,
-      requestId: request_id ?? headerRequestId,
-      details: details ?? [],
+      ...common,
+      code: CLIENT_ERROR_CODES.rateLimited,
+      message: rateLimitMessage(retryAfterSeconds),
+      retryAfterSeconds,
     })
   }
+  if (GATEWAY_STATUSES.has(response.status)) {
+    // Whatever the body says, the useful message is the same: the backend is unreachable.
+    return new ApiError({
+      ...common,
+      code: apiError?.code ?? CLIENT_ERROR_CODES.unavailable,
+      message: UNAVAILABLE_MESSAGE,
+    })
+  }
+  if (apiError) {
+    return new ApiError({ ...common, code: apiError.code, message: apiError.message })
+  }
   return new ApiError({
-    status: response.status,
+    ...common,
     code: CLIENT_ERROR_CODES.unknown,
     message: `Unexpected response from the server (HTTP ${response.status}).`,
-    requestId: headerRequestId,
   })
+}
+
+/** Retry-After is either delay-seconds ("30") or an HTTP date. Null if missing or invalid. */
+export function parseRetryAfter(value: string | null, now: number = Date.now()): number | null {
+  const trimmed = value?.trim()
+  if (!trimmed) return null
+  if (/^\d+$/.test(trimmed)) return Number(trimmed)
+  // An HTTP date always names the day and month; without letters, Date.parse would still
+  // accept junk like "-5" or "1.5" as a date.
+  if (!/[a-z]/i.test(trimmed)) return null
+  const date = Date.parse(trimmed)
+  return Number.isNaN(date) ? null : Math.max(0, Math.ceil((date - now) / 1000))
+}
+
+function rateLimitMessage(seconds: number | null): string {
+  if (seconds === null) return 'Too many requests. Please wait a moment and try again.'
+  return `Too many requests. Please wait ${seconds} second${seconds === 1 ? '' : 's'}.`
 }
 
 function isErrorResponse(body: unknown): body is ErrorResponse {

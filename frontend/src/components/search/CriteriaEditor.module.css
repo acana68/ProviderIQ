@@ -1,0 +1,122 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Three columns on desktop, fewer as space shrinks, one on phones. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-4) var(--space-5);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.field label,
+.priority legend {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.control {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.control:hover:not(:disabled) {
+  border-color: var(--color-accent);
+}
+
+.control:disabled {
+  background: var(--color-surface-muted);
+  color: var(--color-text-subtle);
+  cursor: not-allowed;
+}
+
+.control:invalid {
+  border-color: var(--color-danger);
+}
+
+.hint {
+  margin: 0;
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-xs);
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: fit-content;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.checkbox input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-accent);
+}
+
+.priority {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.priority legend {
+  margin-bottom: var(--space-2);
+  padding: 0;
+}
+
+.segments {
+  display: inline-flex;
+  flex-wrap: wrap;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.segment {
+  padding: var(--space-2) var(--space-4);
+  border-radius: calc(var(--radius-md) - 2px);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  user-select: none;
+}
+
+.segment:hover {
+  color: var(--color-text);
+}
+
+.segment:has(input:checked) {
+  background: var(--color-surface);
+  color: var(--color-accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.segment:has(input:focus-visible) {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 1px;
+}
+
+.segment:has(input:disabled) {
+  color: var(--color-text-subtle);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.priority .hint {
+  margin-top: var(--space-2);
+}

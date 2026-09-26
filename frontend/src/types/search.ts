@@ -86,3 +86,28 @@ export interface ParseQueryResponse {
   /** Human-readable notes: what was inferred, dropped, or fell back. */
   warnings: string[]
 }
+
+/** Backend limits and defaults (backend/app/schemas/). */
+export const DEFAULT_RADIUS_MILES = 25
+export const MIN_RADIUS_MILES = 1
+export const MAX_RADIUS_MILES = 100
+export const MAX_QUERY_LENGTH = 500
+
+/**
+ * Search criteria as the frontend holds them: in the editor, and in the /results URL.
+ * A missing field means "not set"; see utils/searchParams.ts for the URL format.
+ */
+export interface SearchCriteria {
+  specialty?: string
+  condition?: string
+  location?: Location
+  radius_miles?: number
+  min_quality_score?: number
+  min_years_experience?: number
+  accepting_new_patients?: boolean
+  priority?: Priority
+  sort?: SortOption
+  page?: number
+  source?: SearchSource
+  parser_used?: ParserUsed
+}

@@ -28,11 +28,12 @@ describe('routing', () => {
   })
 
   it('renders the search page at /', async () => {
-    mockFetch().mockResolvedValue(jsonResponse([]))
+    // A fresh Response per call: the page loads specialties, conditions and cities.
+    mockFetch().mockImplementation(async () => jsonResponse([]))
 
     renderAppAt('/')
 
     expect(screen.getByRole('heading', { name: 'ProviderIQ', level: 1 })).toBeInTheDocument()
-    expect(await screen.findByText('No specialties yet')).toBeInTheDocument()
+    expect(await screen.findByRole('option', { name: 'Any specialty' })).toBeInTheDocument()
   })
 })

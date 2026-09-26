@@ -1,51 +1,64 @@
-import { useId, useState } from 'react'
-import { EmptyState } from '../components/common/EmptyState'
-import { ErrorState } from '../components/common/ErrorState'
-import { LoadingState } from '../components/common/LoadingState'
-import { useSpecialties } from '../hooks/useReferenceData'
+import { type FormEvent, useId, useState } from 'react'
+import { useNavigate } from 'react-router'
+import { CriteriaEditor } from '../components/search/CriteriaEditor'
+import { NaturalLanguageSearch } from '../components/search/NaturalLanguageSearch'
+import type { ParseQueryResponse, ParserUsed, SearchCriteria } from '../types/search'
+import { INITIAL_CRITERIA, criteriaForSearch, criteriaFromParsed } from '../utils/criteria'
+import { criteriaToSearchParams } from '../utils/searchParams'
 import styles from './SearchPage.module.css'
 
 export function SearchPage() {
-  const specialties = useSpecialties()
-  const [specialty, setSpecialty] = useState('')
-  const selectId = useId()
+  const navigate = useNavigate()
+  const [criteria, setCriteria] = useState<SearchCriteria>(INITIAL_CRITERIA)
+  // Set once the criteria came from Interpret. They stay "nl" even if edited afterwards:
+  // the description is still where they came from.
+  const [parserUsed, setParserUsed] = useState<ParserUsed | null>(null)
+  const headingId = useId()
+
+  function handleParsed(result: ParseQueryResponse) {
+    setCriteria(criteriaFromParsed(result.criteria))
+    setParserUsed(result.parser_used)
+  }
+
+  function handleReset() {
+    setCriteria(INITIAL_CRITERIA)
+    setParserUsed(null)
+  }
+
+  function handleSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const origin: SearchCriteria = parserUsed
+      ? { source: 'nl', parser_used: parserUsed }
+      : { source: 'manual' }
+    const params = criteriaToSearchParams({ ...criteriaForSearch(criteria), ...origin })
+    navigate(`/results?${params}`)
+  }
 
   return (
-    <section className={styles.page}>
-      <h1>ProviderIQ</h1>
-      <p className={styles.lead}>
-        Find and compare healthcare providers by quality, experience, cost, and distance.
-      </p>
+    <div className={styles.page}>
+      <header>
+        <h1>ProviderIQ</h1>
+        <p className={styles.lead}>
+          Find and compare healthcare providers by quality, experience, cost, and distance.
+        </p>
+      </header>
 
-      <div className={styles.card}>
-        {specialties.loading && <LoadingState label="Loading specialties…" />}
-        {specialties.error && (
-          <ErrorState title="Couldn't load specialties" error={specialties.error} />
-        )}
-        {specialties.data?.length === 0 && (
-          <EmptyState title="No specialties yet">
-            Seed the database with <code>python -m scripts.seed_db</code>.
-          </EmptyState>
-        )}
-        {specialties.data && specialties.data.length > 0 && (
-          <div className={styles.field}>
-            <label htmlFor={selectId}>Specialty</label>
-            <select
-              id={selectId}
-              className={styles.select}
-              value={specialty}
-              onChange={(event) => setSpecialty(event.target.value)}
-            >
-              <option value="">Any specialty</option>
-              {specialties.data.map((s) => (
-                <option key={s.slug} value={s.slug}>
-                  {s.name} ({s.provider_count})
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-      </div>
-    </section>
+      <NaturalLanguageSearch onParsed={handleParsed} />
+
+      <form className={styles.card} aria-labelledby={headingId} onSubmit={handleSearch}>
+        <h2 id={headingId} className={styles.cardHeading}>
+          Search criteria
+        </h2>
+        <CriteriaEditor value={criteria} onChange={setCriteria} />
+        <div className={styles.actions}>
+          <button type="button" className={styles.secondary} onClick={handleReset}>
+            Reset
+          </button>
+          <button type="submit" className={styles.primary}>
+            Search providers
+          </button>
+        </div>
+      </form>
+    </div>
   )
 }
