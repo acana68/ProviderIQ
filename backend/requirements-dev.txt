@@ -5,3 +5,4 @@ ruff==0.16.9
 # Synthetic data generation only (scripts/generate_data.py). Pinned exactly: generated
 # names change between Faker releases, and the output must be reproducible.
 faker==40.39.0
+hypothesis==6.168.1
