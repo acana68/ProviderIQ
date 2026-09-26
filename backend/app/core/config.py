@@ -5,8 +5,19 @@ from typing import Annotated, Any, Literal
 from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
-# config.py → core → app → backend → repo root
-REPO_ROOT = Path(__file__).resolve().parents[3]
+
+def _repo_root(config_file: Path = Path(__file__)) -> Path:
+    """config.py → core → app → backend → repo root.
+
+    If the file sits shallower than that (an unusual install layout), use the highest
+    ancestor there is rather than crash on import. A missing .env there is skipped anyway,
+    and the scripts that read REPO_ROOT / "data" then fail with a clear file-not-found.
+    """
+    parents = config_file.resolve().parents
+    return parents[min(3, len(parents) - 1)]
+
+
+REPO_ROOT = _repo_root()
 
 
 class Settings(BaseSettings):

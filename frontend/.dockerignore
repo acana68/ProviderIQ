@@ -1,0 +1,14 @@
+# Build context for frontend/Dockerfile. The image runs `npm ci` itself, so no local
+# node_modules or build output goes in.
+
+# Secrets: never send any .env file to the Docker daemon.
+**/.env
+**/.env.*
+
+.git
+node_modules
+dist
+coverage
+**/.cache
+**/.vite
+**/*.log

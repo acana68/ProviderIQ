@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.models import City, Condition, Provider, Specialty, provider_conditions
 from scripts.generate_data import REFERENCE_DIR, generate, write_csvs
-from scripts.seed_db import SeedDataError, seed
+from scripts.seed_db import SeedDataError, has_providers, seed
 
 N_PROVIDERS = 50
 
@@ -86,3 +86,12 @@ def test_seed_rejects_unknown_condition(db_session: Session, data_dir: Path) -> 
 
     with pytest.raises(SeedDataError, match="unknown condition 'not-a-condition'"):
         seed(db_session, data_dir)
+
+
+def test_has_providers_tells_empty_from_seeded(db_session: Session, data_dir: Path) -> None:
+    # The Docker entrypoint's `seed_db --if-empty` relies on this to never reseed.
+    assert has_providers(db_session) is False
+
+    seed(db_session, data_dir)
+
+    assert has_providers(db_session) is True

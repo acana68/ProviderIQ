@@ -1,0 +1,30 @@
+# Build context for backend/Dockerfile is the repo root. Keep it to what the image needs.
+
+# Secrets: never send any .env file to the Docker daemon (or into an image layer).
+**/.env
+**/.env.*
+
+.git
+.github
+
+# Python
+**/.venv
+**/venv
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/.ruff_cache
+**/.hypothesis
+**/.coverage
+**/htmlcov
+
+# Node (the frontend has its own image and .dockerignore)
+**/node_modules
+**/dist
+frontend
+
+# Not needed at runtime
+backend/tests
+docs
+db
+**/*.md

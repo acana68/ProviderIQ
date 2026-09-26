@@ -4,14 +4,17 @@ Reads data/reference/*.csv and data/generated/*.csv (run scripts.generate_data f
 Deletes every row in the seeded tables, and search_logs, before inserting.
 
 Run from backend/:  python -m scripts.seed_db
+With --if-empty it does nothing when providers already exist (the Docker entrypoint uses
+this, so a container restart never wipes data).
 """
 
+import argparse
 import csv
 import sys
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import insert, text
+from sqlalchemy import exists, insert, select, text
 from sqlalchemy.orm import Session
 
 from app.core.config import REPO_ROOT, get_settings
@@ -162,15 +165,29 @@ def seed(session: Session, data_dir: Path) -> dict[str, int]:
     }
 
 
-def main() -> None:
-    settings = get_settings()
-    if settings.environment == "prod":
-        sys.exit("Refusing to seed: ENVIRONMENT is 'prod' and seeding deletes all provider data.")
+def has_providers(session: Session) -> bool:
+    return bool(session.scalar(select(exists().select_from(Provider))))
 
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Load data/ into the database.")
+    parser.add_argument(
+        "--if-empty", action="store_true", help="skip if the providers table has any rows"
+    )
+    args = parser.parse_args()
+
+    settings = get_settings()
     engine = create_db_engine(settings)
-    print(f"Seeding {engine.url.render_as_string(hide_password=True)}")
     try:
         with create_session_factory(engine)() as session:
+            if args.if_empty and has_providers(session):
+                print("Providers already exist; skipping the seed.")
+                return
+            if settings.environment == "prod":
+                sys.exit(
+                    "Refusing to seed: ENVIRONMENT is 'prod' and seeding deletes all provider data."
+                )
+            print(f"Seeding {engine.url.render_as_string(hide_password=True)}")
             counts = seed(session, DATA_DIR)
     except SeedDataError as exc:
         sys.exit(f"Seed data error: {exc}")

@@ -1,0 +1,41 @@
+name: Frontend
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Dockerfile uses the Node version in .nvmrc
+        run: |
+          expected="FROM node:$(tr -d '[:space:]' < .nvmrc)-alpine AS build"
+          grep -qxF "$expected" Dockerfile || {
+            echo "::error file=frontend/Dockerfile::Expected '$expected' to match .nvmrc"
+            exit 1
+          }
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
