@@ -3,11 +3,11 @@ from collections.abc import Sequence
 from sqlalchemy import Row, exists, func, select
 from sqlalchemy.orm import Session
 
-from app.models import Condition, Provider, Specialty, provider_conditions
+from app.models import City, Condition, Provider, Specialty, provider_conditions
 
 
 class ReferenceRepository:
-    """Specialties and conditions: the fixed vocabularies behind the search dropdowns."""
+    """Specialties, conditions, and cities: the fixed vocabularies behind the search form."""
 
     def __init__(self, session: Session) -> None:
         self.session = session
@@ -49,3 +49,15 @@ class ReferenceRepository:
                 .where(Provider.specialty_id == specialty_id)
             )
         return self.session.scalars(stmt).all()
+
+    def get_condition_by_slug(self, slug: str) -> Condition | None:
+        return self.session.scalars(select(Condition).where(Condition.slug == slug)).one_or_none()
+
+    def list_cities(self) -> Sequence[City]:
+        return self.session.scalars(select(City).order_by(City.state, City.name)).all()
+
+    def get_city(self, name: str, state: str) -> City | None:
+        """Case-insensitive on the name; state must already be uppercase."""
+        return self.session.scalars(
+            select(City).where(func.lower(City.name) == name.lower(), City.state == state)
+        ).one_or_none()

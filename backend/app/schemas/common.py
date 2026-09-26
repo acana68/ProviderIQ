@@ -1,8 +1,11 @@
 import math
 from http import HTTPStatus
-from typing import Any, Literal, Self
+from typing import Annotated, Any, Literal, Self
 
-from pydantic import BaseModel
+from pydantic import BaseModel, StringConstraints
+
+# Two letters in any case, normalized to uppercase ("ny" -> "NY").
+StateCode = Annotated[str, StringConstraints(pattern=r"^[A-Za-z]{2}$", to_upper=True)]
 
 
 class HealthResponse(BaseModel):

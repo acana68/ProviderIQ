@@ -1,10 +1,11 @@
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
+from typing import Any
 
-from sqlalchemy import ColumnElement, func, select
+from sqlalchemy import ColumnElement, Double, Subquery, exists, func, select, type_coerce
 from sqlalchemy.orm import Session, joinedload, selectinload
 
-from app.models import Provider
+from app.models import Provider, provider_conditions
 
 
 @dataclass(frozen=True)
@@ -15,6 +16,39 @@ class ProviderFilters:
     # Matched case-insensitively.
     city: str | None = None
     accepting_new_patients: bool | None = None
+
+
+@dataclass(frozen=True)
+class SearchFilters:
+    specialty_id: int | None = None
+    condition_id: int | None = None
+    min_quality_score: float | None = None
+    min_years_experience: int | None = None
+    accepting_new_patients: bool | None = None
+    # (min_lat, max_lat, min_lon, max_lon); a coarse prefilter, not the exact radius.
+    bounding_box: tuple[float, float, float, float] | None = None
+
+
+@dataclass(frozen=True)
+class PeerPercentiles:
+    """Where a provider ranks among ALL providers in their specialty, each in [0, 1] with
+    1 the best: the fraction of the other providers they beat on that measure.
+
+    Only `volume` feeds the score. The rest exist to explain it (see
+    services/explanation.py), so ranking never depends on them.
+    """
+
+    volume: float
+    quality: float
+    experience: float
+    # Higher = cheaper.
+    cost: float
+
+
+@dataclass(frozen=True)
+class SearchCandidate:
+    provider: Provider
+    percentiles: PeerPercentiles
 
 
 class ProviderRepository:
@@ -53,6 +87,88 @@ class ProviderRepository:
             .where(Provider.id == provider_id)
         )
         return self.session.scalars(stmt).one_or_none()
+
+    def search_candidates(self, filters: SearchFilters) -> list[SearchCandidate]:
+        """Every provider matching the filters, with specialty loaded and peer percentiles
+        attached. Ordered by id; ranking happens in the caller.
+        """
+        percentiles = _peer_percentiles()
+        stmt = (
+            select(Provider, *_percentile_columns(percentiles))
+            .join(percentiles, percentiles.c.provider_id == Provider.id)
+            .options(joinedload(Provider.specialty))
+            .where(*_search_conditions(filters))
+            .order_by(Provider.id)
+        )
+        return [
+            SearchCandidate(provider=provider, percentiles=PeerPercentiles(*values))
+            for provider, *values in self.session.execute(stmt).all()
+        ]
+
+    def get_peer_percentiles(self, provider_id: int) -> PeerPercentiles | None:
+        """The same percentiles search_candidates() attaches, for one provider."""
+        percentiles = _peer_percentiles()
+        row = self.session.execute(
+            select(*_percentile_columns(percentiles)).where(
+                percentiles.c.provider_id == provider_id
+            )
+        ).one_or_none()
+        return None if row is None else PeerPercentiles(*row)
+
+
+def _peer_percentiles() -> Subquery:
+    """provider_id -> percent_rank within the provider's specialty, per measure.
+
+    Computed in a subquery over ALL providers, so the outer query's filters can't change
+    them: a provider's volume score (and explanation) is the same whatever else the
+    search asked for. percent_rank is (rank - 1) / (rows - 1): the fraction of the other
+    providers in the specialty ranked below this one. Ties share the lower rank, and a
+    provider alone in their specialty gets 0.
+    """
+
+    def within_specialty(order_by: ColumnElement[Any], label: str) -> ColumnElement[float]:
+        rank = func.percent_rank().over(partition_by=Provider.specialty_id, order_by=order_by)
+        # SQLAlchemy types percent_rank() as Numeric, which would come back as Decimal.
+        # Postgres returns double precision, so read it as a plain float.
+        return type_coerce(rank, Double()).label(label)
+
+    return select(
+        Provider.id.label("provider_id"),
+        within_specialty(Provider.patient_volume, "volume"),
+        within_specialty(Provider.quality_score, "quality"),
+        within_specialty(Provider.years_experience, "experience"),
+        # Descending: the cheapest provider ranks highest.
+        within_specialty(Provider.cost_index.desc(), "cost"),
+    ).subquery("peer_percentiles")
+
+
+def _percentile_columns(percentiles: Subquery) -> list[ColumnElement[float]]:
+    """In PeerPercentiles field order."""
+    return [percentiles.c[field.name] for field in fields(PeerPercentiles)]
+
+
+def _search_conditions(filters: SearchFilters) -> list[ColumnElement[bool]]:
+    conditions: list[ColumnElement[bool]] = []
+    if filters.specialty_id is not None:
+        conditions.append(Provider.specialty_id == filters.specialty_id)
+    if filters.condition_id is not None:
+        # EXISTS rather than a join, so a provider can't appear twice.
+        conditions.append(
+            exists()
+            .where(provider_conditions.c.provider_id == Provider.id)
+            .where(provider_conditions.c.condition_id == filters.condition_id)
+        )
+    if filters.min_quality_score is not None:
+        conditions.append(Provider.quality_score >= filters.min_quality_score)
+    if filters.min_years_experience is not None:
+        conditions.append(Provider.years_experience >= filters.min_years_experience)
+    if filters.accepting_new_patients is not None:
+        conditions.append(Provider.accepting_new_patients == filters.accepting_new_patients)
+    if filters.bounding_box is not None:
+        min_lat, max_lat, min_lon, max_lon = filters.bounding_box
+        conditions.append(Provider.latitude.between(min_lat, max_lat))
+        conditions.append(Provider.longitude.between(min_lon, max_lon))
+    return conditions
 
 
 def _filter_conditions(filters: ProviderFilters) -> list[ColumnElement[bool]]:

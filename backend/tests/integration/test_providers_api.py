@@ -1,13 +1,11 @@
 import math
-from collections.abc import Iterator
-from contextlib import contextmanager
 
 from fastapi.testclient import TestClient
-from sqlalchemy import Engine, event, func, select
+from sqlalchemy import Engine, func, select
 from sqlalchemy.orm import Session
 
 from app.models import Provider, Specialty
-from tests.helpers import assert_error
+from tests.helpers import assert_error, count_selects
 
 SUMMARY_FIELDS = {
     "id",
@@ -30,22 +28,6 @@ DETAIL_FIELDS = SUMMARY_FIELDS | {
     "readmission_rate",
     "conditions",
 }
-
-
-@contextmanager
-def count_selects(engine: Engine) -> Iterator[list[str]]:
-    """Collects the SELECT statements the engine runs inside the block."""
-    statements: list[str] = []
-
-    def record(conn: object, cursor: object, statement: str, *args: object) -> None:
-        if statement.lstrip().upper().startswith("SELECT"):
-            statements.append(statement)
-
-    event.listen(engine, "before_cursor_execute", record)
-    try:
-        yield statements
-    finally:
-        event.remove(engine, "before_cursor_execute", record)
 
 
 def _all_ids(client: TestClient, **params: object) -> list[int]:

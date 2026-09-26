@@ -2,7 +2,8 @@
 
     {"error": {"code": "...", "message": "...", "request_id": "...", "details": [...]}}
 
-`details` is only present for validation errors.
+`details` (a list of {"field", "message"}) is only present when an error is about
+specific request fields.
 """
 
 import logging
@@ -35,16 +36,40 @@ _LOCATION_PREFIXES = {"query", "path", "body", "header", "cookie"}
 class AppError(Exception):
     """An error we raise on purpose; its message is safe to show to the client."""
 
-    def __init__(self, code: str, message: str, status_code: int = 400) -> None:
+    def __init__(
+        self,
+        code: str,
+        message: str,
+        status_code: int = 400,
+        details: list[dict[str, str]] | None = None,
+    ) -> None:
         super().__init__(message)
         self.code = code
         self.message = message
         self.status_code = status_code
+        self.details = details
 
 
 class NotFoundError(AppError):
     def __init__(self, message: str = "Resource not found") -> None:
         super().__init__("NOT_FOUND", message, 404)
+
+
+class InvalidSearchError(AppError):
+    """Well-formed search criteria that name something that doesn't exist."""
+
+    def __init__(self, details: list[dict[str, str]]) -> None:
+        super().__init__("INVALID_SEARCH", "Invalid search criteria; see details", 422, details)
+
+
+class LocationNotFoundError(AppError):
+    def __init__(self, field: str = "location") -> None:
+        super().__init__(
+            "LOCATION_NOT_FOUND",
+            "Location not found; choose a city from GET /cities",
+            422,
+            [{"field": field, "message": "Unknown city"}],
+        )
 
 
 def error_response(
@@ -66,7 +91,7 @@ def internal_error_response() -> JSONResponse:
 
 async def app_error_handler(request: Request, exc: Exception) -> JSONResponse:
     assert isinstance(exc, AppError)
-    return error_response(exc.status_code, exc.code, exc.message)
+    return error_response(exc.status_code, exc.code, exc.message, exc.details)
 
 
 async def validation_error_handler(request: Request, exc: Exception) -> JSONResponse:

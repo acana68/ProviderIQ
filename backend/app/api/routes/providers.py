@@ -1,17 +1,15 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Path, Query
-from pydantic import StringConstraints
 
-from app.api.deps import ProviderRepo, ReferenceRepo
+from app.api.deps import ProviderRepo, ReferenceRepo, SearchServiceDep
 from app.core.errors import NotFoundError
 from app.repositories.provider_repository import ProviderFilters
-from app.schemas.common import Page, error_responses
-from app.schemas.provider import ProviderDetail, ProviderSummary
+from app.schemas.common import Page, StateCode, error_responses
+from app.schemas.provider import ProviderDetail, ProviderSummary, ScoredProviderDetail
+from app.schemas.search import ScoreContext
 
 router = APIRouter(prefix="/providers", tags=["providers"])
-
-StateCode = Annotated[str, StringConstraints(pattern=r"^[A-Za-z]{2}$", to_upper=True)]
 
 # providers.id is a 32-bit integer; larger ids can't exist and would error in Postgres.
 MAX_PROVIDER_ID = 2**31 - 1
@@ -57,14 +55,27 @@ def list_providers(
 
 @router.get(
     "/{provider_id}",
-    response_model=ProviderDetail,
+    # Scored first: a plain ProviderDetail can't validate as ScoredProviderDetail (it lacks
+    # the required score fields), so each response keeps exactly its own fields.
+    response_model=ScoredProviderDetail | ProviderDetail,
     responses=error_responses(404, 422),
 )
 def get_provider(
     provider_repo: ProviderRepo,
+    search_service: SearchServiceDep,
     provider_id: Annotated[int, Path(gt=0, le=MAX_PROVIDER_ID)],
-) -> ProviderDetail:
+    context: Annotated[ScoreContext, Query()],
+) -> ScoredProviderDetail | ProviderDetail:
+    """One provider. Pass `priority` (and optionally city + state + radius_miles) to also
+    get the score, explanation, and distance a search with those settings would give."""
     provider = provider_repo.get(provider_id)
     if provider is None:
         raise NotFoundError("Provider not found")
-    return ProviderDetail.from_model(provider)
+    if context.priority is None:
+        # Still check a given location, so a typo'd city isn't silently ignored.
+        if context.location is not None:
+            search_service.resolve_city(context.location, field="city")
+        return ProviderDetail.from_model(provider)
+    return search_service.score_provider_detail(
+        provider, context.priority, context.location, context.radius_miles
+    )

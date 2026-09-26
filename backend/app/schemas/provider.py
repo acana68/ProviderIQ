@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from app.models import Provider
 from app.schemas.reference import ConditionRef, SpecialtyRef
+from app.schemas.score import ProviderScore
 
 
 class ProviderSummary(BaseModel):
@@ -51,6 +52,15 @@ class ProviderDetail(ProviderSummary):
                 for condition in sorted(provider.conditions, key=lambda c: c.name)
             ],
         )
+
+
+class ScoredProviderDetail(ProviderDetail):
+    """A provider detail scored the same way a search would score it."""
+
+    # Rounded to 0.1 mile; null when no location was given.
+    distance_miles: float | None
+    score: ProviderScore
+    explanation: str
 
 
 def _summary_fields(provider: Provider) -> dict[str, object]:

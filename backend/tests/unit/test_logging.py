@@ -46,3 +46,12 @@ def test_includes_traceback_for_exceptions() -> None:
     payload = json.loads(JsonFormatter().format(record))
 
     assert "ValueError: boom" in payload["exc_info"]
+
+
+def test_drops_uvicorn_color_message() -> None:
+    payload = json.loads(
+        JsonFormatter().format(_record(color_message="\x1b[32mhello\x1b[0m", status=200))
+    )
+
+    assert "color_message" not in payload
+    assert payload["status"] == 200

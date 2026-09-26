@@ -70,55 +70,56 @@ class ScoreBreakdown:
 Ranked = tuple[ProviderMetrics, ScoreBreakdown]
 
 
+def effective_weights(
+    weights: WeightProfile, *, include_distance: bool
+) -> dict[ComponentName, float]:
+    """The weights actually applied, in component order, renormalized to sum to 1.
+
+    Without a location the distance weight is dropped and the rest are divided by their
+    sum. (With a location the sum is already 1, so the division changes nothing.)
+    """
+    configured: dict[ComponentName, float] = {
+        "quality": weights.quality,
+        "experience": weights.experience,
+        "cost": weights.cost,
+        "volume": weights.volume,
+    }
+    if include_distance:
+        configured["distance"] = weights.distance
+    # Never zero: the quality weight is always at least MIN_QUALITY_WEIGHT.
+    total = sum(configured.values())
+    return {name: weight / total for name, weight in configured.items()}
+
+
 def score_provider(
     metrics: ProviderMetrics, weights: WeightProfile, radius_miles: float | None
 ) -> ScoreBreakdown:
     """Score one provider. radius_miles is required when metrics.distance_miles is set."""
-    # (name, raw value, normalized value, configured weight)
-    parts: list[tuple[ComponentName, float, float, float]] = [
-        (
-            "quality",
-            metrics.quality_score,
-            normalize_quality(metrics.quality_score),
-            weights.quality,
-        ),
-        (
-            "experience",
-            metrics.years_experience,
-            normalize_experience(metrics.years_experience),
-            weights.experience,
-        ),
-        ("cost", metrics.cost_index, normalize_cost(metrics.cost_index), weights.cost),
-        (
-            "volume",
-            metrics.volume_percentile,
-            normalize_volume(metrics.volume_percentile),
-            weights.volume,
-        ),
-    ]
+    # name -> (raw value, normalized value), in component order.
+    values: dict[ComponentName, tuple[float, float]] = {
+        "quality": (metrics.quality_score, normalize_quality(metrics.quality_score)),
+        "experience": (metrics.years_experience, normalize_experience(metrics.years_experience)),
+        "cost": (metrics.cost_index, normalize_cost(metrics.cost_index)),
+        "volume": (metrics.volume_percentile, normalize_volume(metrics.volume_percentile)),
+    }
     if metrics.distance_miles is not None:
         if radius_miles is None:
             raise ValueError("radius_miles is required when distance_miles is set")
-        parts.append(
-            (
-                "distance",
-                metrics.distance_miles,
-                normalize_distance(metrics.distance_miles, radius_miles),
-                weights.distance,
-            )
+        values["distance"] = (
+            metrics.distance_miles,
+            normalize_distance(metrics.distance_miles, radius_miles),
         )
 
-    # Never zero: the quality weight is always at least MIN_QUALITY_WEIGHT.
-    active_weight = sum(weight for *_, weight in parts)
+    applied = effective_weights(weights, include_distance="distance" in values)
     components = tuple(
         ComponentScore(
             name=name,
             raw=raw,
             normalized=normalized,
-            weight=weight / active_weight,
-            contribution=100 * (weight / active_weight) * normalized,
+            weight=applied[name],
+            contribution=100 * applied[name] * normalized,
         )
-        for name, raw, normalized, weight in parts
+        for name, (raw, normalized) in values.items()
     )
     return ScoreBreakdown(overall=sum(c.contribution for c in components), components=components)
 

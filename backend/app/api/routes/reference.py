@@ -6,6 +6,7 @@ from app.api.deps import ReferenceRepo
 from app.core.errors import NotFoundError
 from app.schemas.common import error_responses
 from app.schemas.reference import ConditionSummary, SpecialtySummary
+from app.schemas.search import Location
 
 router = APIRouter(tags=["reference"])
 
@@ -39,3 +40,13 @@ def list_conditions(
             raise NotFoundError("Specialty not found")
         specialty_id = found.id
     return [ConditionSummary.model_validate(c) for c in repo.list_conditions(specialty_id)]
+
+
+@router.get("/cities", response_model=list[Location])
+def list_cities(repo: ReferenceRepo) -> list[Location]:
+    """The locations a search can use, ordered by state then name.
+
+    Each item has the same shape as the search body's `location`, so it can be sent back
+    unchanged.
+    """
+    return [Location(city=city.name, state=city.state) for city in repo.list_cities()]

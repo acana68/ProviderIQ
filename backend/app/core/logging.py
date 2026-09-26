@@ -12,6 +12,8 @@ _STANDARD_RECORD_ATTRS = set(logging.LogRecord("", 0, "", 0, "", (), None).__dic
     "message",
     "asctime",
 }
+# Extras that add nothing in JSON: uvicorn's copy of the message with ANSI color codes.
+_DROPPED_EXTRAS = {"color_message"}
 
 
 class JsonFormatter(logging.Formatter):
@@ -30,8 +32,9 @@ class JsonFormatter(logging.Formatter):
         if request_id is not None:
             payload["request_id"] = request_id
         for key, value in record.__dict__.items():
-            if key not in _STANDARD_RECORD_ATTRS and not key.startswith("_"):
-                payload[key] = value
+            if key in _STANDARD_RECORD_ATTRS or key in _DROPPED_EXTRAS or key.startswith("_"):
+                continue
+            payload[key] = value
         if record.exc_info:
             payload["exc_info"] = self.formatException(record.exc_info)
         return json.dumps(payload, default=str)

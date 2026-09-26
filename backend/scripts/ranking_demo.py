@@ -3,7 +3,7 @@
 No database. Run from backend/:  python -m scripts.ranking_demo
 """
 
-from app.services.explanation import explain
+from app.services.explanation import PeerComparison, explain
 from app.services.ranking.engine import ProviderMetrics, rank, score_provider
 from app.services.ranking.weights import Priority, get_weights
 
@@ -33,6 +33,21 @@ PROVIDERS = {
         cost_index=1.00,
         volume_percentile=0.20,
         distance_miles=1.0,
+    ),
+}
+
+# Made-up ranks among each provider's specialty peers (1 = best; for cost, 1 = cheapest).
+# In the app these come from the database. They only shape the explanations: the scores
+# and ranks above are computed without them.
+PEERS = {
+    "Excellent but expensive": PeerComparison(
+        quality=0.97, experience=0.88, cost=0.04, volume=0.85, peers="cardiologists"
+    ),
+    "Cheap but average": PeerComparison(
+        quality=0.45, experience=0.52, cost=0.93, volume=0.50, peers="cardiologists"
+    ),
+    "Close but junior": PeerComparison(
+        quality=0.66, experience=0.05, cost=0.48, volume=0.20, peers="cardiologists"
     ),
 }
 
@@ -69,7 +84,14 @@ def main() -> None:
             f"{c.weight:>9.2f}{c.contribution:>9.2f}"
         )
     print(f"  {'overall':<12}{'':>29}{breakdown.overall:>9.2f}")
-    print(f"\n  {explain(breakdown, metrics)}")
+
+    # The explanation leads with each provider's standout (where they rank highest among
+    # specialty peers), which doesn't depend on the priority, so one priority is enough.
+    print("\nExplanations:")
+    weights = get_weights(Priority.BALANCED)
+    for name, metrics in PROVIDERS.items():
+        text = explain(score_provider(metrics, weights, RADIUS_MILES), metrics, PEERS[name])
+        print(f"  {name + ':':<{name_width}}{text}")
 
 
 if __name__ == "__main__":

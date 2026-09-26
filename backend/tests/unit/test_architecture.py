@@ -1,4 +1,4 @@
-"""The ranking engine must stay pure Python: no database, no web framework."""
+"""The ranking engine and geo helpers must stay pure Python: no database, no web framework."""
 
 import ast
 import subprocess
@@ -8,14 +8,20 @@ from pathlib import Path
 import pytest
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
-RANKING_DIR = BACKEND_DIR / "app" / "services" / "ranking"
+SERVICES_DIR = BACKEND_DIR / "app" / "services"
 FORBIDDEN = ("sqlalchemy", "fastapi", "app.database")
 
-RANKING_MODULES = sorted(RANKING_DIR.rglob("*.py"))
+# Every module in services/ranking/, plus these single modules.
+PURE_MODULES = sorted((SERVICES_DIR / "ranking").rglob("*.py")) + [SERVICES_DIR / "geo.py"]
 
 
 def _is_forbidden(module: str) -> bool:
     return any(module == name or module.startswith(f"{name}.") for name in FORBIDDEN)
+
+
+def _module_name(path: Path) -> str:
+    """app/services/ranking/__init__.py -> app.services.ranking"""
+    return ".".join(path.relative_to(BACKEND_DIR).with_suffix("").parts).removesuffix(".__init__")
 
 
 def _imported_modules(path: Path) -> list[tuple[int, str]]:
@@ -35,11 +41,12 @@ def _imported_modules(path: Path) -> list[tuple[int, str]]:
     return found
 
 
-def test_ranking_package_has_modules() -> None:
-    assert len(RANKING_MODULES) >= 3
+def test_pure_modules_exist() -> None:
+    assert len(PURE_MODULES) >= 4
+    assert all(path.exists() for path in PURE_MODULES)
 
 
-@pytest.mark.parametrize("path", RANKING_MODULES, ids=lambda p: p.name)
+@pytest.mark.parametrize("path", PURE_MODULES, ids=_module_name)
 def test_module_does_not_import_forbidden_packages(path: Path) -> None:
     violations = [
         f"{path.name}:{line} imports {module}"
@@ -50,16 +57,15 @@ def test_module_does_not_import_forbidden_packages(path: Path) -> None:
     assert not violations, violations
 
 
-def test_importing_ranking_does_not_load_forbidden_packages_indirectly() -> None:
+def test_importing_pure_modules_does_not_load_forbidden_packages_indirectly() -> None:
     """Catches indirect imports too, e.g. ranking -> app.models -> sqlalchemy.
 
     Runs in a fresh interpreter, because this test process has already imported everything.
     """
     code = (
-        "import importlib, pkgutil, sys\n"
-        "import app.services.ranking as pkg\n"
-        "for info in pkgutil.walk_packages(pkg.__path__, pkg.__name__ + '.'):\n"
-        "    importlib.import_module(info.name)\n"
+        "import importlib, sys\n"
+        f"for name in {[_module_name(path) for path in PURE_MODULES]!r}:\n"
+        "    importlib.import_module(name)\n"
         f"forbidden = {FORBIDDEN!r}\n"
         "print('\\n'.join(sorted(m for m in sys.modules\n"
         "    if any(m == f or m.startswith(f + '.') for f in forbidden))))\n"

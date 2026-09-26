@@ -5,6 +5,7 @@ import pytest
 from app.services.ranking.engine import (
     ProviderMetrics,
     SortOption,
+    effective_weights,
     rank,
     score_provider,
 )
@@ -160,3 +161,17 @@ def test_rank_rejects_unknown_sort_or_priority() -> None:
         rank(SORT_CANDIDATES, Priority.BALANCED, radius_miles=20, sort="alphabetical")
     with pytest.raises(ValueError):
         rank(SORT_CANDIDATES, "cheapest", radius_miles=20)
+
+
+@pytest.mark.parametrize("priority", list(Priority))
+def test_effective_weights(priority: Priority) -> None:
+    profile = get_weights(priority)
+
+    with_location = effective_weights(profile, include_distance=True)
+    without_location = effective_weights(profile, include_distance=False)
+
+    assert list(with_location) == ["quality", "experience", "cost", "volume", "distance"]
+    assert with_location["quality"] == pytest.approx(profile.quality)
+    assert "distance" not in without_location
+    assert math.fsum(without_location.values()) == pytest.approx(1.0)
+    assert without_location["quality"] == pytest.approx(profile.quality / (1 - profile.distance))
