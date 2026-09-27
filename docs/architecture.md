@@ -4,9 +4,13 @@
 
 ```
                  ┌──────────────────────────────┐
-  User ───────▶  │  React + TypeScript (Vite)   │
+  User ───────▶  │  React + TypeScript SPA      │
                  └──────────────┬───────────────┘
-                                │ JSON over HTTP (/api/v1)
+                                │ same-origin JSON (/api/v1)
+                 ┌──────────────▼───────────────┐
+                 │  nginx (Docker) or Vite dev  │
+                 │  proxy: /api/ → backend      │
+                 └──────────────┬───────────────┘
                  ┌──────────────▼───────────────┐
                  │  FastAPI                     │
                  │  routes → services → repos   │
@@ -27,10 +31,24 @@
 
 - **Parsing and searching are two separate calls.** The frontend calls `POST /ai/parse-query`, shows the parsed filters as editable fields, and then calls `POST /search` with structured criteria. `/search` never sees free text and never touches the LLM, so the search path is fully deterministic and testable. It also gives "let the user fix what the AI got wrong" for free.
 - **The app runs with no API key.** `AI_PROVIDER=none` uses a rule-based parser. Anyone can clone the repo, run `docker compose up`, and everything works.
-- **Explanations are template-based, not LLM-generated.** They're built from the score breakdown, e.g. *"Ranked mainly on quality (48.4 of 81.5 points), 15 years experience, 6.0 mi away."* That makes them free, instant, testable, and impossible to hallucinate. An LLM rewrite is a stretch goal.
+- **Explanations are template-based, not LLM-generated.** They're built from the score breakdown, the provider's own numbers, and where the provider ranks among specialty peers, e.g. *"Stands out for high patient volume within the specialty (busier than 96% of cardiologists). 29 years of experience, 14.4 miles away, cost 9% below average."* That makes them free, instant, testable, and impossible to hallucinate. The first version led with the largest contribution (*"Ranked mainly on quality (48.4 of 81.5 points)"*), which mostly restated the weights; [ranking.md](ranking.md#explanations) has the story. An LLM rewrite is a stretch goal.
 - **Scores don't depend on who else matched.** Normalization uses fixed bounds or specialty-wide distributions, never min-max over the current result set. A provider's score is the same whether 5 or 500 others matched. This is what makes the detail page and the explanations consistent (see section 7).
-- **Location lookup comes from a local `cities` table, not a geocoding API.** The synthetic providers are clustered around about 25 metro areas, and the user's location resolves against that same table. No external dependency, no API cost.
+- **Location lookup comes from a local `cities` table, not a geocoding API.** The synthetic providers are clustered around 25 cities, and the user's location resolves against that same table. No external dependency, no API cost.
 - **Dev workflow is Postgres in Docker, with backend and frontend run natively.** Faster reloads and easier debugging on Windows. Full `docker compose up` is the one-command demo and the CI path.
+- **The browser only ever talks to one origin.** The frontend calls relative `/api/v1/...` URLs. In development the Vite dev server proxies them to uvicorn; in Docker, nginx does. The planned AWS setup does the same with CloudFront. So production needs no CORS, and the frontend has nothing environment-specific in it.
+
+### Configuration and ports
+
+All settings come from environment variables, read by `app/core/config.py` (pydantic-settings) with the **repo-root `.env`** as a fallback. `.env.example` lists every variable. `.env` is never committed and never copied into an image; Compose passes it in at runtime.
+
+| Port (host) | What | Notes |
+|---|---|---|
+| 5173 | Vite dev server | Local dev only; proxies `/api` to 8000 |
+| 8080 | nginx (frontend container) | The Docker app; proxies `/api/` to `backend:8000` |
+| 8000 | FastAPI (uvicorn) | Local dev and Docker; OpenAPI docs at `/docs` |
+| 5433 | PostgreSQL 17 | Host port for local tools and tests; `db:5432` inside Compose. 5433 avoids clashing with a native Postgres |
+
+The dev database (`provideriq`) and the test database (`provideriq_test`, created by `db/init/01-create-test-db.sql` on first init) live in the same container. Tests refuse to run unless `TEST_DATABASE_URL` points at a separate database.
 
 ## 2. MVP feature set
 
@@ -41,12 +59,12 @@
 - Ranking engine with a per-component score breakdown
 - Natural-language parsing with an LLM, plus a rule-based fallback
 - Provider detail page with metrics, conditions, score breakdown, and explanation
-- Reference endpoints for the specialties and conditions dropdowns
-- Synthetic data generator (about 1,500 providers) and seed script
+- Reference endpoints for the specialty, condition, and city dropdowns
+- Synthetic data generator (1,500 providers, 10 specialties, 50 conditions, 25 cities; seeded, so reproducible) and seed script
 - Search logging with no free text and no identifiers
 - Consistent JSON errors, structured logging, CORS, body size limit, rate limiting
 - Backend and frontend tests, Docker Compose, GitHub Actions CI
-- AWS deployment
+- AWS deployment: **deferred** to avoid running costs. The containers, health checks, proxy headers and smoke test are ready for it (see section 9)
 - Methodology page and a disclaimer on every page
 
 **Out (post-MVP):**
@@ -59,23 +77,25 @@
 
 ## 3. Backend structure
 
-The layers are strict. Routes handle HTTP only. Services hold business logic. Repositories are the only code that touches SQLAlchemy. `ai/` never imports anything from `repositories/` or `database/`, and that separation is itself a security property.
+The layers are strict. Routes handle HTTP only. Services hold business logic. Repositories are the only code that touches SQLAlchemy. `ai/` never imports anything from `repositories/`, `models/` or `database/`, and that separation is itself a security property. `tests/unit/test_architecture.py` enforces these boundaries, including indirect imports.
 
 ```
 backend/app/
 ├── main.py              # app factory: middleware, routers, error handlers
 ├── api/
 │   ├── deps.py          # DB session, services, parser injection
-│   └── routes/          # health, providers, reference, search, ai
-├── core/                # config (pydantic-settings), errors, logging, middleware, rate_limit
+│   └── routes/          # health, reference (specialties, conditions, cities), providers,
+│                        # search, ai, ranking (weights)
+├── core/                # config (pydantic-settings), errors, logging, middleware,
+│                        # rate_limit, request_context (request ID)
 ├── database/            # engine/session, declarative Base
 ├── models/              # SQLAlchemy ORM models
-├── schemas/             # Pydantic request/response models
-├── repositories/        # all queries live here
+├── schemas/             # Pydantic request/response models (closed: extra="forbid" on input)
+├── repositories/        # all queries live here, including the peer-percentile window functions
 ├── services/
 │   ├── search_service.py   # orchestrates filter → distance → rank → paginate → log
 │   ├── geo.py              # haversine + bounding box
-│   ├── explanation.py      # templated explanations
+│   ├── explanation.py      # templated explanations with peer percentiles
 │   └── ranking/            # normalization.py, weights.py, engine.py (pure functions)
 └── ai/
     ├── base.py             # QueryParser protocol
@@ -97,17 +117,30 @@ frontend/src/
 ├── main.tsx, App.tsx          # router setup
 ├── pages/                     # SearchPage, ResultsPage, ProviderDetailPage, MethodologyPage, NotFoundPage
 ├── components/
-│   ├── layout/                # AppLayout, Disclaimer
-│   ├── search/                # NaturalLanguageSearch, CriteriaEditor
-│   ├── results/               # ProviderCard, ResultsToolbar, Pagination
-│   ├── provider/              # ScoreBreakdown, MetricGrid
+│   ├── layout/                # AppLayout, Disclaimer, ErrorBoundary
+│   ├── search/                # NaturalLanguageSearch, CriteriaEditor, PriorityControl, exampleQueries
+│   ├── results/               # ProviderCard, ResultsToolbar, Pagination, ScoreBar, ScoreLegend, SearchSummary
+│   ├── provider/              # ScoreBreakdownTable
 │   └── common/                # LoadingState, ErrorState, EmptyState
-├── services/                  # apiClient (fetch wrapper + error parsing), providersApi, searchApi, aiApi
-├── hooks/                     # useSearch, useProvider, useReferenceData
-├── types/                     # provider.ts, search.ts, api.ts
-├── utils/                     # searchParams (URL ⇄ criteria), format
+├── services/                  # apiClient (fetch wrapper + error parsing), aiApi, providerApi,
+│                              # rankingApi, referenceApi, searchApi
+├── hooks/                     # useApiData (shared fetch/abort/state), useSearch, useProvider, useReferenceData
+├── types/                     # api.ts, provider.ts, ranking.ts, search.ts
+├── utils/                     # searchParams (URL ⇄ criteria), criteria, format, labels, navigation, pagination
 └── styles/                    # tokens.css (colors/spacing vars), global.css
+
+frontend/tests/                # Vitest + React Testing Library, one file per page or module
+frontend/scripts/screenshots.ts  # Playwright: README screenshots from the running Docker stack
 ```
+
+The pages, and what each one does:
+
+| Route | Page |
+|---|---|
+| `/` | Natural-language box (Interpret) above the editable criteria form. Interpret only fills the form; Search navigates to `/results` |
+| `/results?...` | Summary of the search, sort and priority controls, score legend, provider cards with stacked score bars, pagination |
+| `/providers/:id?...` | Header, match score with explanation and a priority switcher, score bar and breakdown table, metrics, conditions treated |
+| `/methodology` | How AI is used, the five factors, the weight table (from `GET /ranking/weights`), how standouts are picked, limitations |
 
 Choices:
 
@@ -156,18 +189,26 @@ Why it's shaped this way:
 | `provider_conditions(condition_id)` | The primary key starts with `provider_id`, so "who treats X" needs the reverse direction. |
 | `search_logs(created_at)` | Time-range queries for observability. |
 
-No `quality_score` index: a minimum-quality filter usually matches most rows, so an index wouldn't help. At 1,500 rows Postgres will seq-scan regardless. We'll check with `EXPLAIN` and discuss when these indexes start to matter.
+No `quality_score` index: a minimum-quality filter usually matches most rows, so an index wouldn't help.
+
+Checked with `EXPLAIN` on the seeded data (after `ANALYZE`): a specialty plus bounding-box query already uses both provider indexes, combined with a `BitmapAnd`, and a condition lookup uses `provider_conditions(condition_id)`. At 1,500 rows (a 264 kB table) the difference is negligible, but the plans are the ones that matter as the table grows.
+
+Integrity is enforced in the database too, not only in Pydantic: `CHECK` constraints on the providers table cover quality 0–100, rates 0–1, years 0–70, a positive cost index, non-negative volume, valid coordinates, and `credential IN ('MD', 'DO')`, and `search_logs.source` is constrained to `nl`/`manual`.
 
 ## 6. REST API (`/api/v1`)
 
+The full reference, with real examples, is [api.md](api.md).
+
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/health` | App and DB status |
-| GET | `/specialties` | Dropdown data |
+| GET | `/health` | App and DB status (503 when the DB is down); not rate limited |
+| GET | `/specialties` | Dropdown data, with provider counts |
 | GET | `/conditions?specialty=cardiology` | Conditions treated within a specialty |
-| GET | `/providers?specialty=&state=&page=&page_size=` | Browse without ranking |
-| GET | `/providers/{id}?priority=&city=&state=` | Detail; returns score + explanation when search context is passed |
+| GET | `/cities` | The locations a search can use (the local geocoding table) |
+| GET | `/providers?specialty=&state=&city=&accepting_new_patients=&page=&page_size=` | Browse without ranking |
+| GET | `/providers/{id}?priority=&city=&state=&radius_miles=` | Detail; adds score + explanation when a priority is passed |
 | POST | `/search` | Ranked search with structured criteria |
+| GET | `/ranking/weights` | The weight profiles, straight from `ranking/weights.py` (the methodology page renders them) |
 | POST | `/ai/parse-query` | Natural language → criteria (never runs a search) |
 
 `POST /search` request:
@@ -191,27 +232,33 @@ Each result:
 
 ```json
 {
-  "provider": { "id": 412, "name": "Dr. ...", "specialty": "Cardiology", "...": "..." },
-  "distance_miles": 6.0,
+  "provider": { "id": 620, "display_name": "Dr. Kevin Hill, MD", "specialty": { "slug": "cardiology", "name": "Cardiology" }, "...": "..." },
+  "distance_miles": 14.4,
   "score": {
-    "overall": 81.5,
+    "overall": 80.5,
     "components": [
-      { "name": "quality", "raw": 88, "normalized": 0.88, "weight": 0.55, "contribution": 48.4 }
+      { "name": "quality", "raw": 79.8, "normalized": 0.798, "weight": 0.55, "contribution": 43.9 }
     ]
-  }
+  },
+  "explanation": "Stands out for high patient volume within the specialty (busier than 96% of cardiologists). 29 years of experience, 14.4 miles away, cost 9% below average."
 }
 ```
 
-Error format is always `{"error": {"code", "message", "details?"}}`:
+The response also carries the pagination fields, `priority`, `sort`, and `weights_used` (the weights actually applied, after renormalization).
+
+Error format is always `{"error": {"code", "message", "request_id", "details?"}}`. `details` lists one entry per bad field and never echoes the submitted value.
 
 | Code | Status |
 |---|---|
-| `VALIDATION_ERROR` | 422 |
-| `LOCATION_NOT_FOUND` | 422 |
-| `NOT_FOUND` | 404 |
-| `PAYLOAD_TOO_LARGE` | 413 |
-| `RATE_LIMITED` | 429 |
-| `INTERNAL_ERROR` | 500 (no stack traces leaked) |
+| `BAD_REQUEST` | 400 (e.g. an invalid `Content-Length`) |
+| `NOT_FOUND` | 404 (unknown route, provider, or specialty slug) |
+| `METHOD_NOT_ALLOWED` | 405 (with an `Allow` header) |
+| `PAYLOAD_TOO_LARGE` | 413 (body over `MAX_REQUEST_BODY_BYTES`, default 64 KiB) |
+| `VALIDATION_ERROR` | 422 (malformed parameter or body field, unknown field) |
+| `INVALID_SEARCH` | 422 (well-formed but unusable: unknown slug, or distance priority/sort without a location) |
+| `LOCATION_NOT_FOUND` | 422 (city not in `GET /cities`) |
+| `RATE_LIMITED` | 429 (with `Retry-After`) |
+| `INTERNAL_ERROR` | 500 (no stack traces leaked; details go to the server log with the request ID) |
 
 There's no "AI unavailable" error, because that case falls back instead of failing.
 
@@ -268,8 +315,9 @@ Quality never drops below 0.25. That's deliberate: even a cost-focused search sh
 1. Resolve the city to lat/lon.
 2. SQL filters: specialty, condition join, minimums, and a bounding box from the radius.
 3. Compute exact haversine distance in Python and drop anything outside the radius.
-4. Score, sort, and paginate.
-5. Log the search.
+4. Score, sort, and paginate. Each candidate's peer percentiles come from `percent_rank()` windows over its whole specialty, fetched in the same query as the candidates. Only volume's percentile enters the score.
+5. Build explanations for the returned page only, using the peer percentiles.
+6. Log the search (no text, no condition, no city).
 
 Ranking the full filtered set in Python is fine at this scale. At 100M providers, scoring moves into the database or Elasticsearch.
 
@@ -337,7 +385,12 @@ Frontend shows editable criteria → user clicks Search → POST /search (struct
     runs only with `pytest -m live`.
 
 **Measuring it:** `python -m scripts.eval_parser` scores both parsers field by field on
-about 20 labeled queries. It runs the LLM parser only when a key is configured.
+22 labeled queries. It runs the LLM parser only when a key is configured. Latest run: the
+keyword parser got 18/22 queries fully right and Claude Haiku 4.5 got 20/22. The README
+has the per-field table. One of the LLM's misses is in the risky direction: it inferred a
+condition (coronary artery disease) from the symptom "chest pain". The user sees and can
+edit every parsed field before searching. Stopping that inference in the prompt is the
+first item on the improvements list.
 
 **Provider-agnostic design:** `LLMQueryParser` depends on an `LLMClient` interface with a
 single method, `complete_json(system, user, schema) -> dict`. Switching providers means
@@ -367,14 +420,26 @@ fall back, so re-check `parser_used` after changing `AI_MODEL`.
 
 Backend tests get written inside each stage, not saved for the end.
 
+**Status:** stages 1–13 and 15 are done. Stage 14 (AWS) is deliberately deferred to avoid
+running costs; the plan below is ready to execute.
+
 **AWS plan (Stage 14, simplest credible setup):**
 
 - The frontend is built to S3 and served through CloudFront.
 - `/api/*` is routed by CloudFront to the FastAPI container on one EC2 instance, with RDS for Postgres.
+- Secrets (the database password, the Anthropic key) live in SSM Parameter Store and are passed to the container as environment variables, never baked into an image.
 - Everything sits on one HTTPS domain, so production needs no CORS.
 - ECS Fargate plus an ALB is the "how I'd scale it" answer rather than a cost paid now.
 
-## 10. Final directory tree
+Already prepared for it:
+
+- **Containers.** Multi-stage images. The backend runs as a non-root user with runtime dependencies only. The frontend runs on unprivileged nginx on 8080.
+- **Health checks.** Docker `HEALTHCHECK`s on both images. `/health` returns 503 when the database is unreachable.
+- **Proxy headers.** uvicorn runs with `--proxy-headers`, trusting `X-Forwarded-For` only from `FORWARDED_ALLOW_IPS`. The default, 127.0.0.1, trusts no other host, so clients can't spoof their IP to dodge the per-IP rate limits; the deployment sets it to the proxy's addresses.
+- **Migrations and seeding at startup.** The entrypoint runs `alembic upgrade head`, then seeds only if the database is empty.
+- **Smoke test.** `backend/scripts/smoke_test.py` (standard library only) checks a running deployment end to end. The Docker CI workflow already runs it against the full stack.
+
+## 10. Directory tree
 
 ```
 provideriq/
@@ -383,11 +448,13 @@ provideriq/
 │   │   ├── main.py
 │   │   ├── api/
 │   │   │   ├── deps.py
-│   │   │   └── routes/        health.py providers.py reference.py search.py ai.py
+│   │   │   └── routes/        health.py reference.py providers.py search.py ai.py ranking.py
 │   │   ├── core/              config.py errors.py logging.py middleware.py rate_limit.py
+│   │   │                      request_context.py
 │   │   ├── database/          base.py session.py
 │   │   ├── models/            provider.py specialty.py condition.py city.py search_log.py
-│   │   ├── schemas/           common.py provider.py search.py ai.py
+│   │   ├── schemas/           common.py provider.py search.py score.py reference.py
+│   │   │                      ranking.py ai.py
 │   │   ├── repositories/      provider_repository.py reference_repository.py search_log_repository.py
 │   │   ├── services/
 │   │   │   ├── search_service.py  geo.py  explanation.py
@@ -396,30 +463,38 @@ provideriq/
 │   │                          llm_client.py llm_parser.py prompts.py factory.py
 │   ├── alembic/               env.py  versions/
 │   ├── scripts/               generate_data.py seed_db.py ranking_demo.py eval_parser.py
-│   ├── tests/                 conftest.py  unit/  integration/
+│   │                          smoke_test.py
+│   ├── tests/                 conftest.py helpers.py  unit/  integration/
 │   ├── alembic.ini
 │   ├── pyproject.toml         # ruff + pytest config
 │   ├── requirements.txt
 │   ├── requirements-dev.txt
+│   ├── docker-entrypoint.sh   # migrate, seed if empty, serve
 │   └── Dockerfile
 ├── frontend/
 │   ├── src/                   (structure from section 4)
-│   ├── tests/                 setup.ts + *.test.tsx
+│   ├── tests/                 setup.ts utils.tsx fixtures.ts + *.test.ts(x)
+│   ├── scripts/               screenshots.ts (Playwright)
+│   ├── public/                favicon.svg
 │   ├── index.html
-│   ├── vite.config.ts
-│   ├── tsconfig.json
+│   ├── vite.config.ts         # dev proxy + Vitest config
+│   ├── tsconfig*.json         # app, node, test projects
 │   ├── eslint.config.js
-│   ├── .prettierrc
+│   ├── .prettierrc.json
+│   ├── .nvmrc                 # Node 24
 │   ├── package.json
+│   ├── nginx.conf             # SPA routing, /api/ proxy, security headers, caching
 │   └── Dockerfile
 ├── data/
-│   ├── generate_data.py
 │   ├── reference/             cities.csv specialties.csv conditions.csv
 │   └── generated/             providers.csv provider_conditions.csv   (committed, seeded RNG)
-├── docs/                      architecture.md api.md ranking.md
-├── .github/workflows/         backend.yml frontend.yml
+├── db/init/                   01-create-test-db.sql   (runs on first volume init)
+├── docs/                      architecture.md api.md ranking.md  screenshots/
+├── .github/
+│   ├── workflows/             backend.yml frontend.yml docker.yml
+│   └── dependabot.yml
 ├── docker-compose.yml
-├── .env.example
+├── .env.example               # copied to the repo-root .env
 ├── .gitignore
 └── README.md
 ```

@@ -1,7 +1,8 @@
 # ProviderIQ API
 
 All endpoints are under `/api/v1`. Responses are JSON. Interactive docs (OpenAPI) are at
-`/docs` when the server is running.
+http://localhost:8000/docs when the backend is running. They're served by the backend
+directly, and the nginx front end on port 8080 proxies only `/api/`.
 
 The examples below come from the default seeded dataset (1,500 providers, seed 42), but
 they're trimmed for length.

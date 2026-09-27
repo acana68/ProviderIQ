@@ -137,6 +137,15 @@ The standout is the factor with the highest of these values, if that value is at
 single standout factor." Ties go to the earlier factor (quality, experience, cost, volume,
 distance).
 
+This took two failed attempts to get right.
+
+**Why not the largest contribution?** The first version led with the component that
+earned the most points ("Ranked mainly on quality (48.4 of 81.5 points)"). But a
+contribution is mostly its weight, so the lead just restated the priority. On the seeded
+data, without a location, quality had the largest contribution for 1,469 of 1,500
+providers under `balanced` and for all 1,500 under `quality`. The sentence said nothing
+about the provider.
+
 **Why not the normalized scores?** Those curves are shaped for *ranking*, not for
 comparing one factor against another. The experience curve saturates early on purpose, to
 give diminishing returns:
