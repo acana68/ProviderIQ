@@ -23,7 +23,10 @@
 **/dist
 frontend
 
-# Not needed at runtime
+# Not needed at runtime. The seed reads data/cms/; the pipeline that builds it and its
+# raw downloads (hundreds of MB) stay out of the image.
+data/raw
+backend/pipeline
 backend/tests
 docs
 db

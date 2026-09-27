@@ -5,7 +5,7 @@ import pytest
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.models import City, Condition, Provider, Specialty, provider_conditions
+from app.models import City, Condition, DatasetMetadata, Provider, Specialty, provider_conditions
 from scripts.generate_data import REFERENCE_DIR, generate, write_csvs
 from scripts.seed_db import SeedDataError, has_providers, seed
 
@@ -95,3 +95,13 @@ def test_has_providers_tells_empty_from_seeded(db_session: Session, data_dir: Pa
     seed(db_session, data_dir)
 
     assert has_providers(db_session) is True
+
+
+def test_seed_records_the_dataset(db_session: Session, data_dir: Path) -> None:
+    seed(db_session, data_dir)
+
+    metadata = db_session.get(DatasetMetadata, 1)
+    assert metadata is not None
+    assert (metadata.source, metadata.as_of, metadata.vintage) == ("synthetic", None, None)
+    assert db_session.scalar(select(func.count()).select_from(DatasetMetadata)) == 1
+    assert db_session.scalar(select(func.count()).where(Provider.data_source != "synthetic")) == 0

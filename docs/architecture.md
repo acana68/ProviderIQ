@@ -33,7 +33,8 @@
 - **The app runs with no API key.** `AI_PROVIDER=none` uses a rule-based parser. Anyone can clone the repo, run `docker compose up`, and everything works.
 - **Explanations are template-based, not LLM-generated.** They're built from the score breakdown, the provider's own numbers, and where the provider ranks among specialty peers, e.g. *"Stands out for high patient volume within the specialty (busier than 96% of cardiologists). 29 years of experience, 14.4 miles away, cost 9% below average."* That makes them free, instant, testable, and impossible to hallucinate. The first version led with the largest contribution (*"Ranked mainly on quality (48.4 of 81.5 points)"*), which mostly restated the weights; [ranking.md](ranking.md#explanations) has the story. An LLM rewrite is a stretch goal.
 - **Scores don't depend on who else matched.** Normalization uses fixed bounds or specialty-wide distributions, never min-max over the current result set. A provider's score is the same whether 5 or 500 others matched. This is what makes the detail page and the explanations consistent (see section 7).
-- **Location lookup comes from a local `cities` table, not a geocoding API.** The synthetic providers are clustered around 25 cities, and the user's location resolves against that same table. No external dependency, no API cost.
+- **Location lookup comes from a local `cities` table, not a geocoding API.** The synthetic providers are clustered around 25 cities, and the user's location resolves against that same table. No external dependency, no API cost. The real-data option swaps in 65 New Jersey municipalities with Census coordinates (section 10).
+- **Two datasets, one app.** Synthetic data is the default and what tests and CI use. `DATA_SOURCE=cms_nj` seeds real public CMS data for New Jersey instead. The app reads which one is loaded from the database, not from the setting (section 10).
 - **Dev workflow is Postgres in Docker, with backend and frontend run natively.** Faster reloads and easier debugging on Windows. Full `docker compose up` is the one-command demo and the CI path.
 - **The browser only ever talks to one origin.** The frontend calls relative `/api/v1/...` URLs. In development the Vite dev server proxies them to uvicorn; in Docker, nginx does. The planned AWS setup does the same with CloudFront. So production needs no CORS, and the frontend has nothing environment-specific in it.
 
@@ -156,19 +157,24 @@ Choices:
 specialties          id PK, slug UNIQUE, name UNIQUE
 conditions           id PK, slug UNIQUE, name UNIQUE
 cities               id PK, name, state, latitude, longitude   UNIQUE(name, state)
-providers            id PK, first_name, last_name, credential (MD/DO),
+providers            id PK, npi UNIQUE (CMS only), data_source ('synthetic'|'cms'),
+                     first_name, last_name, credential (MD/DO),
                      specialty_id FK → specialties, subspecialty (nullable text),
                      city, state, zip_code, latitude, longitude,
-                     years_experience INT,
-                     quality_score DOUBLE (0–100),
+                     years_experience INT NULL,
+                     quality_score DOUBLE NULL (0–100),
+                     quality_imputed BOOL (generated: quality_score IS NULL),
                      cost_index DOUBLE (1.00 = regional avg, lower = cheaper),
                      patient_volume INT (annual patients),
-                     complication_rate DOUBLE (0–1), readmission_rate DOUBLE (0–1),
-                     accepting_new_patients BOOL,
+                     complication_rate DOUBLE NULL (0–1), readmission_rate DOUBLE NULL (0–1),
+                     accepting_new_patients BOOL NULL,
                      created_at, updated_at
 provider_conditions  provider_id FK, condition_id FK   PK(provider_id, condition_id)
 search_logs          id PK, created_at, source ('nl'|'manual'), parser_used,
                      specialty_id, state, priority, result_count, latency_ms
+dataset_metadata     id PK (always 1), source ('synthetic'|'cms_nj'), as_of, vintage,
+                     seeded_at
+staging.*            the CMS pipeline's raw text tables and SQL transforms (section 10)
 ```
 
 Why it's shaped this way:
@@ -179,6 +185,7 @@ Why it's shaped this way:
 - **`cost_index` replaces `cost_score`.** "Cost score" is ambiguous: does high mean cheap or expensive? An index where 1.0 is average removes the ambiguity. Normalization turns it into cost efficiency.
 - **`quality_score` is stored as a given rating.** It's generated to correlate with low complication and readmission rates, which are shown on the detail page. In a real system a data pipeline would compute this score from claims data (a natural hook for dbt later).
 - **`search_logs` stores no query text and no condition.** People type their own health details into search boxes, so neither gets logged.
+- **Missing metrics are NULL, never 0.** Real data doesn't publish everything, and a 0 would be a (terrible) score. `quality_imputed` is a generated column, so it can never disagree with `quality_score`. `accepting_new_patients` has no default: an unknown value must not quietly read as "accepting".
 
 ### Indexes
 
@@ -193,7 +200,7 @@ No `quality_score` index: a minimum-quality filter usually matches most rows, so
 
 Checked with `EXPLAIN` on the seeded data (after `ANALYZE`): a specialty plus bounding-box query already uses both provider indexes, combined with a `BitmapAnd`, and a condition lookup uses `provider_conditions(condition_id)`. At 1,500 rows (a 264 kB table) the difference is negligible, but the plans are the ones that matter as the table grows.
 
-Integrity is enforced in the database too, not only in Pydantic: `CHECK` constraints on the providers table cover quality 0–100, rates 0–1, years 0–70, a positive cost index, non-negative volume, valid coordinates, and `credential IN ('MD', 'DO')`, and `search_logs.source` is constrained to `nl`/`manual`.
+Integrity is enforced in the database too, not only in Pydantic: `CHECK` constraints on the providers table cover quality 0–100, rates 0–1, years 0–70, a positive cost index, non-negative volume, valid coordinates, and `credential IN ('MD', 'DO')`, and `search_logs.source` is constrained to `nl`/`manual`. The range checks pass for NULL, so they still bound every value that is present. A CMS row must have a 10-digit NPI and a synthetic row must not (`(data_source = 'cms') = (npi IS NOT NULL)`).
 
 ## 6. REST API (`/api/v1`)
 
@@ -205,6 +212,7 @@ The full reference, with real examples, is [api.md](api.md).
 | GET | `/specialties` | Dropdown data, with provider counts |
 | GET | `/conditions?specialty=cardiology` | Conditions treated within a specialty |
 | GET | `/cities` | The locations a search can use (the local geocoding table) |
+| GET | `/dataset` | Which dataset is loaded, what it publishes, and its disclaimer |
 | GET | `/providers?specialty=&state=&city=&accepting_new_patients=&page=&page_size=` | Browse without ranking |
 | GET | `/providers/{id}?priority=&city=&state=&radius_miles=` | Detail; adds score + explanation when a priority is passed |
 | POST | `/search` | Ranked search with structured criteria |
@@ -257,6 +265,7 @@ Error format is always `{"error": {"code", "message", "request_id", "details?"}}
 | `VALIDATION_ERROR` | 422 (malformed parameter or body field, unknown field) |
 | `INVALID_SEARCH` | 422 (well-formed but unusable: unknown slug, or distance priority/sort without a location) |
 | `LOCATION_NOT_FOUND` | 422 (city not in `GET /cities`) |
+| `CONDITIONS_UNAVAILABLE` | 422 (a condition filter on a dataset without condition data) |
 | `RATE_LIMITED` | 429 (with `Retry-After`) |
 | `INTERNAL_ERROR` | 500 (no stack traces leaked; details go to the server log with the request ID) |
 
@@ -417,10 +426,12 @@ fall back, so re-check `parser_used` after changing `AI_MODEL`.
 | 13 | Full Docker Compose + GitHub Actions CI | Multi-stage images, CI pipelines |
 | 14 | AWS deployment | Cloud basics, networking, secrets |
 | 15 | README, docs, screenshots, interview prep | Explaining the system |
+| 16a | Real CMS data for New Jersey: ELT pipeline, staging schema, missing-data handling, `GET /dataset` | Public data, SQL transforms, data quality |
+| 16b | Frontend for the real dataset: labels, disclaimer, imputed / not-reported flags | |
 
 Backend tests get written inside each stage, not saved for the end.
 
-**Status:** stages 1–13 and 15 are done. Stage 14 (AWS) is deliberately deferred to avoid
+**Status:** stages 1–13, 15 and 16a are done. Stage 14 (AWS) is deliberately deferred to avoid
 running costs; the plan below is ready to execute.
 
 **AWS plan (Stage 14, simplest credible setup):**
@@ -439,7 +450,112 @@ Already prepared for it:
 - **Migrations and seeding at startup.** The entrypoint runs `alembic upgrade head`, then seeds only if the database is empty.
 - **Smoke test.** `backend/scripts/smoke_test.py` (standard library only) checks a running deployment end to end. The Docker CI workflow already runs it against the full stack.
 
-## 10. Directory tree
+## 10. Real data (CMS, New Jersey)
+
+Alongside the synthetic data, ProviderIQ can run on real public data: physicians in New
+Jersey, in the same 10 specialties, built from three CMS datasets and two Census files.
+`DATA_SOURCE=cms_nj` seeds it. Tests and CI stay on synthetic data.
+
+### Sources
+
+| Source | What we take | How it's cut to NJ |
+|---|---|---|
+| CMS Provider Data Catalog: Doctors and Clinicians **National Downloadable File** (`mj5m-pzi6`) | NPI, name, credential, medical school graduation year, primary specialty, practice address and ZIP | API query, `state = NJ` |
+| CMS Provider Data Catalog: **PY 2024 Clinician Overall MIPS Performance** (`a174-a962`) | MIPS final score per NPI | No state column: the national file is downloaded, and filtered to the NDF's NJ NPIs while loading |
+| data.cms.gov: **Medicare Physician & Other Practitioners, by Provider**, CY 2024 | Medicare beneficiaries, services, allowed amounts per NPI | API query, `Rndrng_Prvdr_State_Abrvtn = NJ` |
+| Census **2025 Gazetteer, ZCTAs** | ZIP code centroids | National file; ZIP prefixes 07/08 kept while loading |
+| Census **2025 Gazetteer, county subdivisions (NJ)** and **Vintage 2025 population estimates (NJ)** | The municipalities used as search locations | State files |
+
+Every dataset id is pinned in `pipeline/sources.py`. `data/cms/MANIFEST.json` records each
+file's URL, release, download time, row count and SHA-256.
+
+### Pipeline (ELT)
+
+```
+python -m pipeline.extract      CMS / Census APIs ──▶ data/raw/        (gitignored, cached)
+python -m pipeline.transform    data/raw/ ──COPY──▶ staging.raw_*      (text, as downloaded)
+                                staging.raw_* ──sql/00…07──▶ staging.cms_providers,
+                                                              staging.cms_cities
+                                ──▶ data/cms/providers_nj.csv, cities_nj.csv  (committed)
+                                ──▶ docs/data-quality.md
+python -m scripts.seed_db --source cms_nj   data/cms/ ──▶ providers, cities, dataset_metadata
+```
+
+- **Extract, load, then transform in SQL.** Raw rows go into a separate `staging` schema
+  (created by a migration) with every column as text, exactly as downloaded; only the
+  column names are normalized to snake_case. All the cleaning is in eight numbered,
+  commented SQL files, which can be read top to bottom or run by hand. Parameters (the
+  state, the reference year) come from a one-row `staging.params` table.
+- **The app never reads `staging`.** The transform ends in two CSVs that are committed,
+  so seeding (and Docker) need no network and no pipeline. The raw files stay out of git
+  and out of the Docker image.
+- **A changed source format fails loudly.** The loader checks every column the SQL
+  needs before loading; a renamed CMS field stops the run instead of producing NULLs.
+
+### Transform rules
+
+| Rule | Choice (and file) |
+|---|---|
+| Specialty | An explicit mapping table from CMS primary specialty to our 10 slugs, each row commented: e.g. `CARDIOVASCULAR DISEASE (CARDIOLOGY)`, `INTERVENTIONAL CARDIOLOGY` → cardiology; family practice, internal medicine, general practice and geriatric medicine → primary care. Hospitalists, pediatrics, surgical oncology, critical care and other shared or inpatient-only fields are left out. Unmapped specialties are dropped and counted (`01_specialty_map.sql`) |
+| One row per NPI | The NDF has a row per enrollment, group and address. Among the rows with a mapped specialty, pick: a ZIP that can be located, then the ZIP on the clinician's Medicare record, then the address listed most often, then the lowest address id (`05_select_address.sql`) |
+| Credential | The NDF's if it is MD or DO; if blank, the Medicare file's ("M.D." → MD). Anything else is dropped: the schema only holds physicians |
+| years_experience | Reference year − medical school graduation year; NULL if missing, in the future, or more than 60 years back. It counts residency too |
+| patient_volume | Medicare beneficiaries seen in 2024 |
+| cost_index | **Medicare spending per patient**: allowed amount per Medicare beneficiary ÷ the median of that for the specialty among the kept NJ providers, so each specialty's median is exactly 1.0. Per patient, not per service: Medicare pays by fee schedule, so the amount per service mostly reflects which services are billed, not a price (`04_medicare_utilization.sql`). Displayed as "Medicare spending per patient", never "cost" |
+| quality_score | The MIPS final score (1–100). A clinician with several scores (individual, group, APM) gets the highest, as CMS does within a TIN. NULL without one, and NULL for a final score of 0, which means nothing that could be scored was submitted (CMS 2024 Traditional MIPS Scoring Guide; `03_mips_scores.sql`) |
+| Location | The Census centroid of the practice ZIP |
+| Not published | complication_rate, readmission_rate, accepting_new_patients, subspecialty, conditions: NULL / none |
+| Search locations | NJ municipalities with 40,000+ residents, plus the largest in each county (65). The legal suffix is dropped ("Edison township" → "Edison"); a name another NJ municipality shares gets its county ("Washington (Gloucester County)") |
+
+Every NPI in the NJ extract is either kept or dropped with exactly one reason, checked in
+this order: specialty not mapped, no Medicare utilization record, not an MD or DO,
+credential not published, missing name, no usable volume or spending, ZIP not located.
+[data-quality.md](data-quality.md) has the counts, match rates between the datasets, and
+distributions per specialty.
+
+### Missing data in the app
+
+Most clinicians have no MIPS score, so missing values are normal here. A missing quality
+or experience is scored as the specialty median and flagged as imputed, which neither
+rewards nor punishes a gap ([ranking.md](ranking.md#missing-values-real-data) explains
+why). The imputation happens in the service layer (`services/imputation.py`, pure like the
+engine), so the engine never sees a missing value. The API keeps the field `null` and
+reports `imputed` / `not_reported` per metric, explanations never call an imputed value a
+standout, and a minimum-quality or minimum-experience filter only matches real values.
+
+`GET /dataset` describes the loaded data: source, label, release, available metrics,
+whether conditions exist, and a disclaimer. For CMS data the disclaimer says it is real
+public data, covers Medicare patients only, and that scores are illustrative, not a rating
+or endorsement of any clinician. The seed records the dataset in `dataset_metadata`, and
+the endpoint reads that rather than `DATA_SOURCE`, so the disclaimer can't go missing
+because the app was started with a different `.env` than the seed. Searching with a
+condition on CMS data returns `422 CONDITIONS_UNAVAILABLE`.
+
+### Limitations
+
+- **Medicare only.** Volume and spending come from Medicare Part B fee-for-service claims.
+  Medicare Advantage, Medicaid and commercial patients aren't counted, so a pediatric or
+  mostly-commercial practice looks small. Clinicians with fewer than 11 Medicare patients
+  aren't in the file at all and are dropped.
+- **Spending per patient isn't price, and isn't risk-adjusted.** It measures how much
+  Medicare care a clinician bills for each patient they see, which also depends on how
+  sick those patients are and what the practice does (a procedural cardiologist vs. a
+  consult-only one). It is spread widely: about a third of providers fall outside the
+  0.5–1.5 range the ranking uses, and are clamped. It includes Part B drugs, which
+  dominate oncology (median index 1.0, 90th percentile about 9.6; about 1.9 without drugs).
+  An earlier version used allowed amount per service, which mostly measured the mix of
+  services billed.
+- **MIPS is a payment program score.** Its final score blends quality measures,
+  improvement activities, interoperability and cost, and clinicians in advanced APMs or
+  under the low-volume threshold don't get one. So coverage is partial and uneven by
+  specialty, and a missing score says nothing about the clinician.
+- **Vintages differ.** The NDF is current, while MIPS (PY 2024) and utilization
+  (CY 2024) lag by one to two years. A clinician who moved or retired since may appear
+  with old numbers.
+- **Location is the ZIP centroid**, not the street address, so distances are
+  approximate to within a ZIP code's size.
+
+## 11. Directory tree
 
 ```
 provideriq/
@@ -461,10 +577,13 @@ provideriq/
 │   │   │   └── ranking/       normalization.py weights.py engine.py
 │   │   └── ai/                base.py vocabulary.py criteria.py rule_based_parser.py
 │   │                          llm_client.py llm_parser.py prompts.py factory.py
+│   ├── pipeline/              extract.py load.py transform.py data_quality.py sources.py
+│   │                          sql/00_functions.sql … 07_cities.sql   (section 10)
 │   ├── alembic/               env.py  versions/
 │   ├── scripts/               generate_data.py seed_db.py ranking_demo.py eval_parser.py
 │   │                          smoke_test.py
 │   ├── tests/                 conftest.py helpers.py  unit/  integration/
+│   │                          fixtures/cms_raw/   (fake raw CMS/Census files)
 │   ├── alembic.ini
 │   ├── pyproject.toml         # ruff + pytest config
 │   ├── requirements.txt
@@ -487,9 +606,11 @@ provideriq/
 │   └── Dockerfile
 ├── data/
 │   ├── reference/             cities.csv specialties.csv conditions.csv
-│   └── generated/             providers.csv provider_conditions.csv   (committed, seeded RNG)
+│   ├── generated/             providers.csv provider_conditions.csv   (committed, seeded RNG)
+│   ├── cms/                   providers_nj.csv cities_nj.csv MANIFEST.json   (committed)
+│   └── raw/                   CMS and Census downloads   (gitignored)
 ├── db/init/                   01-create-test-db.sql   (runs on first volume init)
-├── docs/                      architecture.md api.md ranking.md  screenshots/
+├── docs/                      architecture.md api.md ranking.md data-quality.md  screenshots/
 ├── .github/
 │   ├── workflows/             backend.yml frontend.yml docker.yml
 │   └── dependabot.yml

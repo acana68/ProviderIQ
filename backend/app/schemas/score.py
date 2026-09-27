@@ -15,6 +15,9 @@ class ScoreComponent(BaseModel):
     weight: float
     # Points toward `overall`: 100 * weight * normalized.
     contribution: float
+    # True when the provider doesn't have this metric and `raw` is the specialty median
+    # standing in for it (quality and experience only).
+    imputed: bool
 
 
 class ProviderScore(BaseModel):
@@ -36,6 +39,7 @@ class ProviderScore(BaseModel):
                     normalized=round(c.normalized, 3),
                     weight=round(c.weight, 3),
                     contribution=round(c.contribution, 1),
+                    imputed=c.imputed,
                 )
                 for c in breakdown.components
             ],

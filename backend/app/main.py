@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.ai.factory import create_llm_client
-from app.api.routes import ai, health, providers, ranking, reference, search
+from app.api.routes import ai, dataset, health, providers, ranking, reference, search
 from app.core.config import Settings, get_settings
 from app.core.errors import register_exception_handlers
 from app.core.logging import configure_logging
@@ -37,6 +37,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     for router in (
         health.router,
         reference.router,
+        dataset.router,
         providers.router,
         search.router,
         ai.router,

@@ -1,0 +1,10 @@
+NPI, Org_PAC_ID, Provider Last Name, Provider First Name, source, Facility-based scoring Certification number, Facility Name, Quality_category_score, PI_category_score, IA_category_score, Cost_category_score, final_MIPS_score_without_CPB, final_MIPS_score
+9000000001,,TESTPERSON,FAKE,individual,,,,,,,0,0
+9000000001,1111111111,TESTPERSON,FAKE,group,,,,,,,80.5,80.5
+9000000003,,TESTPERSON,FAKE,individual,,,,,,,,
+9000000004,,TESTPERSON,FAKE,apm,,,,,,,70,70
+9000000008,,TESTPERSON,FAKE,individual,,,,,,,91.25,91.25
+9000000012,6666666666,TESTPERSON,FAKE,group,,,,,,,65,65
+9000000016,8888888888,TESTPERSON,FAKE,group,,,,,,,88,88
+9000000011,,TESTPERSON,FAKE,individual,,,0,,0,0,0,0
+9111111111,,TESTPERSON,FAKE,individual,,,,,,,99,99

@@ -543,8 +543,9 @@ def test_search_uses_a_constant_number_of_queries(
     with count_selects(db_engine) as statements:
         _search(client, **body)
 
-    # Up to: specialty, condition and city lookups, plus one candidates query.
-    assert 1 <= len(statements) <= 4, statements
+    # Up to: the has-conditions check, specialty, condition and city lookups, plus one
+    # candidates query.
+    assert 1 <= len(statements) <= 5, statements
 
 
 # --- Cities -----------------------------------------------------------------------------

@@ -1,0 +1,101 @@
+{
+  "state": "NJ",
+  "sources": {
+    "ndf": {
+      "title": "Doctors and Clinicians National Downloadable File",
+      "publisher": "CMS Provider Data Catalog",
+      "dataset_id": "mj5m-pzi6",
+      "version": "Current monthly release",
+      "landing_page": "https://data.cms.gov/provider-data/dataset/mj5m-pzi6",
+      "url": "https://data.cms.gov/provider-data/api/1/datastore/query/mj5m-pzi6/0/download?format=csv&conditions%5B0%5D%5Bproperty%5D=state&conditions%5B0%5D%5Bvalue%5D=NJ&conditions%5B0%5D%5Boperator%5D=%3D",
+      "filter": "state = NJ (server side)",
+      "modified": "2026-08-18",
+      "raw_file": "data/raw/ndf_nj.csv",
+      "downloaded_at": "2026-09-27T09:24:09+00:00",
+      "rows": 92446,
+      "bytes": 23175677,
+      "sha256": "c9b5408c9e1f7efde2feb46a179263bd76b584c43e2b4bf5da5939d8d030c3e4"
+    },
+    "mips": {
+      "title": "PY 2024 Clinician Public Reporting: Overall MIPS Performance",
+      "publisher": "CMS Provider Data Catalog",
+      "dataset_id": "a174-a962",
+      "version": "Performance Year 2024",
+      "landing_page": "https://data.cms.gov/provider-data/dataset/a174-a962",
+      "url": "https://data.cms.gov/provider-data/sites/default/files/resources/6b9e57db797c95853b034b329b1212b2_1787091345/ec_score_file.csv",
+      "filter": "none (national file; filtered to NJ NDF NPIs while loading)",
+      "modified": "2026-08-18",
+      "raw_file": "data/raw/mips_clinician_overall_national.csv",
+      "downloaded_at": "2026-09-27T09:24:10+00:00",
+      "rows": 520011,
+      "bytes": 40750261,
+      "sha256": "defbf8403322dcc1b1e73511d1ab090544aed9a2d34c6e9f307be1642ce1fa22"
+    },
+    "physician": {
+      "title": "Medicare Physician & Other Practitioners - by Provider",
+      "publisher": "data.cms.gov",
+      "dataset_id": "4d0b2df0-1e99-4db7-a574-a571d99217f1",
+      "version": "Calendar Year 2024",
+      "landing_page": "https://data.cms.gov/provider-summary-by-type-of-service/medicare-physician-other-practitioners/medicare-physician-other-practitioners-by-provider",
+      "url": "https://data.cms.gov/data-api/v1/dataset/4d0b2df0-1e99-4db7-a574-a571d99217f1/data?filter%5BRndrng_Prvdr_State_Abrvtn%5D=NJ",
+      "filter": "Rndrng_Prvdr_State_Abrvtn = NJ (server side)",
+      "raw_file": "data/raw/physician_by_provider_nj.csv",
+      "downloaded_at": "2026-09-27T09:24:25+00:00",
+      "rows": 39694,
+      "bytes": 15826486,
+      "sha256": "b91a06f610aef8d55d8b1d7e88760bac334ddbdceeb01f3f63e685cf75eeb826"
+    },
+    "zcta": {
+      "title": "2025 Gazetteer: ZIP Code Tabulation Areas (national)",
+      "publisher": "U.S. Census Bureau",
+      "dataset_id": null,
+      "version": "2025 Gazetteer",
+      "landing_page": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html",
+      "url": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_zcta_national.zip",
+      "filter": "none (national file; ZIP prefixes 07/08 kept while loading)",
+      "raw_file": "data/raw/2025_Gaz_zcta_national.txt",
+      "downloaded_at": "2026-09-27T09:24:25+00:00",
+      "rows": 33791,
+      "bytes": 2369685,
+      "sha256": "100e70311af1655406d939a930f183559c902b57e1f20e714b43ef4776f6ac3d"
+    },
+    "cousub": {
+      "title": "2025 Gazetteer: County Subdivisions, New Jersey",
+      "publisher": "U.S. Census Bureau",
+      "dataset_id": null,
+      "version": "2025 Gazetteer",
+      "landing_page": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html",
+      "url": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_gaz_cousubs_34.txt",
+      "filter": "state file (New Jersey only)",
+      "raw_file": "data/raw/2025_gaz_cousubs_34.txt",
+      "downloaded_at": "2026-09-27T09:24:25+00:00",
+      "rows": 569,
+      "bytes": 63806,
+      "sha256": "d6490c2ee69b4a68f1c49f52f277d3ad01846c20d1b2b281595c1a6a09217a00"
+    },
+    "population": {
+      "title": "Subcounty Resident Population Estimates, New Jersey (Vintage 2025)",
+      "publisher": "U.S. Census Bureau",
+      "dataset_id": null,
+      "version": "Vintage 2025",
+      "landing_page": "https://www.census.gov/programs-surveys/popest/data/tables.html",
+      "url": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/cities/totals/sub-est2025_34.csv",
+      "filter": "state file (New Jersey only)",
+      "raw_file": "data/raw/sub-est2025_34.csv",
+      "downloaded_at": "2026-09-27T09:24:25+00:00",
+      "rows": 1576,
+      "bytes": 157538,
+      "sha256": "fdd702deb550777e7d8304664809037b9f7763e7b7e14bcffceee4a3eae2d84c"
+    }
+  },
+  "outputs": {
+    "transformed_at": "2026-09-27T23:44:01+00:00",
+    "reference_year": 2026,
+    "data/cms/providers_nj.csv": {
+      "rows": 9071
+    },
+    "data/cms/cities_nj.csv": {
+      "rows": 65
+    }
+  }
+}

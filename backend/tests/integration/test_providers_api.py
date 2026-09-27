@@ -9,6 +9,8 @@ from tests.helpers import assert_error, count_selects
 
 SUMMARY_FIELDS = {
     "id",
+    "npi",
+    "data_source",
     "display_name",
     "specialty",
     "subspecialty",
@@ -18,6 +20,7 @@ SUMMARY_FIELDS = {
     "quality_score",
     "cost_index",
     "accepting_new_patients",
+    "metric_flags",
 }
 DETAIL_FIELDS = SUMMARY_FIELDS | {
     "zip_code",

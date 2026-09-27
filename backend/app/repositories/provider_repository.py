@@ -2,7 +2,17 @@ from collections.abc import Sequence
 from dataclasses import dataclass, fields
 from typing import Any
 
-from sqlalchemy import ColumnElement, Double, Subquery, exists, func, select, type_coerce
+from sqlalchemy import (
+    ColumnElement,
+    Double,
+    Subquery,
+    case,
+    exists,
+    func,
+    select,
+    true,
+    type_coerce,
+)
 from sqlalchemy.orm import Session, joinedload, selectinload
 
 from app.models import Provider, provider_conditions
@@ -35,20 +45,33 @@ class PeerPercentiles:
     1 the best: the fraction of the other providers they beat on that measure.
 
     Only `volume` feeds the score. The rest exist to explain it (see
-    services/explanation.py), so ranking never depends on them.
+    services/explanation.py), so ranking never depends on them. A metric the provider
+    doesn't have is None: they have no rank, and their peers are ranked only among the
+    providers who have it.
     """
 
     volume: float
-    quality: float
-    experience: float
+    quality: float | None
+    experience: float | None
     # Higher = cheaper.
     cost: float
+
+
+@dataclass(frozen=True)
+class SpecialtyMedians:
+    """The median of each optional metric over ALL providers in a specialty who have it
+    (the whole dataset's median if none do; None only if nobody has it). A missing
+    value is scored as this; see services/imputation.py."""
+
+    quality: float | None
+    experience: float | None
 
 
 @dataclass(frozen=True)
 class SearchCandidate:
     provider: Provider
     percentiles: PeerPercentiles
+    medians: SpecialtyMedians
 
 
 class ProviderRepository:
@@ -90,18 +113,32 @@ class ProviderRepository:
 
     def search_candidates(self, filters: SearchFilters) -> list[SearchCandidate]:
         """Every provider matching the filters, with specialty loaded and peer percentiles
-        attached. Ordered by id; ranking happens in the caller.
+        and specialty medians attached. Ordered by id; ranking happens in the caller.
+
+        A minimum quality or experience filter only matches providers who have that
+        value: an imputed median must not pass a filter the user set on real numbers.
         """
         percentiles = _peer_percentiles()
+        medians = _specialty_medians()
         stmt = (
-            select(Provider, *_percentile_columns(percentiles))
+            select(
+                Provider,
+                *_percentile_columns(percentiles),
+                medians.c.quality,
+                medians.c.experience,
+            )
             .join(percentiles, percentiles.c.provider_id == Provider.id)
+            .join(medians, medians.c.specialty_id == Provider.specialty_id)
             .options(joinedload(Provider.specialty))
             .where(*_search_conditions(filters))
             .order_by(Provider.id)
         )
         return [
-            SearchCandidate(provider=provider, percentiles=PeerPercentiles(*values))
+            SearchCandidate(
+                provider=provider,
+                percentiles=PeerPercentiles(*values[:-2]),
+                medians=SpecialtyMedians(*values[-2:]),
+            )
             for provider, *values in self.session.execute(stmt).all()
         ]
 
@@ -115,6 +152,17 @@ class ProviderRepository:
         ).one_or_none()
         return None if row is None else PeerPercentiles(*row)
 
+    def get_specialty_medians(self, specialty_id: int) -> SpecialtyMedians:
+        """The same medians search_candidates() attaches, for one specialty."""
+        medians = _specialty_medians()
+        row = self.session.execute(
+            select(medians.c.quality, medians.c.experience).where(
+                medians.c.specialty_id == specialty_id
+            )
+        ).one_or_none()
+        # Only a specialty with no providers has no row.
+        return SpecialtyMedians(None, None) if row is None else SpecialtyMedians(*row)
+
 
 def _peer_percentiles() -> Subquery:
     """provider_id -> percent_rank within the provider's specialty, per measure.
@@ -124,13 +172,22 @@ def _peer_percentiles() -> Subquery:
     search asked for. percent_rank is (rank - 1) / (rows - 1): the fraction of the other
     providers in the specialty ranked below this one. Ties share the lower rank, and a
     provider alone in their specialty gets 0.
+
+    A provider missing the measure gets NULL, and is left out of everyone else's rank:
+    the partition also splits on "is it NULL". Otherwise Postgres would sort NULLs last,
+    ranking every missing value as the best in the specialty.
     """
 
-    def within_specialty(order_by: ColumnElement[Any], label: str) -> ColumnElement[float]:
-        rank = func.percent_rank().over(partition_by=Provider.specialty_id, order_by=order_by)
+    def within_specialty(
+        column: ColumnElement[Any], label: str, *, descending: bool = False
+    ) -> ColumnElement[float | None]:
+        rank = func.percent_rank().over(
+            partition_by=(Provider.specialty_id, column.is_(None)),
+            order_by=column.desc() if descending else column,
+        )
         # SQLAlchemy types percent_rank() as Numeric, which would come back as Decimal.
         # Postgres returns double precision, so read it as a plain float.
-        return type_coerce(rank, Double()).label(label)
+        return case((column.is_(None), None), else_=type_coerce(rank, Double())).label(label)
 
     return select(
         Provider.id.label("provider_id"),
@@ -138,8 +195,42 @@ def _peer_percentiles() -> Subquery:
         within_specialty(Provider.quality_score, "quality"),
         within_specialty(Provider.years_experience, "experience"),
         # Descending: the cheapest provider ranks highest.
-        within_specialty(Provider.cost_index.desc(), "cost"),
+        within_specialty(Provider.cost_index, "cost", descending=True),
     ).subquery("peer_percentiles")
+
+
+def _specialty_medians() -> Subquery:
+    """specialty_id -> the median quality_score and years_experience over ALL providers
+    in the specialty (percentile_cont skips NULLs), like the percentiles: filters can't
+    change them. A specialty where nobody has the measure uses the whole dataset's."""
+
+    def median(column: ColumnElement[Any], label: str) -> ColumnElement[Any]:
+        return func.percentile_cont(0.5).within_group(column).label(label)
+
+    overall = select(
+        median(Provider.quality_score, "quality"),
+        median(Provider.years_experience, "experience"),
+    ).subquery("overall_medians")
+    per_specialty = (
+        select(
+            Provider.specialty_id,
+            median(Provider.quality_score, "quality"),
+            median(Provider.years_experience, "experience"),
+        )
+        .group_by(Provider.specialty_id)
+        .subquery("per_specialty_medians")
+    )
+
+    def with_fallback(name: str) -> ColumnElement[float | None]:
+        value = func.coalesce(per_specialty.c[name], overall.c[name])
+        # Double: percentile_cont returns double precision, but SQLAlchemy doesn't know.
+        return type_coerce(value, Double()).label(name)
+
+    return (
+        select(per_specialty.c.specialty_id, with_fallback("quality"), with_fallback("experience"))
+        .join(overall, true())
+        .subquery("specialty_medians")
+    )
 
 
 def _percentile_columns(percentiles: Subquery) -> list[ColumnElement[float]]:

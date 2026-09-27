@@ -48,6 +48,7 @@ submitted value is never echoed back.
 | `VALIDATION_ERROR` | 422 | Malformed request: invalid parameter or body field, unknown body field |
 | `INVALID_SEARCH` | 422 | Well-formed criteria that can't be used: an unknown specialty or condition slug, or `priority`/`sort` of `distance` without a location |
 | `LOCATION_NOT_FOUND` | 422 | City/state not in `GET /cities` |
+| `CONDITIONS_UNAVAILABLE` | 422 | A `condition` on a search when the dataset has no condition data (CMS; see `GET /dataset`) |
 | `RATE_LIMITED` | 429 | Over `RATE_LIMIT_PER_MINUTE` (default 120), or `AI_RATE_LIMIT_PER_MINUTE` (default 10) on `/ai/parse-query`. Wait `Retry-After` seconds |
 | `INTERNAL_ERROR` | 500 | Unexpected server error. Details go to the server log only |
 
@@ -139,6 +140,37 @@ match the city name case-insensitively.
 ]
 ```
 
+## `GET /dataset`
+
+Which dataset the database holds, so the UI can label it, show its disclaimer, and hide
+what it doesn't have. Read from what the seed script recorded, so it always describes the
+data actually loaded; only an unseeded database falls back to the `DATA_SOURCE` setting.
+
+```json
+{
+  "source": "cms_nj",
+  "label": "CMS public data: New Jersey",
+  "description": "Real New Jersey physicians in 10 specialties, from public CMS data: … Releases: National Downloadable File updated 2026-08-18; MIPS Performance Year 2024; Medicare utilization Calendar Year 2024. …",
+  "as_of": "2026-09-27",
+  "available_metrics": ["quality_score", "years_experience", "cost_index", "patient_volume"],
+  "metric_labels": {
+    "quality_score": "MIPS final score",
+    "years_experience": "Years since medical school",
+    "cost_index": "Medicare spending per patient",
+    "patient_volume": "Medicare patients"
+  },
+  "has_conditions": false,
+  "disclaimer": "Real public CMS data about real clinicians, covering Medicare fee-for-service patients only. Scores are illustrative, computed by ProviderIQ from that data, and are not a rating or endorsement of any clinician by ProviderIQ or CMS."
+}
+```
+
+`source` is `synthetic` or `cms_nj`. `as_of` is when the CMS files were downloaded (the
+earliest of the three), `null` for synthetic data. Metrics missing from
+`available_metrics` are `null` for every provider. `metric_labels` names each available
+metric as the dataset means it; the same field can differ between datasets (`cost_index`
+is "Cost" for synthetic data). With `has_conditions: false`,
+`GET /conditions` is empty and a search with a `condition` is rejected.
+
 ## `GET /providers`
 
 Browse providers without ranking. Results are ordered by last name, first name, then id,
@@ -160,6 +192,8 @@ so paging is stable.
   "items": [
     {
       "id": 444,
+      "npi": null,
+      "data_source": "synthetic",
       "display_name": "Dr. Eric Alexander, MD",
       "specialty": { "slug": "cardiology", "name": "Cardiology" },
       "subspecialty": null,
@@ -168,10 +202,13 @@ so paging is stable.
       "years_experience": 18,
       "quality_score": 73.7,
       "cost_index": 0.89,
-      "accepting_new_patients": true
+      "accepting_new_patients": true,
+      "metric_flags": { "quality_score": "reported", "years_experience": "reported", "complication_rate": "reported", "readmission_rate": "reported" }
     },
     {
       "id": 1332,
+      "npi": null,
+      "data_source": "synthetic",
       "display_name": "Dr. Holly Blair, MD",
       "specialty": { "slug": "cardiology", "name": "Cardiology" },
       "subspecialty": "Heart Failure",
@@ -180,7 +217,8 @@ so paging is stable.
       "years_experience": 3,
       "quality_score": 68.5,
       "cost_index": 0.88,
-      "accepting_new_patients": true
+      "accepting_new_patients": true,
+      "metric_flags": { "quality_score": "reported", "years_experience": "reported", "complication_rate": "reported", "readmission_rate": "reported" }
     }
   ],
   "page": 1,
@@ -191,11 +229,42 @@ so paging is stable.
 ```
 
 `cost_index` is relative to the regional average: `1.0` is average and lower is cheaper.
+In the CMS dataset it means something else: **Medicare spending per patient** (allowed
+amount per beneficiary), where `1.0` is the median for the provider's specialty in New
+Jersey. Label it with `GET /dataset`'s `metric_labels`, not as cost.
+
+`npi` is the provider's National Provider Identifier (CMS data only; `null` for synthetic
+providers), and `data_source` is `synthetic` or `cms`.
+
+### Missing metrics
+
+Real data has gaps, so `years_experience`, `quality_score`, `complication_rate`,
+`readmission_rate` and `accepting_new_patients` can be `null`. A missing value is never
+turned into a number in these fields. `metric_flags` says what each one means:
+
+| Flag | Meaning |
+|---|---|
+| `reported` | The value is in the response |
+| `imputed` | Not published. Scores use the median of the provider's specialty instead, and the score component says `"imputed": true` (quality and experience only) |
+| `not_reported` | Not published, and not part of any score (complication and readmission rates) |
+
+A CMS provider with no MIPS score:
+
+```json
+{
+  "npi": "1234567890",
+  "data_source": "cms",
+  "quality_score": null,
+  "years_experience": 22,
+  "accepting_new_patients": null,
+  "metric_flags": { "quality_score": "imputed", "years_experience": "reported", "complication_rate": "not_reported", "readmission_rate": "not_reported" }
+}
+```
 
 ## `GET /providers/{provider_id}`
 
 One provider, with everything in the list item plus location, volume, outcome rates, and
-the conditions they treat (ordered by name). `provider_id` must be a positive integer.
+the conditions they treat (ordered by name; always empty for CMS data). `provider_id` must be a positive integer.
 Missing → `404`, invalid → `422`.
 
 `GET /providers/444`:
@@ -203,6 +272,8 @@ Missing → `404`, invalid → `422`.
 ```json
 {
   "id": 444,
+  "npi": null,
+  "data_source": "synthetic",
   "display_name": "Dr. Eric Alexander, MD",
   "specialty": { "slug": "cardiology", "name": "Cardiology" },
   "subspecialty": null,
@@ -212,6 +283,7 @@ Missing → `404`, invalid → `422`.
   "quality_score": 73.7,
   "cost_index": 0.89,
   "accepting_new_patients": true,
+  "metric_flags": { "quality_score": "reported", "years_experience": "reported", "complication_rate": "reported", "readmission_rate": "reported" },
   "zip_code": "10046",
   "latitude": 40.617991,
   "longitude": -74.157242,
@@ -227,7 +299,7 @@ Missing → `404`, invalid → `422`.
 }
 ```
 
-`patient_volume` is annual patients. `complication_rate` and `readmission_rate` are
+`patient_volume` is annual patients (CMS: Medicare beneficiaries only). `complication_rate` and `readmission_rate` are
 fractions (`0.0464` = 4.64%).
 
 ### Scored detail
@@ -250,16 +322,18 @@ Without a location, `distance_miles` is `null` and the score has no distance com
 ```json
 {
   "id": 620,
+  "npi": null,
+  "data_source": "synthetic",
   "display_name": "Dr. Kevin Hill, MD",
   "distance_miles": 14.4,
   "score": {
     "overall": 80.5,
     "components": [
-      { "name": "quality", "raw": 79.8, "normalized": 0.798, "weight": 0.55, "contribution": 43.9 },
-      { "name": "experience", "raw": 29.0, "normalized": 0.99, "weight": 0.2, "contribution": 19.8 },
-      { "name": "cost", "raw": 0.91, "normalized": 0.59, "weight": 0.05, "contribution": 2.9 },
-      { "name": "volume", "raw": 0.963, "normalized": 0.963, "weight": 0.1, "contribution": 9.6 },
-      { "name": "distance", "raw": 14.372, "normalized": 0.425, "weight": 0.1, "contribution": 4.3 }
+      { "name": "quality", "raw": 79.8, "normalized": 0.798, "weight": 0.55, "contribution": 43.9, "imputed": false },
+      { "name": "experience", "raw": 29.0, "normalized": 0.99, "weight": 0.2, "contribution": 19.8, "imputed": false },
+      { "name": "cost", "raw": 0.91, "normalized": 0.59, "weight": 0.05, "contribution": 2.9, "imputed": false },
+      { "name": "volume", "raw": 0.963, "normalized": 0.963, "weight": 0.1, "contribution": 9.6, "imputed": false },
+      { "name": "distance", "raw": 14.372, "normalized": 0.425, "weight": 0.1, "contribution": 4.3, "imputed": false }
     ]
   },
   "explanation": "Stands out for high patient volume within the specialty (busier than 96% of cardiologists). 29 years of experience, 14.4 miles away, cost 9% below average."
@@ -274,11 +348,11 @@ computed. The body never contains free text, and unknown fields are rejected.
 | Field | Type | Notes |
 |---|---|---|
 | `specialty` | slug, optional | Unknown → `422 INVALID_SEARCH` |
-| `condition` | slug, optional | Providers who treat it. Unknown → `422 INVALID_SEARCH` |
+| `condition` | slug, optional | Providers who treat it. Unknown → `422 INVALID_SEARCH`. On a dataset without conditions → `422 CONDITIONS_UNAVAILABLE` |
 | `location` | `{ "city", "state" }`, optional | From `GET /cities`; city is case-insensitive. Unknown → `422 LOCATION_NOT_FOUND` |
 | `radius_miles` | number 1–100 | Default `25`. Sending it without `location` → `422` |
-| `min_quality_score` | number 0–100, optional | |
-| `min_years_experience` | int 0–70, optional | |
+| `min_quality_score` | number 0–100, optional | Only providers with a reported score match; an imputed median never passes |
+| `min_years_experience` | int 0–70, optional | Likewise, reported values only |
 | `accepting_new_patients` | bool, optional | |
 | `priority` | `balanced` \| `quality` \| `cost` \| `experience` \| `distance` | Default `balanced`. Picks the weight profile, so it changes the scores. `distance` requires `location` |
 | `sort` | `match` \| `quality` \| `experience` \| `distance` \| `cost` | Default `match`. Only picks the ordering column. `distance` requires `location` |
@@ -288,8 +362,9 @@ computed. The body never contains free text, and unknown fields are rejected.
 | `parser_used` | `llm` \| `rule_based`, optional | Which parser produced the criteria, from `/ai/parse-query`. Only allowed with `"source": "nl"` (`422` otherwise) |
 
 Sort orders: `match` by overall score, `quality` and `experience` highest first, `cost`
-cheapest first, `distance` nearest first. Ties always fall back to overall score, then
-quality, then provider id.
+cheapest first, `distance` nearest first. Sorting by `quality` or `experience` lists
+providers whose value is imputed after everyone with a reported one. Ties always fall back
+to overall score, then quality, then provider id.
 
 `priority` or `sort` set to `distance` without a `location` is rejected rather than
 silently ignored. Every problem with the criteria is reported at once:
@@ -332,6 +407,8 @@ Response (first item only):
     {
       "provider": {
         "id": 620,
+        "npi": null,
+        "data_source": "synthetic",
         "display_name": "Dr. Kevin Hill, MD",
         "specialty": { "slug": "cardiology", "name": "Cardiology" },
         "subspecialty": "Echocardiography",
@@ -340,17 +417,18 @@ Response (first item only):
         "years_experience": 29,
         "quality_score": 79.8,
         "cost_index": 0.91,
-        "accepting_new_patients": true
+        "accepting_new_patients": true,
+        "metric_flags": { "quality_score": "reported", "years_experience": "reported", "complication_rate": "reported", "readmission_rate": "reported" }
       },
       "distance_miles": 14.4,
       "score": {
         "overall": 80.5,
         "components": [
-          { "name": "quality", "raw": 79.8, "normalized": 0.798, "weight": 0.55, "contribution": 43.9 },
-          { "name": "experience", "raw": 29.0, "normalized": 0.99, "weight": 0.2, "contribution": 19.8 },
-          { "name": "cost", "raw": 0.91, "normalized": 0.59, "weight": 0.05, "contribution": 2.9 },
-          { "name": "volume", "raw": 0.963, "normalized": 0.963, "weight": 0.1, "contribution": 9.6 },
-          { "name": "distance", "raw": 14.372, "normalized": 0.425, "weight": 0.1, "contribution": 4.3 }
+          { "name": "quality", "raw": 79.8, "normalized": 0.798, "weight": 0.55, "contribution": 43.9, "imputed": false },
+          { "name": "experience", "raw": 29.0, "normalized": 0.99, "weight": 0.2, "contribution": 19.8, "imputed": false },
+          { "name": "cost", "raw": 0.91, "normalized": 0.59, "weight": 0.05, "contribution": 2.9, "imputed": false },
+          { "name": "volume", "raw": 0.963, "normalized": 0.963, "weight": 0.1, "contribution": 9.6, "imputed": false },
+          { "name": "distance", "raw": 14.372, "normalized": 0.425, "weight": 0.1, "contribution": 4.3, "imputed": false }
         ]
       },
       "explanation": "Stands out for high patient volume within the specialty (busier than 96% of cardiologists). 29 years of experience, 14.4 miles away, cost 9% below average."
@@ -370,7 +448,9 @@ Response (first item only):
   to 0.001, and `distance_miles` to 0.1. Because of the rounding, the contributions can
   add up to 0.1 more or less than `overall`.
 - `raw` is the provider's own value for that component: quality score, years, cost
-  index, volume percentile within the specialty, or miles.
+  index, volume percentile within the specialty, or miles. When `imputed` is true, `raw`
+  is the specialty median standing in for a missing value, and the explanation says the
+  value wasn't reported instead of calling it a standout.
 - The explanation leads with the provider's standout: the factor where they rank highest
   among all providers in their specialty, if they beat at least 80% of them (see
   [ranking.md](ranking.md#explanations)). These peer ranks only shape the wording; they

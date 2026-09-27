@@ -64,6 +64,18 @@ class InvalidSearchError(AppError):
         super().__init__("INVALID_SEARCH", "Invalid search criteria; see details", 422, details)
 
 
+class ConditionsUnavailableError(AppError):
+    """A condition filter on a dataset that links no provider to any condition (CMS)."""
+
+    def __init__(self) -> None:
+        super().__init__(
+            "CONDITIONS_UNAVAILABLE",
+            "This dataset has no condition data; search without a condition",
+            422,
+            [{"field": "condition", "message": "Not available in this dataset"}],
+        )
+
+
 class LocationNotFoundError(AppError):
     def __init__(self, field: str = "location") -> None:
         super().__init__(

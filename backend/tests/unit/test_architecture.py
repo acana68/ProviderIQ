@@ -1,6 +1,7 @@
 """Import boundaries that are design rules, enforced:
 
-- The ranking engine and geo helpers are pure Python: no database, no web framework.
+- The ranking engine, geo helpers and imputation are pure Python: no database, no web
+  framework. Missing values are filled in before the engine sees them.
 - The AI package never touches repositories or the database (docs/architecture.md). The
   LLM can only return criteria; it has no path to data.
 """
@@ -19,7 +20,7 @@ APP_DIR = BACKEND_DIR / "app"
 BOUNDARIES: dict[str, tuple[list[Path], tuple[str, ...]]] = {
     "ranking": (
         sorted((APP_DIR / "services" / "ranking").rglob("*.py"))
-        + [APP_DIR / "services" / "geo.py"],
+        + [APP_DIR / "services" / "geo.py", APP_DIR / "services" / "imputation.py"],
         ("sqlalchemy", "fastapi", "app.database"),
     ),
     "ai": (

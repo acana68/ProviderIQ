@@ -3,6 +3,9 @@
 .env.*
 !.env.example
 
+# Raw public-data downloads (pipeline/extract.py): large, and re-downloadable
+data/raw/
+
 # Python
 __pycache__/
 *.py[cod]

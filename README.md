@@ -53,6 +53,10 @@ then rank results by criteria they don't show. "Best match" is a black box.
 - **Shareable URLs**: all search state lives in the query string.
 - **Synthetic dataset**: 1,500 providers, 10 specialties, 50 conditions, and 25 cities,
   generated from a fixed seed.
+- **Real public data, optionally**: about 9,000 New Jersey physicians from three CMS
+  datasets, built by a SQL ELT pipeline with a [data-quality report](docs/data-quality.md).
+  Missing quality and experience are scored as the specialty median and flagged, never
+  shown as standouts.
 
 ## Architecture
 
@@ -286,6 +290,7 @@ OpenAPI docs: http://localhost:8000/docs.
 | GET | `/specialties` | Specialties with provider counts |
 | GET | `/conditions?specialty=` | Conditions, optionally only those treated in a specialty |
 | GET | `/cities` | Locations a search can use |
+| GET | `/dataset` | Which dataset is loaded (synthetic or CMS New Jersey), what it publishes, and its disclaimer |
 | GET | `/providers` | Browse without ranking (filters + pagination) |
 | GET | `/providers/{id}` | Detail; with `priority` (and a location) it adds the same score and explanation a search would give |
 | POST | `/search` | Ranked search with structured criteria |
@@ -293,8 +298,8 @@ OpenAPI docs: http://localhost:8000/docs.
 | POST | `/ai/parse-query` | Natural language → criteria (never searches) |
 
 Every error has the shape `{"error": {"code", "message", "request_id", "details?"}}`, with
-codes such as `VALIDATION_ERROR`, `INVALID_SEARCH`, `LOCATION_NOT_FOUND`, `RATE_LIMITED`, and
-`INTERNAL_ERROR`. Submitted values are never echoed back, and no stack traces leak.
+codes such as `VALIDATION_ERROR`, `INVALID_SEARCH`, `LOCATION_NOT_FOUND`,
+`CONDITIONS_UNAVAILABLE`, `RATE_LIMITED`, and `INTERNAL_ERROR`. Submitted values are never echoed back, and no stack traces leak.
 
 ## Security
 
@@ -423,6 +428,31 @@ Checks:
     npx playwright install chromium   # once
     npm run screenshots
 
+### Real data: CMS, New Jersey
+
+The app ships with synthetic data. It can also run on real public CMS data for New Jersey
+physicians (how it's built: [architecture.md, section 10](docs/architecture.md#10-real-data-cms-new-jersey);
+what came out: [data-quality.md](docs/data-quality.md)). The processed files in `data/cms/`
+are committed, so **seeding needs no network**:
+
+    cd backend
+    alembic upgrade head
+    python -m scripts.seed_db --source cms_nj
+
+Or set `DATA_SOURCE=cms_nj` in `.env` and run `python -m scripts.seed_db` (Docker's first
+start does the same). Seeding replaces whatever dataset was loaded; `--source synthetic`
+switches back. `GET /api/v1/dataset` reports which one is loaded.
+
+To rebuild `data/cms/` from the sources (downloads about 80 MB into the gitignored
+`data/raw/`, then transforms in the `staging` schema of `DATABASE_URL`):
+
+    python -m pipeline.extract       # cached; --refresh downloads again
+    python -m pipeline.transform     # load + SQL transforms + CSVs + docs/data-quality.md
+    python -m scripts.seed_db --source cms_nj
+
+Tests and CI always use synthetic data; the pipeline is tested on small fake files in
+`backend/tests/fixtures/cms_raw/`.
+
 ## Design decisions and tradeoffs
 
 **The LLM parses but never ranks.** Ranking by LLM would be non-deterministic, impossible to
@@ -522,11 +552,14 @@ ECS Fargate behind an ALB is the next step when it needs to scale.
 - **Authentication**, which would also unlock an admin write API.
 - **Generated TypeScript types** from the OpenAPI spec instead of hand-written ones.
 - **End-to-end browser tests** with Playwright, which is already set up for screenshots.
-- **Real public provider data**, such as the CMS National Provider Identifier registry, in
-  place of synthetic data.
+- **More states** for the real CMS dataset: the pipeline is parameterized by state, but
+  the city list and the ZIP prefix filter are New Jersey-specific.
 
 ## Disclaimer
 
-> **Educational portfolio project. All provider data is synthetic: the providers are
-> generated, not real people. This is not a medical recommendation system and does not
-> provide medical advice.** If you need care, talk to a licensed healthcare professional.
+> **Educational portfolio project. The default provider data is synthetic: those providers
+> are generated, not real people. The optional CMS dataset is real public data about real
+> clinicians, covering Medicare patients only; its scores are illustrative and are not a
+> rating or endorsement of any clinician. This is not a medical recommendation system and
+> does not provide medical advice.** If you need care, talk to a licensed healthcare
+> professional.

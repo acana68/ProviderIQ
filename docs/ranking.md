@@ -88,6 +88,52 @@ descending, then provider id ascending.** The id makes the order total, so it ne
 on the order the database happened to return rows in. Without that, the same provider
 could appear on two different pages.
 
+Sorting by `quality` or `experience` lists providers whose value is imputed (next section)
+after all the providers with a real value. A stand-in median isn't a measurement, so it
+isn't ranked as one.
+
+### Missing values (real data)
+
+The synthetic data has every metric for every provider. The real CMS data doesn't: most
+New Jersey clinicians have no MIPS score (quality), and a few have no usable graduation
+year (experience). See [data-quality.md](data-quality.md) for the rates.
+
+**A MIPS final score of 0 counts as missing.** Source: CMS, *2024 Traditional MIPS
+Scoring Guide* (qpp.cms.gov). The final score is the weighted sum of the category scores.
+A clinician who submits no quality measure gets 0 points for quality (unless the category
+is reweighted), as does a submitted measure that misses data completeness outside a small
+practice. Cost needs no submission, and every scored cost measure earns 1–10 points. So a
+final score of exactly 0 means nothing that could be scored was submitted and no cost
+measure was scored. In the CMS file every such row has quality 0 and improvement
+activities 0. It says the clinician didn't take part, not that their care is the worst
+possible, so it's imputed like any other missing score (`pipeline/sql/03_mips_scores.sql`).
+The CMS data dictionary doesn't define a final score of 0.
+
+**A missing quality or experience is scored as the median of the provider's specialty,**
+and flagged as imputed (`services/imputation.py`). The median is computed over all
+providers in the specialty that have the value, like the peer percentiles, so filters
+don't change it.
+
+Why not drop the component and renormalize, as with distance? Because that rewards
+missing data. A clinician with no quality score would be ranked on their other factors
+alone, so they could beat an otherwise identical clinician whose real quality score is
+merely good. With the median, a missing value is neutral. It can never beat a real
+above-median score (a property test checks this for every priority and sort), and it
+never sinks a provider just because CMS didn't publish a number. Scoring a missing value
+as 0 would do that, and would mostly punish clinicians exempt from MIPS.
+
+What it means elsewhere:
+
+- The API keeps the field itself `null` and marks it `imputed` in `metric_flags`. The
+  score component carries `"imputed": true`, with the median as its `raw` value.
+- An explanation never says a provider "stands out" on an imputed value. It says
+  "quality score not reported" or "experience not reported" instead.
+- `min_quality_score` and `min_years_experience` only match reported values.
+- The ranking engine never sees a missing value: the service fills it in and passes the
+  flags along with the numbers, so the engine stays pure.
+- Complication and readmission rates aren't scored at all, so they're just `null` and
+  flagged `not_reported`.
+
 ## 5. Worked example
 
 The provider has quality 88, 15 years of experience, cost index 0.9, and a volume
@@ -190,6 +236,21 @@ whatever else the search asked for.
 | cost | Stands out for low cost (23% below average; cheaper than 85% of cardiologists). |
 | volume | Stands out for high patient volume within the specialty (busier than 80% of cardiologists). |
 | distance | Stands out for being close by (2.1 miles away). |
+
+For CMS data, volume reads "high Medicare patient volume" (the file only counts Medicare
+patients). The cost component is **Medicare spending per patient** there, and is never
+called cost or price: "Stands out for lower Medicare spending per patient (lower than 85%
+of cardiologists)", and as a fact "Medicare spending per patient 12% below the specialty
+median".
+
+Why spending per patient, rather than the average allowed amount per service used at
+first: Medicare pays by fee schedule, so the same service is paid about the same whoever
+provides it. The amount per service mostly reflects which services a clinician bills
+(many cheap tests vs. mostly visits or procedures), not a price. Spending per patient
+measures how much care a clinician uses for each patient they see. It is still influenced
+by how sick those patients are, since it isn't risk-adjusted, and it includes Part B
+drugs, which dominate oncology. The index is spending per beneficiary divided by the NJ
+median for the specialty, and is normalized like any cost index.
 
 Percentages are rounded down, so "cheaper than 85%" is never an overstatement. The peer
 group is named per specialty ("cardiologists", "primary care doctors"). An unknown

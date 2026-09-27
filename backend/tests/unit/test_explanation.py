@@ -2,7 +2,7 @@ from dataclasses import replace
 
 import pytest
 
-from app.services.explanation import PeerComparison, explain, peer_noun
+from app.services.explanation import CMS_WORDING, PeerComparison, explain, peer_noun
 from app.services.ranking.engine import ProviderMetrics, score_provider
 from app.services.ranking.weights import Priority, get_weights
 
@@ -200,3 +200,57 @@ def test_peer_noun() -> None:
     assert peer_noun("cardiology", "Cardiology") == "cardiologists"
     assert peer_noun("primary-care", "Primary Care") == "primary care doctors"
     assert peer_noun("sleep-medicine", "Sleep Medicine") == "Sleep Medicine providers"
+
+
+# --- Imputed values ----------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("percentile", [0.95, 1.0])
+def test_an_imputed_quality_is_never_a_standout(percentile: float) -> None:
+    """Even if a percentile slipped through: the metrics' own flag decides."""
+    metrics = replace(PLAIN, quality_score=95, quality_imputed=True)
+
+    text = _explain(metrics, replace(AVERAGE_PEERS, quality=percentile))
+
+    assert "quality score (" not in text
+    assert text == (
+        "No single standout factor. Quality score not reported, 3 years of experience, "
+        "12.0 miles away, average cost."
+    )
+
+
+def test_an_imputed_experience_is_never_a_standout_nor_quoted() -> None:
+    metrics = replace(PLAIN, years_experience=30, experience_imputed=True)
+
+    text = _explain(metrics, replace(AVERAGE_PEERS, experience=0.99))
+
+    assert text == (
+        "No single standout factor. Experience not reported, 12.0 miles away, average cost."
+    )
+
+
+def test_a_missing_percentile_is_skipped_and_the_next_best_standout_wins() -> None:
+    metrics = replace(PLAIN, quality_imputed=True)
+    peers = replace(AVERAGE_PEERS, quality=None, volume=0.9)
+
+    assert _explain(metrics, peers).startswith(
+        "Stands out for high patient volume within the specialty (busier than 90% of"
+    )
+
+
+def test_cms_wording_calls_the_index_medicare_spending_per_patient() -> None:
+    cms = replace(AVERAGE_PEERS, wording=CMS_WORDING)
+    low_spender = _explain(replace(PLAIN, cost_index=0.77), replace(cms, cost=0.85))
+    typical = _explain(PLAIN, cms)
+    high_spender = _explain(replace(PLAIN, cost_index=1.3), cms)
+    busy = _explain(PLAIN, replace(cms, volume=0.95))
+
+    assert low_spender.startswith(
+        "Stands out for lower Medicare spending per patient (lower than 85% of cardiologists)."
+    )
+    assert typical.endswith("Medicare spending per patient near the specialty median.")
+    assert high_spender.endswith("Medicare spending per patient 30% above the specialty median.")
+    assert busy.startswith("Stands out for high Medicare patient volume")
+    # CMS spending isn't a price: never "cost", "cheaper" or "price".
+    for text in (low_spender, typical, high_spender, busy):
+        assert not {"cost", "cheaper", "price"} & set(text.lower().replace(",", " ").split())

@@ -44,6 +44,11 @@ class ProviderMetrics:
     volume_percentile: float
     # None when the search has no location.
     distance_miles: float | None = None
+    # True when the value above is a stand-in for a missing one (the specialty median;
+    # see services/imputation.py). Scored like any other value; the flags only mark it
+    # in the breakdown and put these providers last when sorting by that metric.
+    quality_imputed: bool = False
+    experience_imputed: bool = False
 
 
 @dataclass(frozen=True)
@@ -54,6 +59,8 @@ class ComponentScore:
     # The weight actually applied, after renormalization.
     weight: float
     contribution: float
+    # True when `raw` is a stand-in for a value the provider doesn't have.
+    imputed: bool = False
 
 
 @dataclass(frozen=True)
@@ -111,6 +118,7 @@ def score_provider(
         )
 
     applied = effective_weights(weights, include_distance="distance" in values)
+    imputed = {"quality": metrics.quality_imputed, "experience": metrics.experience_imputed}
     components = tuple(
         ComponentScore(
             name=name,
@@ -118,6 +126,7 @@ def score_provider(
             normalized=normalized,
             weight=applied[name],
             contribution=100 * applied[name] * normalized,
+            imputed=imputed.get(name, False),
         )
         for name, (raw, normalized) in values.items()
     )
@@ -134,7 +143,9 @@ def rank(
 
     `priority` decides how scores are computed; `sort` only picks the ordering column.
     Every sort falls back to the same tie-breaks (overall desc, quality desc, id asc), so
-    the order is fully determined by the input values, never by input order.
+    the order is fully determined by the input values, never by input order. Sorting by
+    quality or experience lists providers with an imputed value after all the ones with
+    a real value: a stand-in median can't be ranked as if it were a measurement.
     """
     weights = get_weights(priority)
     scored = [(m, score_provider(m, weights, radius_miles)) for m in candidates]
@@ -154,8 +165,16 @@ def _by_distance(item: Ranked) -> tuple[object, ...]:
 
 _SORT_KEYS: dict[SortOption, Callable[[Ranked], tuple[object, ...]]] = {
     SortOption.MATCH: _tie_break,
-    SortOption.QUALITY: lambda item: (-item[0].quality_score, *_tie_break(item)),
-    SortOption.EXPERIENCE: lambda item: (-item[0].years_experience, *_tie_break(item)),
+    SortOption.QUALITY: lambda item: (
+        item[0].quality_imputed,
+        -item[0].quality_score,
+        *_tie_break(item),
+    ),
+    SortOption.EXPERIENCE: lambda item: (
+        item[0].experience_imputed,
+        -item[0].years_experience,
+        *_tie_break(item),
+    ),
     SortOption.DISTANCE: _by_distance,
     SortOption.COST: lambda item: (item[0].cost_index, *_tie_break(item)),
 }

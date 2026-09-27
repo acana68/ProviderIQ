@@ -8,13 +8,18 @@ import logging
 import math
 import time
 
-from app.core.errors import InvalidSearchError, LocationNotFoundError
+from app.core.errors import (
+    ConditionsUnavailableError,
+    InvalidSearchError,
+    LocationNotFoundError,
+)
 from app.models import City, Provider
 from app.repositories.provider_repository import (
     PeerPercentiles,
     ProviderRepository,
     SearchCandidate,
     SearchFilters,
+    SpecialtyMedians,
 )
 from app.repositories.reference_repository import ReferenceRepository
 from app.repositories.search_log_repository import SearchLogRepository
@@ -27,8 +32,15 @@ from app.schemas.search import (
     SearchResponse,
     SearchResult,
 )
-from app.services.explanation import PeerComparison, explain, peer_noun
+from app.services.explanation import (
+    CMS_WORDING,
+    SYNTHETIC_WORDING,
+    PeerComparison,
+    explain,
+    peer_noun,
+)
 from app.services.geo import bounding_box, haversine_miles
+from app.services.imputation import impute
 from app.services.ranking.engine import (
     ProviderMetrics,
     SortOption,
@@ -54,6 +66,9 @@ class SearchService:
 
     def search(self, request: SearchRequest) -> SearchResponse:
         start = time.perf_counter()
+        if request.condition is not None and not self.reference.has_conditions():
+            # Checked first: a slug from another dataset shouldn't read as a typo.
+            raise ConditionsUnavailableError()
         errors = _distance_without_location_errors(request.priority, request.sort, request.location)
         specialty_id, condition_id, slug_errors = self._resolve_slugs(request)
         if errors or slug_errors:
@@ -84,7 +99,9 @@ class SearchService:
             if distance is not None and distance > request.radius_miles:
                 continue
             by_id[candidate.provider.id] = candidate
-            metrics.append(_metrics(candidate.provider, candidate.percentiles, distance))
+            metrics.append(
+                _metrics(candidate.provider, candidate.percentiles, candidate.medians, distance)
+            )
 
         # Scores and order come from ProviderMetrics alone; peer percentiles are only
         # attached afterwards, for the explanations of the page being returned.
@@ -139,7 +156,8 @@ class SearchService:
         percentiles = self.providers.get_peer_percentiles(provider.id)
         # The provider was just loaded, so it has percentiles.
         assert percentiles is not None
-        metrics = _metrics(provider, percentiles, _distance(provider, city))
+        medians = self.providers.get_specialty_medians(provider.specialty_id)
+        metrics = _metrics(provider, percentiles, medians, _distance(provider, city))
         breakdown = score_provider(metrics, get_weights(priority), radius)
         return ScoredProviderDetail(
             **ProviderDetail.from_model(provider).model_dump(),
@@ -235,16 +253,27 @@ def _distance(provider: Provider, city: City | None) -> float | None:
 
 
 def _metrics(
-    provider: Provider, percentiles: PeerPercentiles, distance: float | None
+    provider: Provider,
+    percentiles: PeerPercentiles,
+    medians: SpecialtyMedians,
+    distance: float | None,
 ) -> ProviderMetrics:
-    """The engine's input. Of the peer percentiles, only volume's is part of the score."""
+    """The engine's input. Of the peer percentiles, only volume's is part of the score.
+
+    A missing quality or experience is scored as the specialty median and flagged; see
+    services/imputation.py for why. The engine itself never sees a missing value.
+    """
+    quality = impute(provider.quality_score, medians.quality)
+    experience = impute(provider.years_experience, medians.experience)
     return ProviderMetrics(
         provider_id=provider.id,
-        quality_score=provider.quality_score,
-        years_experience=provider.years_experience,
+        quality_score=quality.value,
+        years_experience=experience.value,
         cost_index=provider.cost_index,
         volume_percentile=percentiles.volume,
         distance_miles=distance,
+        quality_imputed=quality.imputed,
+        experience_imputed=experience.imputed,
     )
 
 
@@ -256,4 +285,5 @@ def _peer_comparison(provider: Provider, percentiles: PeerPercentiles) -> PeerCo
         cost=percentiles.cost,
         volume=percentiles.volume,
         peers=peer_noun(provider.specialty.slug, provider.specialty.name),
+        wording=CMS_WORDING if provider.data_source == "cms" else SYNTHETIC_WORDING,
     )

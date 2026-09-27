@@ -3,14 +3,30 @@ from collections.abc import Sequence
 from sqlalchemy import Row, exists, func, select
 from sqlalchemy.orm import Session
 
-from app.models import City, Condition, Provider, Specialty, provider_conditions
+from app.models import (
+    City,
+    Condition,
+    DatasetMetadata,
+    Provider,
+    Specialty,
+    provider_conditions,
+)
 
 
 class ReferenceRepository:
-    """Specialties, conditions, and cities: the fixed vocabularies behind the search form."""
+    """Specialties, conditions, and cities: the fixed vocabularies behind the search form.
+    Also which dataset is loaded."""
 
     def __init__(self, session: Session) -> None:
         self.session = session
+
+    def get_dataset_metadata(self) -> DatasetMetadata | None:
+        """The seeded dataset's row, or None if the database was never seeded."""
+        return self.session.get(DatasetMetadata, 1)
+
+    def has_conditions(self) -> bool:
+        """Whether any provider is linked to a condition. CMS data has no conditions."""
+        return bool(self.session.scalar(select(exists().select_from(provider_conditions))))
 
     def list_specialties_with_provider_counts(self) -> Sequence[Row[tuple[int, str, str, int]]]:
         """Rows with id, slug, name, provider_count, ordered by name.

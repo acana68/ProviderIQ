@@ -37,6 +37,11 @@ class Settings(BaseSettings):
     # Only the test suite reads this; it must point at a separate database.
     test_database_url: str | None = None
 
+    # Which dataset scripts/seed_db.py loads: generated providers, or real CMS data for New
+    # Jersey (data/cms/, built by backend/pipeline/). The API describes whatever was
+    # actually seeded (see GET /dataset), not this setting.
+    data_source: Literal["synthetic", "cms_nj"] = "synthetic"
+
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
     # Comma-separated in .env. NoDecode: read the raw string instead of parsing it as JSON.
     cors_origins: Annotated[list[str], NoDecode] = ["http://localhost:5173"]
@@ -59,9 +64,9 @@ class Settings(BaseSettings):
     def _uppercase_log_level(cls, value: Any) -> Any:
         return value.upper() if isinstance(value, str) else value
 
-    @field_validator("ai_provider", mode="before")
+    @field_validator("ai_provider", "data_source", mode="before")
     @classmethod
-    def _lowercase_ai_provider(cls, value: Any) -> Any:
+    def _lowercase(cls, value: Any) -> Any:
         return value.lower() if isinstance(value, str) else value
 
     @field_validator("anthropic_api_key", mode="before")
