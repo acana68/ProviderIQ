@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import type { ParsedCriteria } from '../src/types/search'
-import { criteriaForSearch, criteriaFromParsed } from '../src/utils/criteria'
+import {
+  criteriaForDataset,
+  criteriaForEditor,
+  criteriaForSearch,
+  criteriaFromParsed,
+} from '../src/utils/criteria'
 
 const EMPTY_PARSED: ParsedCriteria = {
   specialty: null,
@@ -74,5 +79,39 @@ describe('criteriaForSearch', () => {
     const location = { city: 'Chicago', state: 'IL' }
     expect(criteriaForSearch({ location })).toEqual({ location, radius_miles: 25 })
     expect(criteriaForSearch({ location, radius_miles: 5 })).toEqual({ location, radius_miles: 5 })
+  })
+})
+
+describe('criteriaForDataset', () => {
+  const criteria = {
+    specialty: 'cardiology',
+    condition: 'heart-failure',
+    accepting_new_patients: true,
+    require_quality_score: true,
+  }
+
+  it('keeps everything for synthetic data', () => {
+    expect(criteriaForDataset(criteria)).toEqual(criteria)
+  })
+
+  it('drops what the CMS data cannot answer', () => {
+    expect(
+      criteriaForDataset(criteria, { hasConditions: false, hasAcceptingNewPatients: false }),
+    ).toEqual({ specialty: 'cardiology', require_quality_score: true })
+  })
+
+  it('applies to the search URL too', () => {
+    expect(criteriaForSearch(criteria, { hasConditions: false })).toEqual({
+      specialty: 'cardiology',
+      accepting_new_patients: true,
+      require_quality_score: true,
+    })
+  })
+
+  it('keeps require_quality_score in the editor', () => {
+    expect(criteriaForEditor({ require_quality_score: true })).toEqual({
+      priority: 'balanced',
+      require_quality_score: true,
+    })
   })
 })

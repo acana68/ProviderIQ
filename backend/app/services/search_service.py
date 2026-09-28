@@ -82,6 +82,7 @@ class SearchService:
                 specialty_id=specialty_id,
                 condition_id=condition_id,
                 min_quality_score=request.min_quality_score,
+                require_quality_score=request.require_quality_score,
                 min_years_experience=request.min_years_experience,
                 accepting_new_patients=request.accepting_new_patients,
                 bounding_box=(

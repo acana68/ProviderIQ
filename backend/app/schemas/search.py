@@ -35,6 +35,9 @@ class SearchRequest(BaseModel):
     min_quality_score: float | None = Field(default=None, ge=0, le=100)
     min_years_experience: int | None = Field(default=None, ge=0, le=70)
     accepting_new_patients: bool | None = None
+    # True: only providers with a reported quality score (none imputed; CMS data only has
+    # gaps). Like min_quality_score, but without a threshold.
+    require_quality_score: bool = False
     priority: Priority = Priority.BALANCED
     sort: SortOption = SortOption.MATCH
     page: int = Field(default=1, ge=1)

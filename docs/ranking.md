@@ -134,7 +134,7 @@ See [data-quality.md](data-quality.md) for the rates.
   drug part as total − medical. 1,410 of the 9,071 providers (16%), mostly busy
   clinicians who gave a few patients an injection.
 - **Fewer than 30 patients had medical services** (`MIN_SPENDING_PATIENTS` in
-  `pipeline/transform.py`). Over a handful of patients, one unusually sick or healthy
+  `app/services/dataset.py`, applied by the pipeline and served by `GET /dataset`). Over a handful of patients, one unusually sick or healthy
   patient decides the average, so the number says little about the clinician. 292
   providers, 122 of them psychiatrists (their median is 60 Medicare patients).
 
@@ -284,11 +284,21 @@ whatever else the search asked for.
 | volume | Stands out for high patient volume within the specialty (busier than 80% of cardiologists). |
 | distance | Stands out for being close by (2.1 miles away). |
 
-For CMS data, volume reads "high Medicare patient volume" (the file only counts Medicare
-patients). The cost component is **Medicare spending per patient** there, and is never
-called cost or price: "Stands out for lower Medicare spending per patient (lower than 85%
-of cardiologists)", and as a fact "Medicare spending per patient 12% below the specialty
-median".
+For CMS data every template names the metric as `GET /dataset` labels it
+(`CMS_WORDING` in `services/explanation.py`; a test checks no CMS explanation says
+"quality score", "experience", "cost", "cheaper" or "average"):
+
+| Standout / fact | CMS wording |
+|---|---|
+| quality | Stands out for a high MIPS final score (91.8/100; higher than 93% of cardiologists). |
+| experience | Stands out for time since medical school (40 years; longer than 90% of cardiologists). |
+| cost | Stands out for lower Medicare spending per patient (lower than 85% of cardiologists). |
+| volume | Stands out for high Medicare patient volume within the specialty (busier than 80% of cardiologists). |
+| facts | "40 years since medical school", "Medicare spending per patient 12% below the specialty median" |
+| not reported | "MIPS final score not reported", "years since medical school not reported", "Medicare spending per patient not reported" |
+
+Years since medical school include residency, so they're never called experience. Volume
+counts Medicare patients only. Spending is never called cost or price.
 
 Why spending per patient, rather than the average allowed amount per service used at
 first: Medicare pays by fee schedule, so the same service is paid about the same whoever

@@ -2,7 +2,10 @@ import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import type { RankingWeightsResponse } from '../src/types/ranking'
-import { errorBody, jsonResponse, mockFetch, renderAppAt, tableRows } from './utils'
+import { routeFetch } from './fixtures'
+import { errorBody, jsonResponse, renderAppAt, tableRows } from './utils'
+
+const WEIGHTS_URL = 'GET /api/v1/ranking/weights'
 
 const WEIGHTS: RankingWeightsResponse = {
   profiles: {
@@ -17,11 +20,13 @@ const WEIGHTS: RankingWeightsResponse = {
 
 describe('MethodologyPage', () => {
   it('renders the weight table from /ranking/weights', async () => {
-    const fetchSpy = mockFetch().mockImplementation(async () => jsonResponse(WEIGHTS))
+    const fetchSpy = routeFetch({ [WEIGHTS_URL]: () => jsonResponse(WEIGHTS) })
 
     renderAppAt('/methodology')
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Methodology' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Methodology' }),
+    ).toBeInTheDocument()
     expect(screen.getByText('Loading the weights…')).toBeInTheDocument()
     const table = await screen.findByRole('table', { name: 'Weight of each factor, by priority' })
     expect(fetchSpy).toHaveBeenCalledWith('/api/v1/ranking/weights', expect.anything())
@@ -38,13 +43,15 @@ describe('MethodologyPage', () => {
 
   it('shows an error with the request ID, and Retry loads the weights', async () => {
     let calls = 0
-    mockFetch().mockImplementation(async () => {
-      calls += 1
-      return calls === 1
-        ? jsonResponse(errorBody('INTERNAL_ERROR', 'An unexpected error occurred', 'req-w'), {
-            status: 500,
-          })
-        : jsonResponse(WEIGHTS)
+    routeFetch({
+      [WEIGHTS_URL]: () => {
+        calls += 1
+        return calls === 1
+          ? jsonResponse(errorBody('INTERNAL_ERROR', 'An unexpected error occurred', 'req-w'), {
+              status: 500,
+            })
+          : jsonResponse(WEIGHTS)
+      },
     })
     const user = userEvent.setup()
 
@@ -64,10 +71,11 @@ describe('MethodologyPage', () => {
   })
 
   it('covers every section, the factor table and the repo link', async () => {
-    mockFetch().mockImplementation(async () => jsonResponse(WEIGHTS))
+    routeFetch({ [WEIGHTS_URL]: () => jsonResponse(WEIGHTS) })
 
     renderAppAt('/methodology')
 
+    await screen.findByRole('heading', { level: 1, name: 'Methodology' })
     const headings = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
     expect(headings).toEqual([
       'What ProviderIQ is',

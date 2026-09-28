@@ -1,5 +1,5 @@
+import { useDataset } from '../../hooks/useDataset'
 import { COMPONENT_NAMES, type ComponentName } from '../../types/provider'
-import { COMPONENT_LABELS } from '../../utils/labels'
 import colors from './score.module.css'
 import styles from './ScoreLegend.module.css'
 
@@ -10,6 +10,7 @@ interface ScoreLegendProps {
 
 /** One legend for every card's ScoreBar: each component's color and weight. */
 export function ScoreLegend({ weights }: ScoreLegendProps) {
+  const { labels } = useDataset()
   const names = COMPONENT_NAMES.filter((name) => weights[name] !== undefined)
   return (
     <div className={styles.legend}>
@@ -18,7 +19,7 @@ export function ScoreLegend({ weights }: ScoreLegendProps) {
         {names.map((name) => (
           <li key={name} className={styles.item}>
             <span className={`${styles.swatch} ${colors[name]}`} aria-hidden="true" />
-            {COMPONENT_LABELS[name]}
+            {labels.components[name]}
             <span className={styles.weight}>{Math.round((weights[name] ?? 0) * 100)}%</span>
           </li>
         ))}

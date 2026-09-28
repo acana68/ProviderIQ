@@ -7,11 +7,18 @@ const SCORE: ProviderScore = {
   overall: 82.4,
   // Rounded separately by the API, so they sum to 82.3.
   components: [
-    { name: 'quality', raw: 88.5, normalized: 0.885, weight: 0.35, contribution: 31.1 },
-    { name: 'experience', raw: 15, normalized: 0.8, weight: 0.2, contribution: 16 },
-    { name: 'cost', raw: 0.88, normalized: 0.705, weight: 0.2, contribution: 14.1 },
-    { name: 'volume', raw: 0.6, normalized: 0.6, weight: 0.1, contribution: 6 },
-    { name: 'distance', raw: 6.2, normalized: 1, weight: 0.15, contribution: 15.1 },
+    {
+      name: 'quality',
+      raw: 88.5,
+      normalized: 0.885,
+      weight: 0.35,
+      contribution: 31.1,
+      imputed: false,
+    },
+    { name: 'experience', raw: 15, normalized: 0.8, weight: 0.2, contribution: 16, imputed: false },
+    { name: 'cost', raw: 0.88, normalized: 0.705, weight: 0.2, contribution: 14.1, imputed: false },
+    { name: 'volume', raw: 0.6, normalized: 0.6, weight: 0.1, contribution: 6, imputed: false },
+    { name: 'distance', raw: 6.2, normalized: 1, weight: 0.15, contribution: 15.1, imputed: false },
   ],
 }
 

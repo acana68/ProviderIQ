@@ -126,6 +126,15 @@ def test_minimum_quality_and_experience(client: TestClient, seeded_db: Session) 
         assert item["provider"]["years_experience"] >= 10
 
 
+def test_require_quality_score_changes_nothing_on_synthetic_data(
+    client: TestClient, seeded_db: Session
+) -> None:
+    # Every synthetic provider has a reported quality score.
+    body = {"specialty": "cardiology", "location": NYC}
+
+    assert _all_items(client, **body, require_quality_score=True) == _all_items(client, **body)
+
+
 @pytest.mark.parametrize(
     ("sort", "value", "descending"),
     [
@@ -405,6 +414,7 @@ def test_unknown_slugs_are_all_reported(client: TestClient, seeded_db: Session) 
         ({"priority": "cheapest"}, "priority"),
         ({"sort": "alphabetical"}, "sort"),
         ({"source": "email"}, "source"),
+        ({"require_quality_score": "sometimes"}, "require_quality_score"),
     ],
 )
 def test_invalid_request_is_rejected(

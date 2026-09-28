@@ -104,6 +104,9 @@ def test_dataset_endpoint_describes_cms_data(client: TestClient, cms_db: Session
     assert body["has_conditions"] is False
     assert "complication_rate" not in body["available_metrics"]
     assert body["metric_labels"]["cost_index"] == "Medicare spending per patient"
+    assert body["metric_short_labels"]["cost_index"] == "Spending"
+    assert body["min_spending_patients"] == 30
+    assert body["peer_nouns"]["cardiology"] == "cardiologists"
     assert "Medicare" in body["disclaimer"]
     assert "not a rating or endorsement" in body["disclaimer"]
 
@@ -180,7 +183,7 @@ def test_search_scores_missing_quality_as_the_specialty_median(
     assert imputed["experience"]["imputed"] is False
     assert reported["quality"] == {**reported["quality"], "raw": 80.5, "imputed": False}
     explanation = items["9000000002"]["explanation"]
-    assert "Quality score not reported" in explanation
+    assert "MIPS final score not reported" in explanation
     assert "quality score (" not in explanation
     # CMS wording: Medicare spending per patient, relative to the specialty median.
     assert any("Medicare spending per patient" in item["explanation"] for item in items.values())
@@ -194,7 +197,7 @@ def test_missing_experience_is_imputed_too(client: TestClient, cms_db: Session) 
         experience = next(c for c in items[npi]["score"]["components"] if c["name"] == "experience")
         assert experience["imputed"] is True
         assert items[npi]["provider"]["metric_flags"]["years_experience"] == "imputed"
-        assert "experience not reported" in items[npi]["explanation"].lower()
+        assert "years since medical school not reported" in items[npi]["explanation"].lower()
 
 
 def test_detail_score_matches_the_search_for_an_imputed_provider(
@@ -215,6 +218,21 @@ def test_minimum_filters_only_match_reported_values(client: TestClient, cms_db: 
 
     assert set(_by_npi(quality)) == {"9000000001", "9000000012"}
     assert experience["total"] == 0
+
+
+def test_require_quality_score_excludes_imputed_quality(
+    client: TestClient, cms_db: Session
+) -> None:
+    required = _search(client, specialty="cardiology", require_quality_score=True)
+    default = _search(client, specialty="cardiology", require_quality_score=False)
+
+    # 9000000002 and 9000000011 have no MIPS score.
+    assert set(_by_npi(required)) == {"9000000001", "9000000012"}
+    assert all(
+        item["provider"]["metric_flags"]["quality_score"] == "reported"
+        for item in required["items"]
+    )
+    assert default["total"] == 4
 
 
 def test_sort_by_quality_lists_imputed_scores_last(client: TestClient, cms_db: Session) -> None:
@@ -276,3 +294,15 @@ def test_search_near_a_cms_city(client: TestClient, cms_db: Session) -> None:
 
     assert body["total"] > 0
     assert all(item["distance_miles"] <= 25 for item in body["items"])
+
+
+def test_cms_explanations_use_the_dataset_wording(client: TestClient, cms_db: Session) -> None:
+    items = _by_npi(_search(client, specialty="cardiology"))
+
+    # 9000000002: 36 years since medical school, no MIPS score.
+    explanation = items["9000000002"]["explanation"]
+    assert "36 years since medical school" in explanation
+    for item in items.values():
+        lowered = item["explanation"].lower()
+        assert "experience" not in lowered
+        assert "quality score" not in lowered

@@ -1,4 +1,9 @@
-import type { ScoreComponent } from '../types/provider'
+import type { DataSource, ScoreComponent } from '../types/provider'
+
+/** What a missing value shows: never 0, blank or "NaN". */
+export const NOT_REPORTED = 'Not reported'
+/** Complication and readmission rates in the CMS data: CMS doesn't publish them per clinician. */
+export const NOT_PUBLISHED = 'Not published for individual clinicians'
 
 /** A score on 0-100 with one decimal, e.g. "82.4". */
 export function formatScore(value: number): string {
@@ -15,6 +20,22 @@ export function formatCostVsAverage(costIndex: number): string {
   const percent = Math.round(Math.abs(1 - costIndex) * 100)
   if (percent === 0) return 'About average'
   return `${percent}% ${costIndex < 1 ? 'below' : 'above'} average`
+}
+
+/**
+ * CMS spending per patient as a peer comparison, from its percentile (the share of the
+ * specialty that spends more) and the specialty's peer noun (useDataset().peerNoun):
+ * 0.85 -> "Lower than 85% of cardiologists", 0.1 -> "Higher than 90% of cardiologists".
+ * Rounded down, like the explanations, so it never overstates.
+ */
+export function formatSpendingVsPeers(percentile: number, peers: string): string {
+  if (percentile >= 0.5) return `Lower than ${floorPercent(percentile)}% of ${peers}`
+  return `Higher than ${floorPercent(1 - percentile)}% of ${peers}`
+}
+
+/** The epsilon stops float error turning 0.29 * 100 = 28.999... into 28. */
+function floorPercent(fraction: number): number {
+  return Math.floor(fraction * 100 + 1e-9)
 }
 
 /** "1 provider", "1,204 providers". */
@@ -41,20 +62,33 @@ export function formatWeight(weight: number): string {
   return `${Number((weight * 100).toFixed(1))}%`
 }
 
-/** A component's raw value in its own terms, as the breakdown table shows it. */
-export function formatFactorValue(component: ScoreComponent): string {
+/** Whose score a component belongs to: what its values mean depends on the dataset. */
+export interface FactorContext {
+  data_source: DataSource
+  /** The specialty's peer noun, e.g. "cardiologists". */
+  peers: string
+}
+
+/**
+ * A component's value in its own terms, as the breakdown table shows it. An imputed value
+ * isn't the provider's, so it's "Not reported". CMS spending is scored as a percentile, so
+ * it's shown as a peer comparison rather than a percentage of the median.
+ */
+export function formatFactorValue(component: ScoreComponent, context?: FactorContext): string {
   const { name, raw } = component
+  if (component.imputed) return NOT_REPORTED
   switch (name) {
     case 'quality':
       return `${formatScore(raw)} / 100`
     case 'experience':
       return pluralize(Math.round(raw), 'year')
     case 'cost':
-      return formatCostVsAverage(raw)
+      return context?.data_source === 'cms'
+        ? formatSpendingVsPeers(component.normalized, context.peers)
+        : formatCostVsAverage(raw)
     case 'volume':
-      // Rounded down, like the explanations, so it never overstates. The epsilon stops
-      // float error turning 0.29 * 100 = 28.999... into the 28th.
-      return `${formatOrdinal(Math.floor(raw * 100 + 1e-9))} percentile in specialty`
+      // Rounded down, like the explanations, so it never overstates.
+      return `${formatOrdinal(floorPercent(raw))} percentile in specialty`
     case 'distance':
       return `${raw.toFixed(1)} mi`
   }

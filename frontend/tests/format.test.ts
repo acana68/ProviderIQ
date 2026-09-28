@@ -6,10 +6,14 @@ import {
   formatOrdinal,
   formatRate,
   formatScore,
+  formatSpendingVsPeers,
   formatWeight,
   pluralize,
 } from '../src/utils/format'
-import type { ComponentName } from '../src/types/provider'
+import { SYNTHETIC_LABELS, labelsFor } from '../src/utils/labels'
+import { CMS_DATASET, SYNTHETIC_DATASET } from './fixtures'
+import type { ComponentName, ScoreComponent } from '../src/types/provider'
+import type { FactorContext } from '../src/utils/format'
 import { pageItems } from '../src/utils/pagination'
 
 describe('format', () => {
@@ -68,7 +72,9 @@ describe('detail formats', () => {
     ['volume', 0.29, '29th percentile in specialty'],
     ['distance', 6.2, '6.2 mi'],
   ])('%s %s -> %s', (name, raw, text) => {
-    expect(formatFactorValue({ name, raw, normalized: 0, weight: 0, contribution: 0 })).toBe(text)
+    expect(
+      formatFactorValue({ name, raw, normalized: 0, weight: 0, contribution: 0, imputed: false }),
+    ).toBe(text)
   })
 })
 
@@ -84,5 +90,78 @@ describe('pageItems', () => {
     [12, 12, [1, 'gap', 11, 12]],
   ])('page %i of %i', (current, total, expected) => {
     expect(pageItems(current, total)).toEqual(expected)
+  })
+})
+
+describe('formatSpendingVsPeers', () => {
+  it.each([
+    [0.85, 'Lower than 85% of cardiologists'],
+    [0.29, 'Higher than 71% of cardiologists'],
+    [0.5, 'Lower than 50% of cardiologists'],
+    [1, 'Lower than 100% of cardiologists'],
+    [0, 'Higher than 100% of cardiologists'],
+  ])('%s -> %s', (percentile, text) => {
+    expect(formatSpendingVsPeers(percentile, 'cardiologists')).toBe(text)
+  })
+})
+
+describe('formatFactorValue with a dataset', () => {
+  const cost: ScoreComponent = {
+    name: 'cost',
+    raw: 0.81,
+    normalized: 0.85,
+    weight: 0.2,
+    contribution: 17,
+    imputed: false,
+  }
+  const cms: FactorContext = { data_source: 'cms', peers: 'oncologists' }
+
+  it('shows CMS spending as a peer comparison', () => {
+    expect(formatFactorValue(cost, cms)).toBe('Lower than 85% of oncologists')
+    expect(formatFactorValue(cost, { ...cms, data_source: 'synthetic' })).toBe('19% below average')
+  })
+
+  it('says "Not reported" for an imputed value, whatever it is', () => {
+    expect(formatFactorValue({ ...cost, imputed: true }, cms)).toBe('Not reported')
+    expect(formatFactorValue({ ...cost, name: 'quality', raw: 90.3, imputed: true })).toBe(
+      'Not reported',
+    )
+  })
+})
+
+describe('labelsFor', () => {
+  it('keeps the current labels for synthetic data or no dataset', () => {
+    expect(labelsFor(SYNTHETIC_DATASET)).toBe(SYNTHETIC_LABELS)
+    expect(labelsFor(null)).toBe(SYNTHETIC_LABELS)
+    expect(SYNTHETIC_LABELS.priorityNames).toBeNull()
+    expect(SYNTHETIC_LABELS.card).toEqual({
+      quality_score: 'Quality score',
+      years_experience: 'Experience',
+      cost_index: 'Cost',
+    })
+  })
+
+  it('uses the CMS metric labels from GET /dataset', () => {
+    const labels = labelsFor(CMS_DATASET)
+
+    expect(labels.components).toEqual({
+      quality: 'MIPS final score',
+      experience: 'Years since medical school',
+      cost: 'Medicare spending per patient',
+      volume: 'Medicare patients',
+      distance: 'Distance',
+    })
+    // Short on the priority buttons, with the full names alongside.
+    expect(labels.priorities).toEqual({
+      balanced: 'Balanced',
+      quality: 'MIPS score',
+      cost: 'Spending',
+      experience: 'Years in medicine',
+      distance: 'Distance',
+    })
+    expect(labels.priorityNames?.cost).toBe('Medicare spending per patient')
+    expect(labels.sorts.cost).toBe('Medicare spending per patient')
+    expect(labels.minQuality).toBe('Minimum MIPS final score')
+    expect(labels.minExperience).toBe('Minimum years since medical school')
   })
 })

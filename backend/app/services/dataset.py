@@ -3,6 +3,13 @@
 from datetime import date
 
 from app.schemas.dataset import DatasetInfo, DatasetSource, MetricName
+from app.services.explanation import PEER_NOUNS
+
+# CMS Medicare spending per patient is left unreported for a clinician with fewer Medicare
+# patients than this: over a handful of patients, one very sick or very healthy patient
+# decides the average. The pipeline applies it (pipeline/sql/06_providers.sql) and records
+# it in data/cms/MANIFEST.json; GET /dataset serves it.
+MIN_SPENDING_PATIENTS = 30
 
 SYNTHETIC_METRIC_LABELS: dict[MetricName, str] = {
     "quality_score": "Quality score",
@@ -20,6 +27,21 @@ CMS_METRIC_LABELS: dict[MetricName, str] = {
     "years_experience": "Years since medical school",
     "cost_index": "Medicare spending per patient",
     "patient_volume": "Medicare patients",
+}
+# For buttons; the full label goes with it as a tooltip / accessible name.
+SYNTHETIC_METRIC_SHORT_LABELS: dict[MetricName, str] = {
+    "quality_score": "Quality",
+    "years_experience": "Experience",
+    "cost_index": "Cost",
+    "patient_volume": "Volume",
+    "complication_rate": "Complications",
+    "readmission_rate": "Readmissions",
+}
+CMS_METRIC_SHORT_LABELS: dict[MetricName, str] = {
+    "quality_score": "MIPS score",
+    "years_experience": "Years in medicine",
+    "cost_index": "Spending",
+    "patient_volume": "Patients",
 }
 
 CMS_DISCLAIMER = (
@@ -53,8 +75,11 @@ def describe_dataset(
             as_of=as_of,
             available_metrics=list(CMS_METRIC_LABELS),
             metric_labels=CMS_METRIC_LABELS,
+            metric_short_labels=CMS_METRIC_SHORT_LABELS,
             has_conditions=has_conditions,
             disclaimer=CMS_DISCLAIMER,
+            min_spending_patients=MIN_SPENDING_PATIENTS,
+            peer_nouns=PEER_NOUNS,
         )
     return DatasetInfo(
         source=source,
@@ -66,6 +91,9 @@ def describe_dataset(
         as_of=as_of,
         available_metrics=list(SYNTHETIC_METRIC_LABELS),
         metric_labels=SYNTHETIC_METRIC_LABELS,
+        metric_short_labels=SYNTHETIC_METRIC_SHORT_LABELS,
         has_conditions=has_conditions,
         disclaimer=SYNTHETIC_DISCLAIMER,
+        min_spending_patients=None,
+        peer_nouns=PEER_NOUNS,
     )

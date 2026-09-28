@@ -144,3 +144,21 @@ describe('searchParamsToCriteria', () => {
     expect(parse('city=Austin&state=TX&radius_miles=0.5').radius_miles).toBeUndefined()
   })
 })
+
+describe('require_quality_score', () => {
+  it('is written only when true', () => {
+    expect(criteriaToSearchParams({ require_quality_score: true }).toString()).toBe(
+      'require_quality_score=true',
+    )
+    expect(criteriaToSearchParams({ require_quality_score: false }).toString()).toBe('')
+  })
+
+  it('is read only from "true"', () => {
+    const read = (value: string) =>
+      searchParamsToCriteria(new URLSearchParams({ require_quality_score: value }))
+
+    expect(read('true')).toEqual({ require_quality_score: true })
+    expect(read('false')).toEqual({})
+    expect(read('yes')).toEqual({})
+  })
+})

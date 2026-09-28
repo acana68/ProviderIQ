@@ -73,4 +73,7 @@
 
   /* Layout */
   --content-max-width: 72rem;
+  /* A page's column inside the content area (AppLayout); reading pages are narrower. */
+  --page-max-width: 56rem;
+  --reading-max-width: 48rem;
 }

@@ -18,8 +18,8 @@ STANDOUT_PERCENTILE = 0.80
 DISTANCE_STANDOUT = 0.80
 
 # Plural nouns for "cheaper than 85% of ___". Unknown specialties fall back to
-# "<Name> providers".
-_PEER_NOUNS = {
+# "<Name> providers". Also served by GET /dataset, so the frontend says it the same way.
+PEER_NOUNS = {
     "cardiology": "cardiologists",
     "orthopedics": "orthopedists",
     "dermatology": "dermatologists",
@@ -37,6 +37,18 @@ _PEER_NOUNS = {
 class Wording:
     """The phrases that depend on what the dataset's numbers mean."""
 
+    # The lead when quality is the standout. Placeholders: {score} (e.g. "88"),
+    # {percent} (share of peers beaten) and {peers}.
+    quality_lead: str
+    # The fact when the quality score is imputed.
+    quality_not_reported: str
+    # The lead when experience is the standout: {years} (e.g. "25 years"), {percent},
+    # {peers}.
+    experience_lead: str
+    # The fact about experience otherwise: {years}.
+    experience_fact: str
+    # The fact when experience is imputed.
+    experience_not_reported: str
     # "Stands out for high ___ within the specialty"
     volume: str
     # The lead when cost_index is the standout. Placeholders: {vs_baseline} (e.g. "12%
@@ -53,6 +65,15 @@ class Wording:
 
 
 SYNTHETIC_WORDING = Wording(
+    quality_lead=(
+        "Stands out for a high quality score ({score}/100; higher than {percent} of {peers})."
+    ),
+    quality_not_reported="quality score not reported",
+    experience_lead=(
+        "Stands out for experience ({years}; more experienced than {percent} of {peers})."
+    ),
+    experience_fact="{years} of experience",
+    experience_not_reported="experience not reported",
     volume="patient volume",
     cost_lead="Stands out for low cost ({vs_baseline}; cheaper than {percent} of {peers}).",
     cost_fact="cost {vs_baseline}",
@@ -60,9 +81,20 @@ SYNTHETIC_WORDING = Wording(
     typical_cost="average cost",
     cost_not_reported="cost not reported",
 )
-# CMS volume counts Medicare patients only. Its cost_index is Medicare spending per
-# patient relative to the NJ specialty median: not a price, so never called "cost".
+# Each CMS metric is named for what it is, as in GET /dataset's labels. Quality is the MIPS
+# final score. Experience is years since medical school (residency included), so it's
+# never called "experience". Volume counts Medicare patients only. cost_index is Medicare
+# spending per patient relative to the NJ specialty median: not a price, so never "cost".
 CMS_WORDING = Wording(
+    quality_lead=(
+        "Stands out for a high MIPS final score ({score}/100; higher than {percent} of {peers})."
+    ),
+    quality_not_reported="MIPS final score not reported",
+    experience_lead=(
+        "Stands out for time since medical school ({years}; longer than {percent} of {peers})."
+    ),
+    experience_fact="{years} since medical school",
+    experience_not_reported="years since medical school not reported",
     volume="Medicare patient volume",
     cost_lead=(
         "Stands out for lower Medicare spending per patient (lower than {percent} of {peers})."
@@ -94,7 +126,7 @@ class PeerComparison:
 
 
 def peer_noun(specialty_slug: str, specialty_name: str) -> str:
-    return _PEER_NOUNS.get(specialty_slug, f"{specialty_name} providers")
+    return PEER_NOUNS.get(specialty_slug, f"{specialty_name} providers")
 
 
 def explain(breakdown: ScoreBreakdown, metrics: ProviderMetrics, peers: PeerComparison) -> str:
@@ -114,23 +146,22 @@ def explain(breakdown: ScoreBreakdown, metrics: ProviderMetrics, peers: PeerComp
     standout = _standout(breakdown, metrics, peers)
     lead = "No single standout factor." if standout is None else _lead(standout, metrics, peers)
 
+    wording = peers.wording
     facts = []
     if metrics.quality_imputed:
-        facts.append("quality score not reported")
+        facts.append(wording.quality_not_reported)
     if metrics.experience_imputed:
-        facts.append("experience not reported")
+        facts.append(wording.experience_not_reported)
     elif standout != "experience":
-        facts.append(_years_text(metrics.years_experience) + " of experience")
+        facts.append(wording.experience_fact.format(years=_years_text(metrics.years_experience)))
     if metrics.distance_miles is not None and standout != "distance":
         facts.append(_miles_text(metrics.distance_miles))
     if metrics.cost_imputed:
-        facts.append(peers.wording.cost_not_reported)
+        facts.append(wording.cost_not_reported)
     elif standout != "cost":
-        cost = _cost_percent_text(metrics.cost_index, peers.wording)
+        cost = _cost_percent_text(metrics.cost_index, wording)
         facts.append(
-            peers.wording.typical_cost
-            if cost is None
-            else peers.wording.cost_fact.format(vs_baseline=cost)
+            wording.typical_cost if cost is None else wording.cost_fact.format(vs_baseline=cost)
         )
     text = ", ".join(facts)
     return f"{lead} {text[0].upper()}{text[1:]}."
@@ -161,15 +192,17 @@ def _lead(standout: ComponentName, metrics: ProviderMetrics, peers: PeerComparis
         case "quality":
             # _standout() only picks a metric the provider has.
             assert peers.quality is not None
-            return (
-                f"Stands out for a high quality score ({_number(metrics.quality_score)}/100; "
-                f"higher than {_percent(peers.quality)} of {peers.peers})."
+            return peers.wording.quality_lead.format(
+                score=_number(metrics.quality_score),
+                percent=_percent(peers.quality),
+                peers=peers.peers,
             )
         case "experience":
             assert peers.experience is not None
-            return (
-                f"Stands out for experience ({_years_text(metrics.years_experience)}; "
-                f"more experienced than {_percent(peers.experience)} of {peers.peers})."
+            return peers.wording.experience_lead.format(
+                years=_years_text(metrics.years_experience),
+                percent=_percent(peers.experience),
+                peers=peers.peers,
             )
         case "cost":
             assert peers.cost is not None

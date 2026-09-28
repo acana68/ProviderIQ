@@ -35,6 +35,8 @@ export interface SearchRequest {
   /** 0-70. */
   min_years_experience?: number | null
   accepting_new_patients?: boolean | null
+  /** True: only providers whose quality score is reported, not imputed. Default false. */
+  require_quality_score?: boolean
   /** Default "balanced". */
   priority?: Priority
   /** Default "match". */
@@ -105,6 +107,8 @@ export interface SearchCriteria {
   min_quality_score?: number
   min_years_experience?: number
   accepting_new_patients?: boolean
+  /** Only set when true (CMS data, where quality can be missing). */
+  require_quality_score?: boolean
   priority?: Priority
   sort?: SortOption
   page?: number

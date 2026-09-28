@@ -89,8 +89,9 @@
     }
   },
   "outputs": {
-    "transformed_at": "2026-09-28T00:00:43+00:00",
+    "transformed_at": "2026-09-28T02:41:12+00:00",
     "reference_year": 2026,
+    "min_spending_patients": 30,
     "data/cms/providers_nj.csv": {
       "rows": 9071
     },

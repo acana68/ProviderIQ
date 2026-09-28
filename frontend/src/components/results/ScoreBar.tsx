@@ -1,6 +1,6 @@
+import { useDataset } from '../../hooks/useDataset'
 import type { ProviderScore } from '../../types/provider'
 import { formatScore } from '../../utils/format'
-import { COMPONENT_LABELS } from '../../utils/labels'
 import styles from './ScoreBar.module.css'
 import colors from './score.module.css'
 
@@ -10,8 +10,9 @@ import colors from './score.module.css'
  * readers, labelled with every contribution.
  */
 export function ScoreBar({ score }: { score: ProviderScore }) {
+  const { labels } = useDataset()
   const parts = score.components.map(
-    (c) => `${COMPONENT_LABELS[c.name]} ${formatScore(c.contribution)}`,
+    (c) => `${labels.components[c.name]} ${formatScore(c.contribution)}`,
   )
   const label = `Score breakdown, ${formatScore(score.overall)} out of 100: ${parts.join(', ')}`
 

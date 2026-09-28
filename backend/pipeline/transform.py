@@ -22,6 +22,7 @@ from typing import Any
 from sqlalchemy import Connection, create_engine, text
 
 from app.core.config import get_settings
+from app.services.dataset import MIN_SPENDING_PATIENTS
 from pipeline import data_quality
 from pipeline.extract import read_manifest, write_manifest
 from pipeline.load import LoadError, load_all
@@ -29,11 +30,10 @@ from pipeline.sources import CMS_DIR, MANIFEST_PATH, RAW_DIR, STATE
 
 SQL_DIR = Path(__file__).resolve().parent / "sql"
 PROVIDERS_FILE = "providers_nj.csv"
-# Medicare spending per patient is left unreported (NULL: imputed in the app, and never
-# a reason to stand out) for a clinician with fewer Medicare patients than this: over a
-# handful of patients, one very sick or very healthy patient decides the average.
-MIN_SPENDING_PATIENTS = 30
 CITIES_FILE = "cities_nj.csv"
+# MIN_SPENDING_PATIENTS: spending per patient is left unreported (NULL: imputed in the app,
+# never a reason to stand out) below this many patients. Defined in the app, which serves
+# it in GET /dataset; the SQL reads it from staging.params.
 
 # Output column -> formatter. None is written as an empty field.
 Formatter = Callable[[Any], str]
@@ -157,6 +157,7 @@ def main() -> None:
     manifest["outputs"] = {
         "transformed_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "reference_year": args.reference_year,
+        "min_spending_patients": MIN_SPENDING_PATIENTS,
         f"data/cms/{PROVIDERS_FILE}": {"rows": result.providers},
         f"data/cms/{CITIES_FILE}": {"rows": result.cities},
     }

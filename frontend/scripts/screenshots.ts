@@ -7,7 +7,8 @@
  * It never starts anything itself. The search screenshot makes one real /ai/parse-query
  * call, so the stack needs AI_PROVIDER=anthropic and a key; with the keyword parser the
  * badge would read "Keyword matching" and the script stops instead of saving it.
- * Set SCREENSHOT_BASE_URL to point it somewhere other than http://localhost:8080.
+ * Set SCREENSHOT_BASE_URL to point it somewhere other than http://localhost:8080. It only
+ * captures synthetic data: against the real CMS dataset it stops.
  */
 import { mkdir } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
@@ -39,6 +40,21 @@ async function assertStackIsUp() {
     console.error('Start it from the repo root with `docker compose up --build`, then rerun.')
     process.exit(1)
   }
+}
+
+/**
+ * The README screenshots show synthetic providers only. Real (CMS) data describes real
+ * clinicians, so the script stops rather than publish pictures of them.
+ */
+async function assertSyntheticData() {
+  const response = await fetch(`${BASE_URL}/api/v1/dataset`, { signal: AbortSignal.timeout(5000) })
+  const dataset = (await response.json()) as { source?: string }
+  if (dataset.source === 'synthetic') return
+  console.error(`The stack is serving ${dataset.source ?? 'unknown'} data, not synthetic.`)
+  console.error(
+    'Switch back with: docker compose exec backend python -m scripts.seed_db --source synthetic',
+  )
+  process.exit(1)
 }
 
 /** `height`: crop to this many pixels from the top of the page instead of the viewport. */
@@ -104,6 +120,7 @@ async function methodologyPage(page: Page) {
 
 async function main() {
   await assertStackIsUp()
+  await assertSyntheticData()
   await mkdir(OUT_DIR, { recursive: true })
 
   const browser = await chromium.launch()

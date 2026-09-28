@@ -1,5 +1,6 @@
 import { type ReactNode, useId } from 'react'
 import { Link } from 'react-router'
+import { useDataset } from '../../hooks/useDataset'
 import { useConditions, useSpecialties } from '../../hooks/useReferenceData'
 import type { SearchCriteria } from '../../types/search'
 import { PARSER_LABELS } from '../../utils/labels'
@@ -13,6 +14,7 @@ interface SearchSummaryProps {
 
 /** The search's filters as label/value pairs. Priority and sort live in the toolbar. */
 export function SearchSummary({ criteria, changeSearchTo }: SearchSummaryProps) {
+  const { labels } = useDataset()
   const specialties = useSpecialties()
   // All conditions, not the specialty's: the name is needed even if the pair doesn't match.
   const conditions = useConditions()
@@ -46,10 +48,13 @@ export function SearchSummary({ criteria, changeSearchTo }: SearchSummaryProps) 
     ])
   }
   if (criteria.min_quality_score !== undefined) {
-    rows.push(['Minimum quality score', String(criteria.min_quality_score)])
+    rows.push([labels.minQuality, String(criteria.min_quality_score)])
   }
   if (criteria.min_years_experience !== undefined) {
-    rows.push(['Minimum years of experience', String(criteria.min_years_experience)])
+    rows.push([labels.minExperience, String(criteria.min_years_experience)])
+  }
+  if (criteria.require_quality_score) {
+    rows.push([labels.metrics.quality_score, 'Reported only'])
   }
   if (criteria.accepting_new_patients !== undefined) {
     rows.push(['Accepting new patients', criteria.accepting_new_patients ? 'Yes' : 'No'])

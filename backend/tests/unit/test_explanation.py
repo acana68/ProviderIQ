@@ -262,6 +262,68 @@ def test_unreported_spending_is_never_a_standout() -> None:
     peers = replace(AVERAGE_PEERS, cost=0.99, wording=CMS_WORDING)
 
     assert _explain(metrics, peers) == (
-        "No single standout factor. 3 years of experience, 12.0 miles away, "
+        "No single standout factor. 3 years since medical school, 12.0 miles away, "
         "Medicare spending per patient not reported."
     )
+
+
+CMS_PEERS = replace(AVERAGE_PEERS, wording=CMS_WORDING)
+
+
+@pytest.mark.parametrize(
+    ("metric_changes", "peer_changes", "expected"),
+    [
+        (
+            {"quality_score": 91.8},
+            {"quality": 0.93},
+            "Stands out for a high MIPS final score (91.8/100; higher than 93% of "
+            "cardiologists). 3 years since medical school, 12.0 miles away, Medicare "
+            "spending per patient near the specialty median.",
+        ),
+        (
+            {"years_experience": 40},
+            {"experience": 0.9},
+            "Stands out for time since medical school (40 years; longer than 90% of "
+            "cardiologists). 12.0 miles away, Medicare spending per patient near the "
+            "specialty median.",
+        ),
+        (
+            {"quality_imputed": True, "experience_imputed": True},
+            {"quality": None, "experience": None},
+            "No single standout factor. MIPS final score not reported, years since medical "
+            "school not reported, 12.0 miles away, Medicare spending per patient near the "
+            "specialty median.",
+        ),
+    ],
+)
+def test_cms_wording_in_every_template(
+    metric_changes: dict[str, object], peer_changes: dict[str, object], expected: str
+) -> None:
+    metrics = replace(PLAIN, **metric_changes)  # type: ignore[arg-type]
+    peers = replace(CMS_PEERS, **peer_changes)  # type: ignore[arg-type]
+
+    assert _explain(metrics, peers) == expected
+
+
+def test_cms_explanations_never_use_synthetic_wording() -> None:
+    """Every lead and every fact, on CMS data, for providers with and without values."""
+    texts = [
+        _explain(replace(PLAIN, **metrics), replace(CMS_PEERS, **peers))  # type: ignore[arg-type]
+        for metrics, peers in [
+            ({"quality_score": 95.0}, {"quality": 0.99}),
+            ({"years_experience": 40}, {"experience": 0.99}),
+            ({"cost_index": 0.7}, {"cost": 0.99}),
+            ({}, {"volume": 0.99}),
+            ({"distance_miles": 1.0}, {}),
+            ({}, {}),
+            (
+                {"quality_imputed": True, "experience_imputed": True, "cost_imputed": True},
+                {"quality": None, "experience": None, "cost": None},
+            ),
+        ]
+    ]
+
+    for text in texts:
+        lowered = text.lower()
+        for synthetic in ("quality score", "experience", "cost", "cheaper", "average"):
+            assert synthetic not in lowered, (synthetic, text)

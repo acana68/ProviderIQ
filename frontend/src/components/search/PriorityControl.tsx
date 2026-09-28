@@ -1,6 +1,6 @@
 import { useId } from 'react'
+import { useDataset } from '../../hooks/useDataset'
 import { PRIORITIES, type Priority } from '../../types/search'
-import { PRIORITY_LABELS } from '../../utils/labels'
 import styles from './PriorityControl.module.css'
 
 interface PriorityControlProps {
@@ -20,6 +20,7 @@ export function PriorityControl({
   compact = false,
 }: PriorityControlProps) {
   const id = useId()
+  const { labels } = useDataset()
   const hintId = `${id}-hint`
   return (
     <fieldset className={styles.priority}>
@@ -27,11 +28,21 @@ export function PriorityControl({
       <div className={styles.segments}>
         {PRIORITIES.map((option) => {
           const disabled = option === 'distance' && !hasLocation
+          // A short button label (CMS: "Spending") carries the full metric name as its
+          // tooltip and accessible name.
+          const fullName = labels.priorityNames?.[option]
+          const named = fullName !== undefined && fullName !== labels.priorities[option]
           return (
             <label
               key={option}
               className={styles.segment}
-              title={disabled ? 'Choose a location to prioritize distance.' : undefined}
+              title={
+                disabled
+                  ? 'Choose a location to prioritize distance.'
+                  : named
+                    ? fullName
+                    : undefined
+              }
             >
               <input
                 type="radio"
@@ -40,10 +51,11 @@ export function PriorityControl({
                 value={option}
                 checked={value === option}
                 disabled={disabled}
+                aria-label={named ? fullName : undefined}
                 aria-describedby={disabled ? hintId : undefined}
                 onChange={() => onChange(option)}
               />
-              {PRIORITY_LABELS[option]}
+              {labels.priorities[option]}
             </label>
           )
         })}

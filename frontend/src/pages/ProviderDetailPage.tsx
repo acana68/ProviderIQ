@@ -4,18 +4,21 @@ import { ErrorState } from '../components/common/ErrorState'
 import { ScoreBreakdownTable } from '../components/provider/ScoreBreakdownTable'
 import { ScoreBar } from '../components/results/ScoreBar'
 import { PriorityControl } from '../components/search/PriorityControl'
+import { useDataset } from '../hooks/useDataset'
 import { useProvider } from '../hooks/useProvider'
 import { isScored, type ScoreContext } from '../services/providerApi'
 import type { ProviderDetail, ScoredProviderDetail } from '../types/provider'
 import { DEFAULT_RADIUS_MILES, type Priority } from '../types/search'
 import {
+  NOT_PUBLISHED,
+  NOT_REPORTED,
   formatCostVsAverage,
   formatDistance,
   formatRate,
   formatScore,
+  formatSpendingVsPeers,
   pluralize,
 } from '../utils/format'
-import { PRIORITY_LABELS } from '../utils/labels'
 import { resultsUrlFrom } from '../utils/navigation'
 import { scoreContextParams, searchParamsToCriteria } from '../utils/searchParams'
 import styles from './ProviderDetailPage.module.css'
@@ -171,6 +174,7 @@ interface MatchScoreProps {
 
 function MatchScore({ provider, context, updating, onPriorityChange }: MatchScoreProps) {
   const headingId = useId()
+  const { labels, peerNoun } = useDataset()
   const where = context.location
     ? `near ${context.location.city}, ${context.location.state} within ${
         context.radius_miles ?? DEFAULT_RADIUS_MILES
@@ -194,7 +198,7 @@ function MatchScore({ provider, context, updating, onPriorityChange }: MatchScor
         <div className={styles.scoreText}>
           <p className={styles.explanation}>{provider.explanation}</p>
           <p className={styles.context}>
-            Scored for {PRIORITY_LABELS[context.priority]} priority · {where}
+            Scored for {labels.priorities[context.priority]} priority · {where}
           </p>
         </div>
       </div>
@@ -210,7 +214,10 @@ function MatchScore({ provider, context, updating, onPriorityChange }: MatchScor
 
       <div className={updating ? styles.updating : undefined}>
         <ScoreBar score={provider.score} />
-        <ScoreBreakdownTable score={provider.score} />
+        <ScoreBreakdownTable
+          score={provider.score}
+          provider={{ data_source: provider.data_source, peers: peerNoun(provider.specialty) }}
+        />
       </div>
       <p className={styles.footnote}>
         Points = normalized × weight × 100. Totals may differ by 0.1 due to rounding.{' '}
@@ -220,15 +227,28 @@ function MatchScore({ provider, context, updating, onPriorityChange }: MatchScor
   )
 }
 
-function Metrics({ provider }: { provider: ProviderDetail }) {
+function Metrics({ provider }: { provider: ProviderDetail | ScoredProviderDetail }) {
   const headingId = useId()
+  const { labels, peerNoun } = useDataset()
+  const { metrics } = labels
   const rows: [string, string, string?][] = [
-    ['Quality score', `${formatScore(provider.quality_score)} / 100`],
-    ['Years of experience', pluralize(provider.years_experience, 'year')],
-    ['Cost', formatCostVsAverage(provider.cost_index)],
-    ['Annual patient volume', pluralize(provider.patient_volume, 'patient')],
-    ['Complication rate', formatRate(provider.complication_rate), 'lower is better'],
-    ['Readmission rate', formatRate(provider.readmission_rate), 'lower is better'],
+    [
+      metrics.quality_score,
+      provider.quality_score === null
+        ? NOT_REPORTED
+        : `${formatScore(provider.quality_score)} / 100`,
+    ],
+    [
+      metrics.years_experience,
+      provider.years_experience === null
+        ? NOT_REPORTED
+        : pluralize(provider.years_experience, 'year'),
+    ],
+    [metrics.cost_index, costText(provider, peerNoun(provider.specialty))],
+    [metrics.patient_volume, pluralize(provider.patient_volume, 'patient')],
+    rateRow(metrics.complication_rate, provider, provider.complication_rate),
+    rateRow(metrics.readmission_rate, provider, provider.readmission_rate),
+    ...(provider.npi ? [['NPI', provider.npi] as [string, string]] : []),
     ['ZIP code', provider.zip_code],
   ]
   return (
@@ -251,6 +271,32 @@ function Metrics({ provider }: { provider: ProviderDetail }) {
   )
 }
 
+/**
+ * Synthetic cost vs the regional average. CMS spending is scored as a percentile within the
+ * specialty, which only a score carries (its cost component), so without one there's no
+ * peer comparison to show.
+ */
+function costText(provider: ProviderDetail | ScoredProviderDetail, peers: string): string {
+  if (provider.cost_index === null) return NOT_REPORTED
+  if (provider.data_source !== 'cms') return formatCostVsAverage(provider.cost_index)
+  const cost = isScored(provider)
+    ? provider.score.components.find((c) => c.name === 'cost')
+    : undefined
+  if (!cost) return 'Run a search to compare with peers'
+  if (cost.imputed) return NOT_REPORTED
+  return formatSpendingVsPeers(cost.normalized, peers)
+}
+
+/** A rate, or why there isn't one: CMS doesn't publish these per clinician. */
+function rateRow(
+  label: string,
+  provider: ProviderDetail,
+  rate: number | null,
+): [string, string, string?] {
+  if (rate !== null) return [label, formatRate(rate), 'lower is better']
+  return [label, provider.data_source === 'cms' ? NOT_PUBLISHED : NOT_REPORTED]
+}
+
 function Conditions({ provider }: { provider: ProviderDetail }) {
   const headingId = useId()
   return (
@@ -267,7 +313,9 @@ function Conditions({ provider }: { provider: ProviderDetail }) {
           ))}
         </ul>
       ) : (
-        <p className={styles.hint}>None listed.</p>
+        <p className={styles.hint}>
+          {provider.data_source === 'cms' ? `${NOT_PUBLISHED}.` : 'None listed.'}
+        </p>
       )}
     </section>
   )

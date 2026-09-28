@@ -22,13 +22,39 @@ export function criteriaFromParsed(parsed: ParsedCriteria): SearchCriteria {
   return criteria
 }
 
+/** What the dataset can be filtered on (see useDataset). Both true for synthetic data. */
+export interface DatasetFilters {
+  /** False for CMS: a condition would be rejected by the API. */
+  hasConditions?: boolean
+  /** False for CMS: nobody's is known, so the filter would match nobody. */
+  hasAcceptingNewPatients?: boolean
+}
+
+/** Drops filters the dataset can't answer: a condition, or accepting new patients (CMS). */
+export function criteriaForDataset(
+  criteria: SearchCriteria,
+  { hasConditions = true, hasAcceptingNewPatients = true }: DatasetFilters = {},
+): SearchCriteria {
+  const { condition, accepting_new_patients, ...rest } = criteria
+  return {
+    ...rest,
+    ...(hasConditions && condition !== undefined ? { condition } : {}),
+    ...(hasAcceptingNewPatients && accepting_new_patients !== undefined
+      ? { accepting_new_patients }
+      : {}),
+  }
+}
+
 /**
  * The criteria to put in the /results URL. A radius only goes with a location (the API
  * rejects one without), and it defaults to the API's 25 miles so the URL says what was
- * searched.
+ * searched. Filters the dataset can't answer are dropped (criteriaForDataset).
  */
-export function criteriaForSearch(criteria: SearchCriteria): SearchCriteria {
-  const { radius_miles, ...rest } = criteria
+export function criteriaForSearch(
+  criteria: SearchCriteria,
+  dataset: DatasetFilters = {},
+): SearchCriteria {
+  const { radius_miles, ...rest } = criteriaForDataset(criteria, dataset)
   if (!rest.location) return rest
   return { ...rest, radius_miles: radius_miles ?? DEFAULT_RADIUS_MILES }
 }
@@ -52,5 +78,6 @@ export function criteriaForEditor(criteria: SearchCriteria): SearchCriteria {
     editable.min_years_experience = criteria.min_years_experience
   }
   if (criteria.accepting_new_patients) editable.accepting_new_patients = true
+  if (criteria.require_quality_score) editable.require_quality_score = true
   return editable
 }

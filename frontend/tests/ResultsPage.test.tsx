@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router'
 import { describe, expect, it, vi } from 'vitest'
 import { ResultsPage } from '../src/pages/ResultsPage'
 import type { SearchRequest, SearchResponse, SearchResult } from '../src/types/search'
-import { type Handler, requestBodies, routeFetch } from './fixtures'
+import { type Handler, SYNTHETIC_FLAGS, requestBodies, routeFetch } from './fixtures'
 import { errorBody, jsonResponse } from './utils'
 
 const SEARCH_URL = '/api/v1/search'
@@ -13,6 +13,8 @@ function result(id: number, name: string): SearchResult {
   return {
     provider: {
       id,
+      npi: null,
+      data_source: 'synthetic',
       display_name: name,
       specialty: { slug: 'cardiology', name: 'Cardiology' },
       subspecialty: id === 1 ? 'Heart Failure & Transplant' : null,
@@ -22,17 +24,46 @@ function result(id: number, name: string): SearchResult {
       quality_score: 88.5,
       cost_index: 0.88,
       accepting_new_patients: id === 1,
+      metric_flags: SYNTHETIC_FLAGS,
     },
     distance_miles: id === 1 ? 6.2 : null,
     score: {
       overall: 82.4,
       // Rounded separately, so they sum to 82.3: a rounding step off, as from the API.
       components: [
-        { name: 'quality', raw: 88.5, normalized: 0.885, weight: 0.35, contribution: 31.1 },
-        { name: 'experience', raw: 15, normalized: 0.8, weight: 0.2, contribution: 16 },
-        { name: 'cost', raw: 0.88, normalized: 0.705, weight: 0.2, contribution: 14.1 },
-        { name: 'volume', raw: 0.6, normalized: 0.6, weight: 0.1, contribution: 6 },
-        { name: 'distance', raw: 6.2, normalized: 1, weight: 0.15, contribution: 15.1 },
+        {
+          name: 'quality',
+          raw: 88.5,
+          normalized: 0.885,
+          weight: 0.35,
+          contribution: 31.1,
+          imputed: false,
+        },
+        {
+          name: 'experience',
+          raw: 15,
+          normalized: 0.8,
+          weight: 0.2,
+          contribution: 16,
+          imputed: false,
+        },
+        {
+          name: 'cost',
+          raw: 0.88,
+          normalized: 0.705,
+          weight: 0.2,
+          contribution: 14.1,
+          imputed: false,
+        },
+        { name: 'volume', raw: 0.6, normalized: 0.6, weight: 0.1, contribution: 6, imputed: false },
+        {
+          name: 'distance',
+          raw: 6.2,
+          normalized: 1,
+          weight: 0.15,
+          contribution: 15.1,
+          imputed: false,
+        },
       ],
     },
     explanation: `${name} ranks highly for quality among cardiologists.`,

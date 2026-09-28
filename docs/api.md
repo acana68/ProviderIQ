@@ -159,10 +159,24 @@ data actually loaded; only an unseeded database falls back to the `DATA_SOURCE` 
     "cost_index": "Medicare spending per patient",
     "patient_volume": "Medicare patients"
   },
+  "metric_short_labels": {
+    "quality_score": "MIPS score",
+    "years_experience": "Years in medicine",
+    "cost_index": "Spending",
+    "patient_volume": "Patients"
+  },
   "has_conditions": false,
-  "disclaimer": "Real public CMS data about real clinicians, covering Medicare fee-for-service patients only. Scores are illustrative, computed by ProviderIQ from that data, and are not a rating or endorsement of any clinician by ProviderIQ or CMS."
+  "disclaimer": "Real public CMS data about real clinicians, covering Medicare fee-for-service patients only. Scores are illustrative, computed by ProviderIQ from that data, and are not a rating or endorsement of any clinician by ProviderIQ or CMS.",
+  "min_spending_patients": 30,
+  "peer_nouns": { "cardiology": "cardiologists", "primary-care": "primary care doctors", "…": "…" }
 }
 ```
+
+`metric_short_labels` are for buttons (the priority control), with the full label as the
+tooltip and accessible name. `min_spending_patients` is the fewest Medicare patients a
+clinician needs for spending per patient to be reported (`null` for synthetic data).
+`peer_nouns` names each specialty's providers the way explanations do; any other
+specialty is "<Name> providers".
 
 `source` is `synthetic` or `cms_nj`. `as_of` is when the CMS files were downloaded (the
 earliest of the three), `null` for synthetic data. Metrics missing from
@@ -355,6 +369,7 @@ computed. The body never contains free text, and unknown fields are rejected.
 | `radius_miles` | number 1–100 | Default `25`. Sending it without `location` → `422` |
 | `min_quality_score` | number 0–100, optional | Only providers with a reported score match; an imputed median never passes |
 | `min_years_experience` | int 0–70, optional | Likewise, reported values only |
+| `require_quality_score` | bool, default `false` | `true`: only providers whose quality score is reported, none imputed (CMS data has gaps; synthetic providers all have one) |
 | `accepting_new_patients` | bool, optional | |
 | `priority` | `balanced` \| `quality` \| `cost` \| `experience` \| `distance` | Default `balanced`. Picks the weight profile, so it changes the scores. `distance` requires `location` |
 | `sort` | `match` \| `quality` \| `experience` \| `distance` \| `cost` | Default `match`. Only picks the ordering column. `distance` requires `location` |

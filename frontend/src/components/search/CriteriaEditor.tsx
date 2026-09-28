@@ -1,4 +1,5 @@
 import { useEffect, useId } from 'react'
+import { useDataset } from '../../hooks/useDataset'
 import { useCities, useConditions, useSpecialties } from '../../hooks/useReferenceData'
 import {
   DEFAULT_RADIUS_MILES,
@@ -16,8 +17,13 @@ interface CriteriaEditorProps {
   onChange: (next: SearchCriteria) => void
 }
 
-/** Editable search criteria. Controlled: the parent owns `value`. */
+/**
+ * Editable search criteria. Controlled: the parent owns `value`. For CMS data there's no
+ * condition field or "accepting new patients" (neither is published), and a quality score
+ * can be required, since many clinicians have none.
+ */
 export function CriteriaEditor({ value, onChange }: CriteriaEditorProps) {
+  const { isCms, hasConditions, labels } = useDataset()
   const specialties = useSpecialties()
   const conditions = useConditions(value.specialty)
   const cities = useCities()
@@ -82,23 +88,25 @@ export function CriteriaEditor({ value, onChange }: CriteriaEditorProps) {
           </select>
         </div>
 
-        <div className={styles.field}>
-          <label htmlFor={`${id}-condition`}>Condition</label>
-          <select
-            id={`${id}-condition`}
-            className={styles.control}
-            value={value.condition ?? ''}
-            disabled={conditions.loading}
-            onChange={(event) => update({ condition: event.target.value || undefined })}
-          >
-            <option value="">{conditions.loading ? 'Loading…' : 'Any condition'}</option>
-            {conditions.data?.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        {hasConditions && (
+          <div className={styles.field}>
+            <label htmlFor={`${id}-condition`}>Condition</label>
+            <select
+              id={`${id}-condition`}
+              className={styles.control}
+              value={value.condition ?? ''}
+              disabled={conditions.loading}
+              onChange={(event) => update({ condition: event.target.value || undefined })}
+            >
+              <option value="">{conditions.loading ? 'Loading…' : 'Any condition'}</option>
+              {conditions.data?.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className={styles.field}>
           <label htmlFor={`${id}-location`}>Location</label>
@@ -133,7 +141,7 @@ export function CriteriaEditor({ value, onChange }: CriteriaEditorProps) {
 
         <NumberField
           id={`${id}-quality`}
-          label="Minimum quality score"
+          label={labels.minQuality}
           value={value.min_quality_score}
           min={0}
           max={100}
@@ -143,7 +151,7 @@ export function CriteriaEditor({ value, onChange }: CriteriaEditorProps) {
 
         <NumberField
           id={`${id}-years`}
-          label="Minimum years of experience"
+          label={labels.minExperience}
           value={value.min_years_experience}
           min={0}
           max={70}
@@ -153,16 +161,31 @@ export function CriteriaEditor({ value, onChange }: CriteriaEditorProps) {
         />
       </div>
 
-      <label className={styles.checkbox}>
-        <input
-          type="checkbox"
-          checked={value.accepting_new_patients === true}
-          onChange={(event) =>
-            update({ accepting_new_patients: event.target.checked ? true : undefined })
-          }
-        />
-        Accepting new patients only
-      </label>
+      {!isCms && (
+        <label className={styles.checkbox}>
+          <input
+            type="checkbox"
+            checked={value.accepting_new_patients === true}
+            onChange={(event) =>
+              update({ accepting_new_patients: event.target.checked ? true : undefined })
+            }
+          />
+          Accepting new patients only
+        </label>
+      )}
+
+      {isCms && (
+        <label className={styles.checkbox}>
+          <input
+            type="checkbox"
+            checked={value.require_quality_score === true}
+            onChange={(event) =>
+              update({ require_quality_score: event.target.checked ? true : undefined })
+            }
+          />
+          Only providers with a quality score
+        </label>
+      )}
 
       <PriorityControl
         value={priority}

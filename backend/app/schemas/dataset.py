@@ -28,7 +28,16 @@ class DatasetInfo(BaseModel):
     # mean different things: cost_index is "Cost" for synthetic data but "Medicare
     # spending per patient" for CMS data.
     metric_labels: dict[MetricName, str]
+    # The same, short enough for a button ("Spending" for "Medicare spending per patient").
+    # Every available metric has one.
+    metric_short_labels: dict[MetricName, str]
     # False: GET /conditions is empty and a search with a condition is rejected.
     has_conditions: bool
     # Show with every page of results.
     disclaimer: str
+    # Fewest patients a clinician needs for their spending per patient to be reported;
+    # null when the dataset has no such rule (synthetic).
+    min_spending_patients: int | None
+    # Specialty slug -> plural noun for its providers ("cardiologists"), as the
+    # explanations say it. Any other specialty is "<Name> providers".
+    peer_nouns: dict[str, str]

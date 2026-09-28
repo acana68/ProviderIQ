@@ -1,8 +1,9 @@
 import { type FormEvent, useEffect, useId, useRef, useState } from 'react'
+import { useDataset } from '../../hooks/useDataset'
 import { parseQuery } from '../../services/aiApi'
 import { type ApiError, isAbortError, toApiError } from '../../services/apiClient'
 import { MAX_QUERY_LENGTH, type ParseQueryResponse } from '../../types/search'
-import { EXAMPLE_QUERIES } from './exampleQueries'
+import { CMS_EXAMPLE_QUERIES, EXAMPLE_QUERIES } from './exampleQueries'
 import styles from './NaturalLanguageSearch.module.css'
 
 interface NaturalLanguageSearchProps {
@@ -21,6 +22,8 @@ type Status =
  * The API is called only on submit: typing and the example chips don't call it.
  */
 export function NaturalLanguageSearch({ onParsed }: NaturalLanguageSearchProps) {
+  const { isCms } = useDataset()
+  const examples = isCms ? CMS_EXAMPLE_QUERIES : EXAMPLE_QUERIES
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
   const inputRef = useRef<HTMLInputElement>(null)
@@ -73,7 +76,11 @@ export function NaturalLanguageSearch({ onParsed }: NaturalLanguageSearchProps) 
             type="text"
             value={query}
             maxLength={MAX_QUERY_LENGTH}
-            placeholder="e.g. a highly rated cardiologist near New York for heart failure"
+            placeholder={
+              isCms
+                ? 'e.g. an experienced cardiologist near Newark'
+                : 'e.g. a highly rated cardiologist near New York for heart failure'
+            }
             autoComplete="off"
             aria-describedby={counterId}
             onChange={(event) => setQuery(event.target.value)}
@@ -94,7 +101,7 @@ export function NaturalLanguageSearch({ onParsed }: NaturalLanguageSearchProps) 
 
       <div className={styles.examples}>
         <span className={styles.examplesLabel}>Try:</span>
-        {EXAMPLE_QUERIES.map((example) => (
+        {examples.map((example) => (
           <button
             key={example}
             type="button"

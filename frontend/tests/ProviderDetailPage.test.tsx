@@ -4,11 +4,13 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router'
 import { describe, expect, it } from 'vitest'
 import { ProviderDetailPage } from '../src/pages/ProviderDetailPage'
 import type { ProviderDetail, ScoredProviderDetail } from '../src/types/provider'
-import { routeFetch, type Handler } from './fixtures'
+import { SYNTHETIC_FLAGS, routeFetch, type Handler } from './fixtures'
 import { errorBody, hangingFetch, jsonResponse, mockFetch, renderAppAt, tableRows } from './utils'
 
 const DETAIL: ProviderDetail = {
   id: 7,
+  npi: null,
+  data_source: 'synthetic',
   display_name: 'Dr. Maya Patel',
   specialty: { slug: 'cardiology', name: 'Cardiology' },
   subspecialty: 'Interventional Cardiology',
@@ -24,6 +26,7 @@ const DETAIL: ProviderDetail = {
   patient_volume: 2345,
   complication_rate: 0.0464,
   readmission_rate: 0.0812,
+  metric_flags: SYNTHETIC_FLAGS,
   conditions: [
     { slug: 'heart-failure', name: 'Heart Failure' },
     { slug: 'atrial-fibrillation', name: 'Atrial Fibrillation' },
@@ -39,11 +42,46 @@ function scored(overall: number): ScoredProviderDetail {
     score: {
       overall,
       components: [
-        { name: 'quality', raw: 88.4, normalized: 0.884, weight: 0.55, contribution: 48.6 },
-        { name: 'experience', raw: 31, normalized: 1, weight: 0.2, contribution: 20 },
-        { name: 'cost', raw: 0.79, normalized: 0.71, weight: 0.05, contribution: 3.6 },
-        { name: 'volume', raw: 0.963, normalized: 0.963, weight: 0.1, contribution: 9.6 },
-        { name: 'distance', raw: 6.2, normalized: 0.38, weight: 0.1, contribution: 3.8 },
+        {
+          name: 'quality',
+          raw: 88.4,
+          normalized: 0.884,
+          weight: 0.55,
+          contribution: 48.6,
+          imputed: false,
+        },
+        {
+          name: 'experience',
+          raw: 31,
+          normalized: 1,
+          weight: 0.2,
+          contribution: 20,
+          imputed: false,
+        },
+        {
+          name: 'cost',
+          raw: 0.79,
+          normalized: 0.71,
+          weight: 0.05,
+          contribution: 3.6,
+          imputed: false,
+        },
+        {
+          name: 'volume',
+          raw: 0.963,
+          normalized: 0.963,
+          weight: 0.1,
+          contribution: 9.6,
+          imputed: false,
+        },
+        {
+          name: 'distance',
+          raw: 6.2,
+          normalized: 0.38,
+          weight: 0.1,
+          contribution: 3.8,
+          imputed: false,
+        },
       ],
     },
   }

@@ -428,12 +428,25 @@ Checks:
     npx playwright install chromium   # once
     npm run screenshots
 
-### Real data: CMS, New Jersey
+### Real data mode (CMS, New Jersey)
 
 The app ships with synthetic data. It can also run on real public CMS data for New Jersey
 physicians (how it's built: [architecture.md, section 10](docs/architecture.md#10-real-data-cms-new-jersey);
 what came out: [data-quality.md](docs/data-quality.md)). The processed files in `data/cms/`
-are committed, so **seeding needs no network**:
+are committed, so **seeding needs no network**. With the Docker stack running:
+
+    docker compose exec backend python -m scripts.seed_db --source cms_nj      # real data
+    docker compose exec backend python -m scripts.seed_db --source synthetic   # back again
+
+Reload the page after switching. The frontend asks `GET /api/v1/dataset` which data is
+loaded and adapts: a banner with the CMS disclaimer and data date on every page, metrics
+named for what they are ("MIPS final score", "Medicare spending per patient"), "Not
+reported" for missing values, no condition filter, an "Only providers with a quality
+score" option, and an "About the real data" section on the Methodology page. The
+screenshots above are synthetic on purpose; please don't publish screenshots of real
+clinicians (`npm run screenshots` refuses to run against CMS data).
+
+Locally, without Docker:
 
     cd backend
     alembic upgrade head

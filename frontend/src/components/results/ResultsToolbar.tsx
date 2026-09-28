@@ -1,7 +1,7 @@
 import { useId } from 'react'
+import { useDataset } from '../../hooks/useDataset'
 import { SORT_OPTIONS, type Priority, type SortOption } from '../../types/search'
 import { pluralize } from '../../utils/format'
-import { SORT_LABELS } from '../../utils/labels'
 import { PriorityControl } from '../search/PriorityControl'
 import styles from './ResultsToolbar.module.css'
 
@@ -27,6 +27,7 @@ export function ResultsToolbar({
   onPriorityChange,
 }: ResultsToolbarProps) {
   const sortId = useId()
+  const { labels } = useDataset()
   let count = ''
   if (loading) count = 'Searching…'
   else if (total !== null) count = `${pluralize(total, 'provider')} found`
@@ -49,7 +50,7 @@ export function ResultsToolbar({
           >
             {SORT_OPTIONS.map((option) => (
               <option key={option} value={option} disabled={option === 'distance' && !hasLocation}>
-                {SORT_LABELS[option]}
+                {labels.sorts[option]}
                 {option === 'distance' && !hasLocation ? ' (needs a location)' : ''}
               </option>
             ))}

@@ -2,6 +2,7 @@ import { type FormEvent, useId, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { CriteriaEditor } from '../components/search/CriteriaEditor'
 import { NaturalLanguageSearch } from '../components/search/NaturalLanguageSearch'
+import { useDataset } from '../hooks/useDataset'
 import type { ParseQueryResponse, ParserUsed, SearchCriteria } from '../types/search'
 import {
   INITIAL_CRITERIA,
@@ -14,6 +15,7 @@ import styles from './SearchPage.module.css'
 
 export function SearchPage() {
   const navigate = useNavigate()
+  const { isCms, hasConditions } = useDataset()
   // Starts from the URL, so "Change search" on the results page comes back to the same
   // criteria (the URL is only read once; editing doesn't write it back).
   const [params] = useSearchParams()
@@ -39,7 +41,10 @@ export function SearchPage() {
     const origin: SearchCriteria = parserUsed
       ? { source: 'nl', parser_used: parserUsed }
       : { source: 'manual' }
-    const params = criteriaToSearchParams({ ...criteriaForSearch(criteria), ...origin })
+    const params = criteriaToSearchParams({
+      ...criteriaForSearch(criteria, { hasConditions, hasAcceptingNewPatients: !isCms }),
+      ...origin,
+    })
     navigate(`/results?${params}`)
   }
 
@@ -48,7 +53,9 @@ export function SearchPage() {
       <header>
         <h1>ProviderIQ</h1>
         <p className={styles.lead}>
-          Find and compare healthcare providers by quality, experience, cost, and distance.
+          {isCms
+            ? 'Find and compare New Jersey physicians using public Medicare data.'
+            : 'Find and compare healthcare providers by quality, experience, cost, and distance.'}
         </p>
       </header>
 

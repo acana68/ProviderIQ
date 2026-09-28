@@ -38,6 +38,7 @@ export function criteriaToSearchParams(criteria: SearchCriteria): URLSearchParam
   set('min_quality_score', criteria.min_quality_score)
   set('min_years_experience', criteria.min_years_experience)
   set('accepting_new_patients', criteria.accepting_new_patients)
+  set('require_quality_score', criteria.require_quality_score || undefined)
   set('priority', criteria.priority)
   set('sort', criteria.sort)
   set('page', criteria.page)
@@ -80,6 +81,9 @@ export function searchParamsToCriteria(params: URLSearchParams): SearchCriteria 
   if (accepting === 'true' || accepting === 'false') {
     criteria.accepting_new_patients = accepting === 'true'
   }
+
+  // Only "true" means anything: false is the API's default.
+  if (params.get('require_quality_score') === 'true') criteria.require_quality_score = true
 
   const priority = oneOf(params.get('priority'), PRIORITIES)
   if (priority && (priority !== 'distance' || criteria.location)) criteria.priority = priority

@@ -49,3 +49,30 @@
   margin-right: var(--space-2);
   border-radius: var(--radius-sm);
 }
+
+/* A value the provider doesn't have: the specialty median stands in for it. */
+.imputed td:first-of-type {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.imputed th {
+  box-shadow: inset 3px 0 0 var(--color-border-strong);
+}
+
+.marker {
+  margin-left: 2px;
+  color: var(--color-text-subtle);
+  font-weight: var(--font-weight-semibold);
+}
+
+.note {
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-xs);
+}
+
+.legend {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-xs);
+}

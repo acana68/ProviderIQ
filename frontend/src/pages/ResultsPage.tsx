@@ -6,6 +6,7 @@ import { ProviderCard, ProviderCardSkeleton } from '../components/results/Provid
 import { ResultsToolbar } from '../components/results/ResultsToolbar'
 import { ScoreLegend } from '../components/results/ScoreLegend'
 import { SearchSummary } from '../components/results/SearchSummary'
+import { useDataset } from '../hooks/useDataset'
 import { useSearch } from '../hooks/useSearch'
 import { DEFAULT_RADIUS_MILES, MAX_RADIUS_MILES, type SearchCriteria } from '../types/search'
 import {
@@ -13,6 +14,7 @@ import {
   scoreContextParams,
   searchParamsToCriteria,
 } from '../utils/searchParams'
+import { criteriaForDataset } from '../utils/criteria'
 import styles from './ResultsPage.module.css'
 
 const SKELETON_COUNT = 3
@@ -21,7 +23,12 @@ const SKELETON_COUNT = 3
  * here rewrites it, and the search follows. */
 export function ResultsPage() {
   const [params, setParams] = useSearchParams()
-  const criteria = searchParamsToCriteria(params)
+  const { isCms, hasConditions } = useDataset()
+  // A URL may carry a filter this dataset can't answer (e.g. an old link): it's dropped.
+  const criteria = criteriaForDataset(searchParamsToCriteria(params), {
+    hasConditions,
+    hasAcceptingNewPatients: !isCms,
+  })
   const results = useSearch(criteria)
   const { data } = results
 
@@ -125,6 +132,7 @@ function suggestions(criteria: SearchCriteria): string[] {
   if (criteria.accepting_new_patients) {
     list.push("Include providers who aren't accepting new patients.")
   }
+  if (criteria.require_quality_score) list.push('Include providers without a quality score.')
   if (criteria.condition) list.push('Search without a specific condition.')
   if (criteria.location) list.push('Try another location, or search anywhere.')
   if (list.length === 0) list.push('Try a different specialty.')

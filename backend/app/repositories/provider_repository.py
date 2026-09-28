@@ -33,6 +33,8 @@ class SearchFilters:
     specialty_id: int | None = None
     condition_id: int | None = None
     min_quality_score: float | None = None
+    # Only providers whose quality score is reported, not imputed.
+    require_quality_score: bool = False
     min_years_experience: int | None = None
     accepting_new_patients: bool | None = None
     # (min_lat, max_lat, min_lon, max_lon); a coarse prefilter, not the exact radius.
@@ -261,6 +263,8 @@ def _search_conditions(filters: SearchFilters) -> list[ColumnElement[bool]]:
         )
     if filters.min_quality_score is not None:
         conditions.append(Provider.quality_score >= filters.min_quality_score)
+    if filters.require_quality_score:
+        conditions.append(Provider.quality_score.is_not(None))
     if filters.min_years_experience is not None:
         conditions.append(Provider.years_experience >= filters.min_years_experience)
     if filters.accepting_new_patients is not None:

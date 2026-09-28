@@ -1,0 +1,20 @@
+/* Calm, not alarming: an informational note, not a warning. */
+.banner {
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-soft);
+  font-size: var(--font-size-sm);
+}
+
+.source {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.disclaimer {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+}

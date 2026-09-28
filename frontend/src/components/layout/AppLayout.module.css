@@ -62,6 +62,16 @@
   padding-block: var(--space-6);
 }
 
+/* The page's column. The CMS banner sits in it too, so both share one width and left edge. */
+.column {
+  max-width: var(--page-max-width);
+  margin-inline: auto;
+}
+
+.reading {
+  max-width: var(--reading-max-width);
+}
+
 .footer {
   padding-block: var(--space-5);
 }
