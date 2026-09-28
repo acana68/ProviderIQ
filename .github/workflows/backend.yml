@@ -18,7 +18,9 @@ jobs:
 
     services:
       postgres:
-        image: postgres:17
+        # 17.11, the same digest as docker-compose.yml. Dependabot doesn't update service
+        # images in workflows, so bump this together with the Compose file's.
+        image: postgres:17@sha256:d74eeac9a635390a49bc21bd49fccd973de707e2a53a76ac49b552b8712ec46f
         # A throwaway database that only exists for this job: not a real secret.
         env:
           POSTGRES_USER: provideriq
@@ -42,9 +44,9 @@ jobs:
       PGPASSWORD: ci-only-password
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
           cache: pip

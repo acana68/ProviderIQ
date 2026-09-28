@@ -19,7 +19,7 @@ target_metadata = Base.metadata
 def run_migrations_offline() -> None:
     """`alembic upgrade --sql`: emit SQL to stdout instead of connecting."""
     context.configure(
-        url=get_settings().database_url,
+        url=get_settings().owner_database_url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -37,13 +37,13 @@ def do_run_migrations(connection: Connection) -> None:
 
 def run_migrations_online() -> None:
     # Callers (the test suite) can hand over their own connection, e.g. to the test DB.
-    # Otherwise, connect to DATABASE_URL from Settings.
+    # Otherwise, connect as the owner role (MIGRATION_DATABASE_URL, else DATABASE_URL).
     connection = config.attributes.get("connection")
     if connection is not None:
         do_run_migrations(connection)
         return
 
-    engine = create_engine(get_settings().database_url, poolclass=pool.NullPool)
+    engine = create_engine(get_settings().owner_database_url, poolclass=pool.NullPool)
     try:
         with engine.connect() as connection:
             do_run_migrations(connection)

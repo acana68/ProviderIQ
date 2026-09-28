@@ -56,10 +56,13 @@ def get_json(base_url: str, path: str, *, body: Any = None) -> Any:
 
 
 def check_health(base_url: str) -> str:
-    health = get_json(base_url, "/api/v1/health")
-    if health.get("status") != "ok" or health.get("database") != "ok":
-        raise SmokeTestFailure(f"/api/v1/health: not healthy: {health}")
-    return f"health ok, database ok (version {health.get('version')})"
+    live = get_json(base_url, "/api/v1/health/live")
+    if live.get("status") != "ok":
+        raise SmokeTestFailure(f"/api/v1/health/live: not live: {live}")
+    ready = get_json(base_url, "/api/v1/health/ready")
+    if ready.get("status") != "ok" or ready.get("database") != "ok":
+        raise SmokeTestFailure(f"/api/v1/health/ready: not ready: {ready}")
+    return "live, ready, database ok"
 
 
 def check_specialties(base_url: str) -> str:

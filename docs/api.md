@@ -2,7 +2,8 @@
 
 All endpoints are under `/api/v1`. Responses are JSON. Interactive docs (OpenAPI) are at
 http://localhost:8000/docs when the backend is running. They're served by the backend
-directly, and the nginx front end on port 8080 proxies only `/api/`.
+directly, and the nginx front end on port 8080 proxies only `/api/`. With
+`ENVIRONMENT=prod`, `/docs`, `/redoc` and `/openapi.json` aren't served at all (404).
 
 The examples below come from the default seeded dataset (1,500 providers, seed 42), but
 they're trimmed for length.
@@ -61,8 +62,11 @@ include the same ID.
 
 ### Rate limiting
 
-Requests are limited per client IP over a sliding one-minute window. `/health` is exempt.
-The limit is counted per server process.
+Requests are limited per client IP over a sliding one-minute window. `/health/live` is
+exempt. The limit is counted per server process. Behind the bundled nginx, the client IP is
+the address nginx saw, and nginx also allows each address 10 requests a second (bursts of
+20) before anything reaches the backend. Its 429 has the same error shape, with
+`request_id: null` and no `Retry-After`.
 
 ### CORS
 
@@ -83,20 +87,29 @@ A `page` past the end returns `200` with empty `items`.
 
 ---
 
-## `GET /health`
+## `GET /health/live`
 
-App and database status. Returns `503` with `"status": "degraded"` when the database is
-unreachable. Not rate limited.
+Liveness: the process is up and serving. Never touches the database, and isn't rate
+limited.
 
 ```json
-{
-  "status": "ok",
-  "app": "ProviderIQ",
-  "version": "0.1.0",
-  "environment": "dev",
-  "database": "ok"
-}
+{ "status": "ok" }
 ```
+
+## `GET /health/ready`
+
+Readiness: the database answers a query. Returns `503` when it doesn't (the cause stays in
+the server log). Rate limited like the rest of the API. The Docker health checks use it.
+
+```json
+{ "status": "ok", "database": "ok" }
+```
+
+```json
+{ "status": "unavailable", "database": "unavailable" }
+```
+
+Neither says which version or environment is running.
 
 ## `GET /specialties`
 

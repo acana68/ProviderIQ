@@ -31,3 +31,22 @@ def test_data_source_defaults_to_synthetic_and_ignores_case() -> None:
     assert Settings(**base, data_source="CMS_NJ").data_source == "cms_nj"
     with pytest.raises(ValidationError):
         Settings(**base, data_source="cms_ny")
+
+
+def test_migrations_use_the_app_url_unless_given_their_own() -> None:
+    base = {"_env_file": None, "database_url": "postgresql+psycopg://app@localhost/x"}
+    owner = "postgresql+psycopg://owner@localhost/x"
+
+    assert Settings(**base).owner_database_url == base["database_url"]
+    assert Settings(**base, migration_database_url=owner).owner_database_url == owner
+
+
+@pytest.mark.parametrize(
+    ("environment", "enabled"), [("dev", True), ("test", True), ("prod", False)]
+)
+def test_api_docs_are_off_in_prod(environment: str, enabled: bool) -> None:
+    settings = Settings(
+        _env_file=None, database_url="postgresql+psycopg://localhost/x", environment=environment
+    )
+
+    assert settings.docs_enabled is enabled

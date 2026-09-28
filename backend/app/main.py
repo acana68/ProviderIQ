@@ -24,7 +24,15 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(settings.log_level)
-    app = FastAPI(title=settings.app_name, version=settings.app_version, lifespan=lifespan)
+    docs = settings.docs_enabled
+    app = FastAPI(
+        title=settings.app_name,
+        version=settings.app_version,
+        lifespan=lifespan,
+        docs_url="/docs" if docs else None,
+        redoc_url="/redoc" if docs else None,
+        openapi_url="/openapi.json" if docs else None,
+    )
     app.state.settings = settings
     # Built per app (not at import time) so tests can point an app at the test database.
     app.state.db_engine = create_db_engine(settings)

@@ -33,7 +33,7 @@ def _assert_common_headers(response: Response) -> None:
 
 
 def test_request_id_is_generated_when_missing(client: TestClient) -> None:
-    response = client.get("/api/v1/health")
+    response = client.get("/api/v1/health/live")
 
     assert _is_uuid(response.headers["X-Request-ID"])
     assert response.headers["X-Content-Type-Options"] == "nosniff"
@@ -48,7 +48,7 @@ def test_valid_incoming_request_id_is_echoed(client: TestClient) -> None:
 
 @pytest.mark.parametrize("incoming", ["has spaces", "semi;colon", "x" * 65, ""])
 def test_invalid_incoming_request_id_is_replaced(client: TestClient, incoming: str) -> None:
-    response = client.get("/api/v1/health", headers={"X-Request-ID": incoming})
+    response = client.get("/api/v1/health/live", headers={"X-Request-ID": incoming})
 
     assert response.headers["X-Request-ID"] != incoming
     assert _is_uuid(response.headers["X-Request-ID"])
@@ -124,12 +124,21 @@ def test_requests_over_rate_limit_get_429(make_client: MakeClient) -> None:
     _assert_common_headers(limited)
 
 
-def test_health_is_never_rate_limited(make_client: MakeClient) -> None:
+def test_liveness_is_never_rate_limited(make_client: MakeClient) -> None:
     client = make_client(rate_limit_per_minute=3)
 
-    statuses = [client.get("/api/v1/health").status_code for _ in range(10)]
+    statuses = [client.get("/api/v1/health/live").status_code for _ in range(10)]
 
     assert statuses == [200] * 10
+
+
+def test_readiness_is_rate_limited(make_client: MakeClient) -> None:
+    # Each readiness check runs a query, so it counts like any other request.
+    client = make_client(rate_limit_per_minute=3)
+
+    statuses = [client.get("/api/v1/health/ready").status_code for _ in range(4)]
+
+    assert statuses == [200, 200, 200, 429]
 
 
 # --- Errors keep their headers --------------------------------------------------------
@@ -181,7 +190,7 @@ def test_cors_preflight_from_other_origin_is_not_allowed(make_client: MakeClient
 def test_cors_exposes_request_id_header(make_client: MakeClient) -> None:
     client = make_client(cors_origins=[ALLOWED_ORIGIN])
 
-    response = client.get("/api/v1/health", headers={"Origin": ALLOWED_ORIGIN})
+    response = client.get("/api/v1/health/live", headers={"Origin": ALLOWED_ORIGIN})
 
     _assert_common_headers(response)
     assert "x-request-id" in response.headers["Access-Control-Expose-Headers"].lower()

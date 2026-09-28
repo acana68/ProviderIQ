@@ -352,7 +352,7 @@ def render(s: dict[str, Any], manifest: dict[str, Any]) -> str:
 
 
 def main() -> None:
-    engine = create_engine(get_settings().database_url)
+    engine = create_engine(get_settings().owner_database_url)
     try:
         with engine.connect() as connection:
             report = collect(connection)

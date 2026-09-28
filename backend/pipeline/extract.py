@@ -3,7 +3,8 @@ data/cms/MANIFEST.json.
 
 Run from backend/:  python -m pipeline.extract [--refresh] [--only ndf,mips,...]
 
-Files already in data/raw/ are kept (the cache); --refresh downloads them again. Where
+Files already in data/raw/ are kept (the cache), after checking each against the SHA-256
+its manifest entry recorded at download; --refresh downloads them again. Where
 the source API can filter by state, only New Jersey is requested; the national files
 (MIPS, ZIP centroids) are saved whole and cut down to New Jersey while loading.
 Standard library only, like scripts/smoke_test.py.
@@ -35,6 +36,7 @@ from pipeline.sources import (
     PHYSICIAN,
     POPEST,
     POPULATION,
+    RAW_DIR,
     SOURCES,
     STATE,
     ZCTA,
@@ -202,6 +204,37 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def verify_download(source: Source, path: Path, entry: dict[str, Any]) -> None:
+    """Raise ExtractError unless path is byte for byte the file the manifest recorded:
+    a cached file that was edited, truncated or swapped would otherwise flow silently
+    into data/cms/."""
+    expected = entry.get("sha256")
+    if not expected:
+        raise ExtractError(f"{source.key}: MANIFEST.json records no sha256 for {path.name}")
+    if _sha256(path) != expected:
+        raise ExtractError(
+            f"{source.key}: {path.name} doesn't match the SHA-256 in MANIFEST.json (it "
+            f"changed after it was downloaded); run: python -m pipeline.extract --refresh "
+            f"--only {source.key}"
+        )
+
+
+def verify_cache(
+    manifest: dict[str, Any], raw_dir: Path = RAW_DIR, sources: tuple[Source, ...] = SOURCES
+) -> None:
+    """Check every raw file against the manifest before the transform reads it."""
+    for source in sources:
+        entry = manifest.get("sources", {}).get(source.key)
+        if entry is None:
+            raise ExtractError(
+                f"{source.key}: no entry in MANIFEST.json (run: python -m pipeline.extract)"
+            )
+        path = raw_dir / source.raw_file
+        if not path.exists():
+            raise ExtractError(f"{source.key}: {path} not found (run: python -m pipeline.extract)")
+        verify_download(source, path, entry)
+
+
 def _describe(source: Source) -> dict[str, Any]:
     """The manifest fields that come from sources.py rather than from the download."""
     return {
@@ -231,9 +264,10 @@ def extract(sources: tuple[Source, ...], *, refresh: bool) -> dict[str, Any]:
         path.parent.mkdir(parents=True, exist_ok=True)
         entry = manifest["sources"].get(source.key)
         if path.exists() and not refresh and entry is not None:
+            verify_download(source, path, entry)
             # Keep the download's details, but describe the source as sources.py now does.
             entry.update(_describe(source))
-            print(f"  {source.key:<11} cached      {path.name}")
+            print(f"  {source.key:<11} cached      {path.name} (SHA-256 verified)")
             continue
         if path.exists() and not refresh:
             # A file with no manifest entry (e.g. copied in by hand): record it as found.

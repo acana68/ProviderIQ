@@ -46,10 +46,12 @@ All settings come from environment variables, read by `app/core/config.py` (pyda
 |---|---|---|
 | 5173 | Vite dev server | Local dev only; proxies `/api` to 8000 |
 | 8080 | nginx (frontend container) | The Docker app; proxies `/api/` to `backend:8000` |
-| 8000 | FastAPI (uvicorn) | Local dev and Docker; OpenAPI docs at `/docs` |
-| 5433 | PostgreSQL 17 | Host port for local tools and tests; `db:5432` inside Compose. 5433 avoids clashing with a native Postgres |
+| 8000 | FastAPI (uvicorn) | Local dev and Docker (127.0.0.1 only); OpenAPI docs at `/docs`, except in prod |
+| 5433 | PostgreSQL 17 | Host port for local tools and tests (127.0.0.1 only); `db:5432` inside Compose. 5433 avoids clashing with a native Postgres |
 
 The dev database (`provideriq`) and the test database (`provideriq_test`, created by `db/init/01-create-test-db.sql` on first init) live in the same container. Tests refuse to run unless `TEST_DATABASE_URL` points at a separate database.
+
+Two database roles. The owner (`POSTGRES_USER`, `MIGRATION_DATABASE_URL`) runs migrations, seeding and the CMS pipeline. The API connects as `provideriq_app` (`DATABASE_URL`), which a migration creates with `SELECT` on the app's tables and `INSERT` on `search_logs` only; `scripts/app_db_role.py` gives it its login password, outside the migrations. `tests/integration/test_db_roles.py` checks its exact privileges.
 
 ## 2. MVP feature set
 
@@ -208,7 +210,8 @@ The full reference, with real examples, is [api.md](api.md).
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/health` | App and DB status (503 when the DB is down); not rate limited |
+| GET | `/health/live` | Liveness; never touches the DB; not rate limited |
+| GET | `/health/ready` | Readiness: DB ping (503 when the DB is down) |
 | GET | `/specialties` | Dropdown data, with provider counts |
 | GET | `/conditions?specialty=cardiology` | Conditions treated within a specialty |
 | GET | `/cities` | The locations a search can use (the local geocoding table) |
@@ -445,9 +448,9 @@ running costs; the plan below is ready to execute.
 Already prepared for it:
 
 - **Containers.** Multi-stage images. The backend runs as a non-root user with runtime dependencies only. The frontend runs on unprivileged nginx on 8080.
-- **Health checks.** Docker `HEALTHCHECK`s on both images. `/health` returns 503 when the database is unreachable.
-- **Proxy headers.** uvicorn runs with `--proxy-headers`, trusting `X-Forwarded-For` only from `FORWARDED_ALLOW_IPS`. The default, 127.0.0.1, trusts no other host, so clients can't spoof their IP to dodge the per-IP rate limits; the deployment sets it to the proxy's addresses.
-- **Migrations and seeding at startup.** The entrypoint runs `alembic upgrade head`, then seeds only if the database is empty.
+- **Health checks.** Docker `HEALTHCHECK`s on both images. `/health/live` is liveness; `/health/ready` returns 503 when the database is unreachable, and is what the backend's health check uses.
+- **Proxy headers.** uvicorn runs with `--proxy-headers`, trusting `X-Forwarded-For` only from `FORWARDED_ALLOW_IPS`. The default, 127.0.0.1, trusts no other host, so clients can't spoof their IP to dodge the per-IP rate limits. Compose gives nginx a fixed address (`172.29.53.10`) and sets `FORWARDED_ALLOW_IPS` to it; nginx appends its peer to `X-Forwarded-For`, and uvicorn takes the rightmost untrusted entry, which is that peer. A deployment adds its load balancer's addresses.
+- **Migrations and seeding at startup.** The entrypoint runs `alembic upgrade head`, sets the runtime role's password, then seeds only if the database is empty, all as the owner role. It then drops the owner's credentials from the environment before starting the API.
 - **Smoke test.** `backend/scripts/smoke_test.py` (standard library only) checks a running deployment end to end. The Docker CI workflow already runs it against the full stack.
 
 ## 10. Real data (CMS, New Jersey)
@@ -467,7 +470,9 @@ Jersey, in the same 10 specialties, built from three CMS datasets and two Census
 | Census **2025 Gazetteer, county subdivisions (NJ)** and **Vintage 2025 population estimates (NJ)** | The municipalities used as search locations | State files |
 
 Every dataset id is pinned in `pipeline/sources.py`. `data/cms/MANIFEST.json` records each
-file's URL, release, download time, row count and SHA-256.
+file's URL, release, download time, row count and SHA-256. A cached file is checked against
+that SHA-256 before `pipeline.extract` keeps it and before `pipeline.transform` loads it; a
+mismatch stops the run and names the `--refresh` command.
 
 ### Pipeline (ELT)
 
@@ -581,7 +586,8 @@ provideriq/
 │   ├── pipeline/              extract.py load.py transform.py data_quality.py sources.py
 │   │                          sql/00_functions.sql … 07_cities.sql   (section 10)
 │   ├── alembic/               env.py  versions/
-│   ├── scripts/               generate_data.py seed_db.py ranking_demo.py eval_parser.py
+│   ├── scripts/               generate_data.py seed_db.py app_db_role.py bench_search.py
+│   │                          ranking_demo.py eval_parser.py
 │   │                          smoke_test.py
 │   ├── tests/                 conftest.py helpers.py  unit/  integration/
 │   │                          fixtures/cms_raw/   (fake raw CMS/Census files)

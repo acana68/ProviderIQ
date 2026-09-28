@@ -255,7 +255,8 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    engine = create_db_engine(settings)
+    # TRUNCATE and bulk inserts: the owner role, not the app's read-mostly runtime role.
+    engine = create_db_engine(settings, settings.owner_database_url)
     try:
         with create_session_factory(engine)() as session:
             if args.if_empty and has_providers(session):

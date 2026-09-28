@@ -1,22 +1,36 @@
 # The whole app in containers: `docker compose up --build`, then open http://localhost:8080.
 # For day-to-day development, `npm run dev` (http://localhost:5173, hot reload) with a local
 # uvicorn is still the workflow; `docker compose up -d db` starts just the database for it.
+#
+# Ports on the host:
+#   8080  the app (nginx: the frontend, and /api/ proxied to the backend)
+#   8000  the backend directly, 127.0.0.1 only (for local tools; browsers use 8080)
+#   5433  Postgres, 127.0.0.1 only (the local uvicorn, tests, psql)
+
+# nginx's fixed address on the Compose network. The backend trusts X-Forwarded-For from
+# this address only, so it must stay inside the subnet below.
+x-nginx-ip: &nginx-ip 172.29.53.10
 
 services:
   db:
-    image: postgres:17
+    # 17.11. Tag and digest: the digest is what's pulled; Dependabot updates both.
+    image: postgres:17@sha256:d74eeac9a635390a49bc21bd49fccd973de707e2a53a76ac49b552b8712ec46f
     container_name: provideriq-db
-    # Reads POSTGRES_USER / POSTGRES_PASSWORD / POSTGRES_DB. These only take effect when the
-    # data volume is first initialised; after changing them, recreate it with `docker compose down -v`.
-    env_file: .env
+    # Only what Postgres reads, not the whole .env (no API key, no app settings). These
+    # only take effect when the data volume is first initialised; after changing them,
+    # recreate it with `docker compose down -v`.
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5433:5432"
+      - "127.0.0.1:5433:5432"
     volumes:
       - provideriq-pgdata:/var/lib/postgresql/data
       # *.sql files here run once, on first init only (e.g. creating the test database).
       - ./db/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      # $$ defers expansion to the container's shell, where env_file has set these.
+      # $$ defers expansion to the container's shell, where `environment` has set these.
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
@@ -31,24 +45,31 @@ services:
     container_name: provideriq-backend
     env_file: .env
     environment:
-      # Inside the Compose network Postgres is "db" on 5432; .env's DATABASE_URL points at
-      # localhost:5433, which is only right from the host. Built from the POSTGRES_* values
-      # in .env, so the password lives in one place (keep it URL-safe: no @ : / ? #).
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      # Inside the Compose network Postgres is "db" on 5432; .env's URLs point at
+      # localhost:5433, which is only right from the host. Built from the POSTGRES_* and
+      # APP_DB_PASSWORD values in .env, so each password lives in one place (keep them
+      # URL-safe: no @ : / ? #).
+      # The API connects as the runtime role: read-only, plus inserting search_logs rows.
+      DATABASE_URL: postgresql+psycopg://provideriq_app:${APP_DB_PASSWORD}@db:5432/${POSTGRES_DB}
+      # The owner role, for the entrypoint's migrations and seed only. The entrypoint
+      # unsets it (and POSTGRES_PASSWORD) before starting the API.
+      MIGRATION_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       # Load data/ on the first start (empty database). Later starts leave the data alone.
       SEED_IF_EMPTY: "true"
+      # Take the client address from X-Forwarded-For only on requests from nginx.
+      FORWARDED_ALLOW_IPS: *nginx-ip
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     healthcheck:
       # Same check as the image's HEALTHCHECK (there's no curl in python:slim).
       test:
         - CMD
         - python
         - -c
-        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=4)
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready', timeout=4)
       interval: 10s
       timeout: 5s
       retries: 5
@@ -62,8 +83,19 @@ services:
       # nginx resolves "backend" when it starts, so the backend must be up first.
       backend:
         condition: service_healthy
+    networks:
+      default:
+        ipv4_address: *nginx-ip
     ports:
       - "8080:8080"
+
+networks:
+  default:
+    ipam:
+      config:
+        # Fixed so nginx's address (above) is known in advance. If it clashes with a
+        # network on your machine, change it and x-nginx-ip together.
+        - subnet: 172.29.53.0/24
 
 volumes:
   provideriq-pgdata:

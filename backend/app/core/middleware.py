@@ -44,7 +44,7 @@ def install_middleware(app: FastAPI, settings: Settings) -> None:
         ),
         (
             RateLimitMiddleware,
-            {"limiter": limiter, "exempt_paths": {f"{settings.api_prefix}/health"}},
+            {"limiter": limiter, "exempt_paths": {f"{settings.api_prefix}/health/live"}},
         ),
         (BodySizeLimitMiddleware, {"max_bytes": settings.max_request_body_bytes}),
         (UnhandledErrorMiddleware, {}),

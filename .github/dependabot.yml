@@ -13,12 +13,26 @@ updates:
       # One PR for dev tooling (lint, test, types, build) instead of a dozen.
       dev-dependencies:
         dependency-type: development
+    ignore:
+      # typescript-eslint declares a peer range of TypeScript < 7, so a TypeScript 7 bump
+      # breaks `npm ci` and linting. Remove this once typescript-eslint supports 7.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
+      # @types/node's major tracks the Node major in .nvmrc (and the Dockerfile's node
+      # image), which is upgraded by hand, everywhere at once. Types for a newer Node would
+      # let code use APIs the runtime doesn't have.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
+  # Workflow actions are pinned to commit SHAs with a version comment; Dependabot bumps
+  # the SHA and the comment together.
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
 
+  # Base images are pinned as tag@digest; Dependabot updates the digest when the tag is
+  # republished (security patches) and the tag when a new version is out.
   - package-ecosystem: docker
     directories:
       - /backend
@@ -31,4 +45,14 @@ updates:
       - dependency-name: python
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
       - dependency-name: node
+        update-types: ["version-update:semver-major"]
+
+  # The postgres image in docker-compose.yml, pinned the same way.
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+    ignore:
+      # A Postgres major upgrade needs a dump and restore of the data volume.
+      - dependency-name: postgres
         update-types: ["version-update:semver-major"]

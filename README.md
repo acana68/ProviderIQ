@@ -282,11 +282,12 @@ indexes with a `BitmapAnd`.
 ## API
 
 All endpoints are under `/api/v1`. Full reference with real examples: [docs/api.md](docs/api.md).
-OpenAPI docs: http://localhost:8000/docs.
+OpenAPI docs: http://localhost:8000/docs (not served when `ENVIRONMENT=prod`).
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/health` | App and database status (503 when the database is down) |
+| GET | `/health/live` | Liveness: the process is serving (never touches the database) |
+| GET | `/health/ready` | Readiness: the database answers (503 when it doesn't) |
 | GET | `/specialties` | Specialties with provider counts |
 | GET | `/conditions?specialty=` | Conditions, optionally only those treated in a specialty |
 | GET | `/cities` | Locations a search can use |
@@ -309,21 +310,31 @@ codes such as `VALIDATION_ERROR`, `INVALID_SEARCH`, `LOCATION_NOT_FOUND`,
   request body; database `CHECK` constraints behind them. All SQL goes through SQLAlchemy
   with bound parameters. The frontend parses URL state strictly and drops anything invalid.
 - **Abuse limits.** A 64 KiB request body limit (413), a sliding-window per-IP rate limit of
-  120 requests a minute, and 10 a minute on the AI endpoint (429 with `Retry-After`).
-- **Client IPs can't be spoofed.** uvicorn trusts `X-Forwarded-For` only from
-  `FORWARDED_ALLOW_IPS`, so a client can't dodge the per-IP limits with a forged header.
+  120 requests a minute, and 10 a minute on the AI endpoint (429 with `Retry-After`). In
+  front of that, nginx sheds floods (10 requests a second per address, bursts of 20).
+- **Client IPs can't be spoofed.** uvicorn trusts `X-Forwarded-For` only from nginx's fixed
+  address on the Compose network, and takes the address nginx appended, so each client gets
+  its own rate-limit bucket and a forged header changes nothing.
+- **Least-privilege database access.** The API connects as `provideriq_app`, which can read
+  and add search-log rows, nothing else: no other writes, no DDL. Migrations and seeding use
+  the owner role, whose credentials the API process never receives.
 - **CORS** is an allow-list: `GET` and `POST` only, no credentials. The deployed shape is
   same-origin anyway.
 - **Security headers** from nginx: a strict Content-Security-Policy (same-origin resources
   only, no inline scripts), `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and a
   `Referrer-Policy`.
 - **Containers.** Both run as non-root users. The backend image has runtime dependencies only,
-  and its code is read-only to the app user.
+  and its code is read-only to the app user. Postgres and the backend's direct port are
+  published on 127.0.0.1 only, and the database container gets only the `POSTGRES_*` settings.
 - **Privacy.** No query text, condition, or city is ever logged or stored.
 - **Safe operations.** Reseeding (which deletes provider data) is refused when
-  `ENVIRONMENT=prod`. Dependabot proposes weekly dependency updates.
+  `ENVIRONMENT=prod`, and so are the OpenAPI docs. The public health checks don't reveal the
+  version or environment.
 - **Supply chain.** CI scans the whole Git history for secrets (gitleaks) and audits the
   dependencies for known vulnerabilities (`pip-audit`, `npm audit`) on every push and weekly.
+  GitHub Actions are pinned to commit SHAs and base images to digests; Dependabot keeps
+  them, and the dependencies, up to date. Cached CMS downloads are checked against the
+  SHA-256 recorded in `data/cms/MANIFEST.json` before the pipeline uses them.
 - **LLM containment**: see [How AI is used](#how-ai-is-used).
 
 Everything in place, what's out of scope, known limitations, and how to report a
@@ -381,8 +392,8 @@ in `.env`.
 | Port | Service | Notes |
 |---|---|---|
 | 8080 | frontend (nginx) | The app; proxies `/api/` to the backend |
-| 8000 | backend (FastAPI) | Direct API access; docs at http://localhost:8000/docs |
-| 5433 | db (Postgres 17) | Host port for local tools and tests (`db:5432` inside Compose) |
+| 8000 | backend (FastAPI) | Direct API access, from this machine only (127.0.0.1); docs at http://localhost:8000/docs |
+| 5433 | db (Postgres 17) | For local tools and tests, from this machine only (127.0.0.1); `db:5432` inside Compose |
 
 Useful commands:
 
@@ -405,8 +416,14 @@ Backend, on http://localhost:8000:
     .venv\Scripts\Activate.ps1      # Windows; macOS/Linux: source .venv/bin/activate
     pip install -r requirements-dev.txt
     alembic upgrade head
+    python -m scripts.app_db_role          # lets the runtime role log in (APP_DB_PASSWORD)
     python -m scripts.seed_db --if-empty   # loads data/ only into an empty database
     uvicorn app.main:app --reload
+
+The API connects with `DATABASE_URL` (the runtime role, `provideriq_app`); migrations,
+seeding and the pipeline use `MIGRATION_DATABASE_URL` (the owner). See `.env.example`. An
+older `.env` without `MIGRATION_DATABASE_URL` still works locally, with one role for
+everything, but Docker needs `APP_DB_PASSWORD` set.
 
 Frontend, on http://localhost:5173 (Node 24, see `frontend/.nvmrc`). The dev server proxies
 `/api` to the backend:
@@ -462,9 +479,9 @@ start does the same). Seeding replaces whatever dataset was loaded; `--source sy
 switches back. `GET /api/v1/dataset` reports which one is loaded.
 
 To rebuild `data/cms/` from the sources (downloads about 80 MB into the gitignored
-`data/raw/`, then transforms in the `staging` schema of `DATABASE_URL`):
+`data/raw/`, then transforms in the `staging` schema, as the owner role):
 
-    python -m pipeline.extract       # cached; --refresh downloads again
+    python -m pipeline.extract       # cached and SHA-256 checked; --refresh downloads again
     python -m pipeline.transform     # load + SQL transforms + CSVs + docs/data-quality.md
     python -m scripts.seed_db --source cms_nj
 
@@ -550,7 +567,9 @@ Already prepared:
 
 - **Containers.** Multi-stage images, non-root, with health checks.
 - **Proxy headers.** uvicorn runs with `--proxy-headers`, trusting only `FORWARDED_ALLOW_IPS`,
-  so rate limits see real client IPs behind a proxy.
+  so rate limits see real client IPs behind a proxy. A load balancer in front of nginx
+  must be added to it (and nginx told to trust it with `set_real_ip_from`).
+- **Health checks.** `/health/live` for liveness, `/health/ready` for readiness.
 - **Startup.** The entrypoint migrates the database and seeds only if it's empty.
 - **Smoke test.** A standard-library smoke test that CI already runs against the full stack,
   ready to point at the deployed URL.

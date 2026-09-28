@@ -11,10 +11,11 @@ from app.core.config import Settings
 logger = logging.getLogger(__name__)
 
 
-def create_db_engine(settings: Settings) -> Engine:
-    """Build the engine. No connection is opened until the first query."""
+def create_db_engine(settings: Settings, url: str | None = None) -> Engine:
+    """Build the engine for url (default: the app's DATABASE_URL). No connection is opened
+    until the first query."""
     return create_engine(
-        settings.database_url,
+        url or settings.database_url,
         # Transparently replace pooled connections the server has dropped (e.g. DB restart).
         pool_pre_ping=True,
         # Fail fast instead of hanging when the DB is unreachable (matters for /health).

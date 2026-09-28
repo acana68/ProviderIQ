@@ -33,8 +33,14 @@ class Settings(BaseSettings):
     environment: Literal["dev", "test", "prod"] = "dev"
     api_prefix: str = "/api/v1"
 
+    # The app's connection. In Docker this is the runtime role (provideriq_app), which can
+    # read everything and add search_logs rows, but can't change data or the schema.
     database_url: str
-    # Only the test suite reads this; it must point at a separate database.
+    # The owner role, for migrations, seeding and the CMS pipeline. Unset: DATABASE_URL is
+    # used for those too (a single role, as before the roles were split).
+    migration_database_url: str | None = None
+    # Only the test suite reads this; it must point at a separate database. The suite
+    # migrates and seeds it, so it's an owner connection.
     test_database_url: str | None = None
 
     # Which dataset scripts/seed_db.py loads: generated providers, or real CMS data for New
@@ -58,6 +64,17 @@ class Settings(BaseSettings):
     ai_timeout_seconds: float = Field(default=8, gt=0, le=60)
     # Per client IP on POST /ai/parse-query, on top of rate_limit_per_minute.
     ai_rate_limit_per_minute: int = Field(default=10, gt=0)
+
+    @property
+    def owner_database_url(self) -> str:
+        """The connection for migrations, seeding and the pipeline."""
+        return self.migration_database_url or self.database_url
+
+    @property
+    def docs_enabled(self) -> bool:
+        """Serve /docs, /redoc and /openapi.json. Off in prod: there they would only map
+        the API out for attackers, and docs/api.md describes it anyway."""
+        return self.environment != "prod"
 
     @field_validator("log_level", mode="before")
     @classmethod

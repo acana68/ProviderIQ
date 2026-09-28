@@ -6,8 +6,9 @@ Run from backend/ after `python -m pipeline.extract` and `alembic upgrade head`:
 
 Writes data/cms/providers_nj.csv and data/cms/cities_nj.csv (committed, so seeding
 never needs the network), adds their row counts to data/cms/MANIFEST.json, and writes
-docs/data-quality.md. Everything runs in one transaction in the `staging` schema of
-DATABASE_URL; the app's own tables are untouched until you seed.
+docs/data-quality.md. Everything runs in one transaction in the `staging` schema, as the
+owner role (MIGRATION_DATABASE_URL, else DATABASE_URL); the app's own tables are
+untouched until you seed.
 """
 
 import argparse
@@ -24,7 +25,7 @@ from sqlalchemy import Connection, create_engine, text
 from app.core.config import get_settings
 from app.services.dataset import MIN_SPENDING_PATIENTS
 from pipeline import data_quality
-from pipeline.extract import read_manifest, write_manifest
+from pipeline.extract import ExtractError, read_manifest, verify_cache, write_manifest
 from pipeline.load import LoadError, load_all
 from pipeline.sources import CMS_DIR, MANIFEST_PATH, RAW_DIR, STATE
 
@@ -141,7 +142,12 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    engine = create_engine(get_settings().database_url)
+    try:
+        verify_cache(read_manifest())
+    except ExtractError as exc:
+        sys.exit(f"Raw files failed verification: {exc}")
+
+    engine = create_engine(get_settings().owner_database_url)
     try:
         with engine.begin() as connection:
             result = run(

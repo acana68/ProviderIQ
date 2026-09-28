@@ -23,11 +23,12 @@ class Location(BaseModel):
     state: StateCode
 
 
-class HealthResponse(BaseModel):
-    status: Literal["ok", "degraded"]
-    app: str
-    version: str
-    environment: str
+class LivenessResponse(BaseModel):
+    status: Literal["ok"]
+
+
+class ReadinessResponse(BaseModel):
+    status: Literal["ok", "unavailable"]
     database: Literal["ok", "unavailable"]
 
 
