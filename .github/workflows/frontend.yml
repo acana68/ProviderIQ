@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   checks:
-    name: Typecheck, lint, test, build
+    name: Typecheck, lint, test, build, browser checks
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -40,3 +40,19 @@ jobs:
       - run: npm run format:check
       - run: npm test
       - run: npm run build
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Browser checks (375px layout, link crawl)
+        # Against the built app with the API mocked (e2e/fixtures.ts); the crawl also
+        # requests the GitHub links it finds.
+        run: npm run test:e2e
+
+      - name: Upload the Playwright report
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report
+          path: frontend/test-results/
+          retention-days: 7

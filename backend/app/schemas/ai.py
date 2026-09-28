@@ -39,6 +39,18 @@ class ParsedCriteria(BaseModel):
     )
 
 
+class LLMParsedQuery(ParsedCriteria):
+    """What the LLM answers with: the criteria, plus a flag that isn't a search filter."""
+
+    crisis: bool | None = Field(
+        default=None,
+        description=(
+            "true only if the text suggests the person may be thinking about suicide or "
+            "self-harm, or is in danger; otherwise null. Never changes the other fields."
+        ),
+    )
+
+
 class ParseQueryRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -52,3 +64,6 @@ class ParseQueryResponse(BaseModel):
     parser_used: ParserUsed
     # Human-readable notes: what was inferred, dropped, or fell back.
     warnings: list[str]
+    # The query suggests suicide or self-harm risk (app/ai/crisis.py, or the LLM's flag):
+    # the client shows crisis helpline information. The criteria are unaffected.
+    crisis: bool = False

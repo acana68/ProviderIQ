@@ -19,6 +19,7 @@ describe('parseQuery', () => {
       },
       parser_used: 'llm',
       warnings: [],
+      crisis: false,
     }
     const fetchSpy = mockFetch().mockResolvedValue(jsonResponse(response))
 

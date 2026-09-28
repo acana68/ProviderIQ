@@ -6,6 +6,7 @@ import {
   formatScore,
   formatWeight,
 } from '../../utils/format'
+import { TableScroll } from '../common/TableScroll'
 import colors from '../results/score.module.css'
 import styles from './ScoreBreakdownTable.module.css'
 
@@ -25,7 +26,7 @@ export function ScoreBreakdownTable({ score, provider }: ScoreBreakdownTableProp
   const anyImputed = score.components.some((c) => c.imputed)
   return (
     <>
-      <div className={styles.scroll}>
+      <TableScroll label="Score breakdown" className={styles.scroll}>
         <table className={styles.table}>
           <caption className="visually-hidden">Score breakdown</caption>
           <thead>
@@ -79,7 +80,7 @@ export function ScoreBreakdownTable({ score, provider }: ScoreBreakdownTableProp
             </tr>
           </tfoot>
         </table>
-      </div>
+      </TableScroll>
       {anyImputed && (
         <p className={styles.legend}>
           <span className={styles.marker} aria-hidden="true">

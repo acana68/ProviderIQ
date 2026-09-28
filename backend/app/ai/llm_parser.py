@@ -7,7 +7,7 @@ from app.ai.criteria import finalize
 from app.ai.llm_client import LLMClient
 from app.ai.prompts import build_system_prompt, build_user_message
 from app.ai.vocabulary import Vocabulary
-from app.schemas.ai import ParsedCriteria
+from app.schemas.ai import LLMParsedQuery, ParsedCriteria
 from app.schemas.common import Location
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class LLMQueryParser:
             raw = self.client.complete_json(
                 self._system_prompt, build_user_message(query), self._schema
             )
-            criteria = ParsedCriteria.model_validate(raw)
+            parsed = LLMParsedQuery.model_validate(raw)
         # Any failure at all falls back. Only the exception type is logged: messages can
         # quote the model's output or the request, and so the user's query.
         except Exception as exc:
@@ -51,9 +51,15 @@ class LLMQueryParser:
                 warnings=[FALLBACK_WARNING, *result.warnings],
             )
 
+        criteria = ParsedCriteria.model_validate(parsed.model_dump(exclude={"crisis"}))
         criteria, warnings = self._drop_unknown_values(criteria)
         criteria, final_warnings = finalize(criteria, self.vocabulary)
-        return ParseResult(criteria=criteria, parser_used="llm", warnings=warnings + final_warnings)
+        return ParseResult(
+            criteria=criteria,
+            parser_used="llm",
+            warnings=warnings + final_warnings,
+            crisis=parsed.crisis is True,
+        )
 
     def _drop_unknown_values(self, criteria: ParsedCriteria) -> tuple[ParsedCriteria, list[str]]:
         """Schema-valid isn't enough: a slug or city must also exist. Warnings don't repeat
@@ -79,8 +85,9 @@ class LLMQueryParser:
 
 
 def criteria_json_schema() -> dict[str, Any]:
-    """ParsedCriteria's JSON schema with $refs inlined, so it's one self-contained object."""
-    schema = ParsedCriteria.model_json_schema()
+    """The LLM's answer schema (the criteria plus the crisis flag) with $refs inlined, so
+    it's one self-contained object."""
+    schema = LLMParsedQuery.model_json_schema()
     definitions = schema.pop("$defs", {})
 
     def inline(node: Any) -> Any:

@@ -1,17 +1,20 @@
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { useDataset } from '../../hooks/useDataset'
+import { GITHUB_URL } from '../../utils/links'
 import { LoadingState } from '../common/LoadingState'
 import styles from './AppLayout.module.css'
+import { CrisisBanner } from './CrisisBanner'
 import { DatasetBanner } from './DatasetBanner'
 import { Disclaimer } from './Disclaimer'
 import { ErrorBoundary } from './ErrorBoundary'
 
 /** Pages set in the narrower reading column; every other page uses the standard one. */
-const READING_PATHS = ['/methodology']
+const READING_PATHS = ['/methodology', '/privacy']
 
 /**
- * The frame around every page: header, the routed page, and the disclaimer footer. The
- * page and, with real (CMS) data, the banner above it share one column, so they line up.
+ * The frame around every page: header, the routed page, and the footer. The page and the
+ * banners above it (crisis support once a query calls for it, then the CMS data banner)
+ * share one column, so they line up.
  *
  * Until GET /dataset answers, the page isn't rendered at all (only a neutral loading
  * state): everything on it may depend on which dataset it is.
@@ -42,6 +45,7 @@ export function AppLayout() {
       </header>
       <main className={styles.main}>
         <div className={reading ? `${styles.column} ${styles.reading}` : styles.column}>
+          <CrisisBanner />
           {status === 'loading' ? (
             <LoadingState />
           ) : (
@@ -56,6 +60,10 @@ export function AppLayout() {
       </main>
       <footer className={styles.footer}>
         <Disclaimer />
+        <nav aria-label="Footer" className={styles.footerNav}>
+          <Link to="/privacy">Privacy</Link>
+          <a href={GITHUB_URL}>GitHub</a>
+        </nav>
       </footer>
     </div>
   )

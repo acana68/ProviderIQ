@@ -107,21 +107,23 @@ CASES: list[tuple[str, dict[str, Any]]] = [
         },
     ),
     ("neurologist", {"specialty": "neurology"}),
+    # Symptoms aren't conditions: "chest pain" must never become a condition filter.
     (
         "my doctor says I should see a heart specialist in Atlanta about chest pain",
         {"specialty": "cardiology", "location": _city("Atlanta", "GA")},
     ),
     (
+        "I've been having chest pain, need a doctor near Chicago",
+        {"location": _city("Chicago", "IL")},
+    ),
+    (
         "someone in the Big Apple who won't break the bank for my kid's asthma",
         {"condition": "asthma", "location": _city("New York", "NY"), "priority": "cost"},
     ),
+    # Heartburn is a symptom, not a diagnosis of GERD.
     (
         "I keep getting bad heartburn, need a GI doc around Houston",
-        {
-            "specialty": "gastroenterology",
-            "condition": "gerd",
-            "location": _city("Houston", "TX"),
-        },
+        {"specialty": "gastroenterology", "location": _city("Houston", "TX")},
     ),
     (
         "need a shrink in Austin who takes new patients",

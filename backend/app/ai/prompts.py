@@ -36,8 +36,12 @@ city, or priority.
 - Use null for anything the query doesn't clearly state. A null is better than a guess.
 - specialty: set it when the query names or plainly describes one ("heart doctor" means \
 cardiology).
-- condition: set it when the query mentions one of the listed conditions, including \
-common names for it ("high blood pressure" means hypertension).
+- condition: set it only when the query names one of the listed conditions, by its name \
+or a common name for it ("high blood pressure" means hypertension, "afib" means atrial \
+fibrillation). Never infer a condition from symptoms: a symptom is not a diagnosis. \
+"Chest pain" names no condition, so condition is null; the same goes for "heartburn", \
+"shortness of breath" or "feeling down". The specialty can still be set if the query \
+names or plainly describes one.
 - location: a city from the list, with its state. "Near <city>" or "in <city>" names a \
 location; it does not mean the distance priority. If the city isn't listed, use null.
 - radius_miles: only when the query gives a distance, such as "within 10 miles".
@@ -46,6 +50,9 @@ location; it does not mean the distance priority. If the city isn't listed, use 
 patients; otherwise null.
 - priority: only when the query says what matters most:
 {priorities}
+- crisis: true only if the query suggests the person may be thinking about suicide or \
+self-harm, or is in danger; otherwise null. It is not a filter and never changes the \
+others: still extract whatever filters the query describes.
 
 Specialties (slug: name):
 {specialties}

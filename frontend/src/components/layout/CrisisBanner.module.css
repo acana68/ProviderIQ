@@ -1,0 +1,21 @@
+/* Prominent but calm: the accent color, not the error red, and room to breathe. */
+.banner {
+  margin-bottom: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-accent);
+  border-left-width: 6px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+.text {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
+}
+
+.text a {
+  font-weight: var(--font-weight-semibold);
+  text-decoration: underline;
+}

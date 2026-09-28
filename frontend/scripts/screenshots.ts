@@ -29,7 +29,7 @@ const RESULTS_QUERY = new URLSearchParams({
 
 async function assertStackIsUp() {
   try {
-    const response = await fetch(`${BASE_URL}/api/v1/health`, {
+    const response = await fetch(`${BASE_URL}/api/v1/health/ready`, {
       signal: AbortSignal.timeout(5000),
     })
     if (response.ok) return

@@ -7,7 +7,7 @@ import pytest
 
 from app.ai.llm_parser import FALLBACK_WARNING, LLMQueryParser, criteria_json_schema
 from app.ai.rule_based_parser import RuleBasedQueryParser
-from app.schemas.ai import ParsedCriteria
+from app.schemas.ai import LLMParsedQuery, ParsedCriteria
 from tests.helpers import FakeLLMClient, reference_vocabulary
 
 QUERY = "highly rated cardiologist near New York for heart failure"
@@ -149,7 +149,8 @@ def test_schema_is_the_closed_criteria_schema() -> None:
 
     schema = client.calls[0]["schema"]
     assert schema == criteria_json_schema()
-    assert set(schema["properties"]) == set(ParsedCriteria.model_fields)
+    assert set(schema["properties"]) == set(ParsedCriteria.model_fields) | {"crisis"}
+    assert set(LLMParsedQuery.model_fields) == set(schema["properties"])
     assert schema["additionalProperties"] is False
     assert "$ref" not in str(schema) and "$defs" not in schema
 
@@ -189,3 +190,28 @@ def test_query_never_reaches_the_logs(caplog: pytest.LogCaptureFixture) -> None:
         assert "private-marker-8812" not in str(record.__dict__)
     [failure] = [r for r in caplog.records if r.levelno == logging.WARNING]
     assert failure.error_type == "RuntimeError"
+
+
+@pytest.mark.parametrize(("flag", "expected"), [(True, True), (False, False), (None, False)])
+def test_llm_can_flag_a_crisis(flag: bool | None, expected: bool) -> None:
+    result = _parser(FakeLLMClient(VALID | {"crisis": flag})).parse(QUERY)
+
+    assert result.crisis is expected
+    assert result.parser_used == "llm"
+    # Not a filter: the criteria are the same either way.
+    assert result.criteria == _parser(FakeLLMClient(VALID)).parse(QUERY).criteria
+
+
+def test_crisis_defaults_to_false_when_the_llm_omits_it() -> None:
+    assert _parser(FakeLLMClient(VALID)).parse(QUERY).crisis is False
+
+
+def test_system_prompt_forbids_conditions_from_symptoms() -> None:
+    client = FakeLLMClient(VALID)
+
+    _parser(client).parse(QUERY)
+
+    system = client.calls[0]["system"]
+    assert "Never infer a condition from symptoms" in system
+    assert '"Chest pain" names no condition' in system
+    assert "- crisis: true only if" in system

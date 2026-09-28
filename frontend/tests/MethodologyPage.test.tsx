@@ -94,7 +94,8 @@ describe('MethodologyPage', () => {
         .getAllByRole('rowheader')
         .map((h) => h.textContent),
     ).toEqual(['Quality', 'Experience', 'Cost', 'Volume', 'Distance'])
-    expect(screen.getByRole('link', { name: 'GitHub' })).toHaveAttribute(
+    // The page's own link (the footer has one too).
+    expect(within(screen.getByRole('main')).getByRole('link', { name: 'GitHub' })).toHaveAttribute(
       'href',
       'https://github.com/acana68/ProviderIQ',
     )

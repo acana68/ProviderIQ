@@ -87,6 +87,11 @@ export interface ParseQueryResponse {
   parser_used: ParserUsed
   /** Human-readable notes: what was inferred, dropped, or fell back. */
   warnings: string[]
+  /**
+   * The query suggests suicide or self-harm risk (a backend keyword check, or the LLM's
+   * judgment): show crisis helpline information. The criteria are unaffected.
+   */
+  crisis: boolean
 }
 
 /** Backend limits and defaults (backend/app/schemas/). */

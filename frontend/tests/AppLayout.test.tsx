@@ -36,6 +36,20 @@ describe('AppLayout', () => {
     )
   })
 
+  it('links to the privacy page and the source code in the footer', () => {
+    renderLayout()
+
+    const footer = screen.getByRole('navigation', { name: 'Footer' })
+    expect(within(footer).getByRole('link', { name: 'Privacy' })).toHaveAttribute(
+      'href',
+      '/privacy',
+    )
+    expect(within(footer).getByRole('link', { name: 'GitHub' })).toHaveAttribute(
+      'href',
+      'https://github.com/acana68/ProviderIQ',
+    )
+  })
+
   it('renders the routed page inside main', () => {
     renderLayout()
 

@@ -33,7 +33,11 @@ def test_data_source_defaults_to_synthetic_and_ignores_case() -> None:
         Settings(**base, data_source="cms_ny")
 
 
-def test_migrations_use_the_app_url_unless_given_their_own() -> None:
+def test_migrations_use_the_app_url_unless_given_their_own(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # _env_file=None skips .env, but not variables set in the environment itself.
+    monkeypatch.delenv("MIGRATION_DATABASE_URL", raising=False)
     base = {"_env_file": None, "database_url": "postgresql+psycopg://app@localhost/x"}
     owner = "postgresql+psycopg://owner@localhost/x"
 

@@ -2,6 +2,7 @@ import { type FormEvent, useId, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { CriteriaEditor } from '../components/search/CriteriaEditor'
 import { NaturalLanguageSearch } from '../components/search/NaturalLanguageSearch'
+import { useCrisisSupport } from '../hooks/useCrisisSupport'
 import { useDataset } from '../hooks/useDataset'
 import type { ParseQueryResponse, ParserUsed, SearchCriteria } from '../types/search'
 import {
@@ -16,6 +17,7 @@ import styles from './SearchPage.module.css'
 export function SearchPage() {
   const navigate = useNavigate()
   const { isCms, hasConditions } = useDataset()
+  const { show: showCrisisSupport } = useCrisisSupport()
   // Starts from the URL, so "Change search" on the results page comes back to the same
   // criteria (the URL is only read once; editing doesn't write it back).
   const [params] = useSearchParams()
@@ -29,6 +31,8 @@ export function SearchPage() {
   function handleParsed(result: ParseQueryResponse) {
     setCriteria(criteriaFromParsed(result.criteria))
     setParserUsed(result.parser_used)
+    // Helpline information above the page; the criteria and the search are unaffected.
+    if (result.crisis) showCrisisSupport()
   }
 
   function handleReset() {

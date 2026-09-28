@@ -10,6 +10,9 @@ class ParseResult:
     criteria: ParsedCriteria
     parser_used: ParserUsed
     warnings: list[str] = field(default_factory=list)
+    # The LLM judged the query to suggest suicide or self-harm risk. The keyword check
+    # (app/ai/crisis.py) is applied separately, whichever parser answered.
+    crisis: bool = False
 
 
 class QueryParser(Protocol):

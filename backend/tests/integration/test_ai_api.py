@@ -186,6 +186,90 @@ def test_query_text_is_never_logged(
     assert all(r.query_length == len(query) and r.latency_ms >= 0 for r in parse_lines)
 
 
+# --- Crisis flag ---------------------------------------------------------------------
+
+CRISIS_QUERY = "I want to kill myself, need a psychiatrist in Boston"
+
+
+def test_keyword_check_flags_a_crisis_without_any_ai(
+    client: TestClient, seeded_db: Session
+) -> None:
+    body = _parse(client, CRISIS_QUERY)
+
+    assert body["parser_used"] == "rule_based"
+    assert body["crisis"] is True
+    # The search itself is unaffected.
+    assert body["criteria"]["specialty"] == "psychiatry"
+    assert body["criteria"]["location"] == {"city": "Boston", "state": "MA"}
+
+
+def test_ordinary_query_is_not_flagged(client: TestClient, seeded_db: Session) -> None:
+    assert _parse(client, EXAMPLE)["crisis"] is False
+    client.app.state.llm_client = FakeLLMClient(LLM_OUTPUT)
+    assert _parse(client, EXAMPLE)["crisis"] is False
+
+
+def test_llm_flag_alone_triggers_it(client: TestClient, seeded_db: Session) -> None:
+    # No keyword matches this wording; only the model's judgment flags it.
+    query = "everything feels pointless lately, looking for a psychiatrist in Boston"
+    client.app.state.llm_client = FakeLLMClient(LLM_OUTPUT | {"crisis": True})
+
+    body = _parse(client, query)
+
+    assert body["parser_used"] == "llm"
+    assert body["crisis"] is True
+    assert body["criteria"] == LLM_OUTPUT
+
+
+def test_keyword_check_applies_when_the_llm_says_no(client: TestClient, seeded_db: Session) -> None:
+    client.app.state.llm_client = FakeLLMClient(LLM_OUTPUT | {"crisis": False})
+
+    assert _parse(client, CRISIS_QUERY)["crisis"] is True
+
+
+def test_keyword_check_applies_when_the_llm_fails(client: TestClient, seeded_db: Session) -> None:
+    client.app.state.llm_client = FakeLLMClient(error=TimeoutError())
+
+    body = _parse(client, CRISIS_QUERY)
+
+    assert body["parser_used"] == "rule_based"
+    assert body["crisis"] is True
+
+
+def test_flagged_criteria_can_still_be_searched(client: TestClient, seeded_db: Session) -> None:
+    parsed = _parse(client, CRISIS_QUERY)
+    criteria = {k: v for k, v in parsed["criteria"].items() if v is not None}
+
+    response = client.post(
+        SEARCH_URL, json=criteria | {"source": "nl", "parser_used": "rule_based"}
+    )
+
+    assert response.status_code == 200, response.text
+
+
+def test_crisis_query_and_flag_are_never_logged(
+    client: TestClient, seeded_db: Session, caplog: pytest.LogCaptureFixture
+) -> None:
+    caplog.set_level(logging.DEBUG)
+    marker = "private-marker-7730"
+    query = f"I want to kill myself {marker}"
+
+    _parse(client, query)
+    client.app.state.llm_client = FakeLLMClient(LLM_OUTPUT | {"crisis": True})
+    _parse(client, f"feeling hopeless {marker}")
+
+    formatter = JsonFormatter()
+    server_records = [r for r in caplog.records if not r.name.startswith("httpx")]
+    assert server_records
+    for record in server_records:
+        rendered = formatter.format(record)
+        assert marker not in rendered
+        assert "kill myself" not in rendered and "hopeless" not in rendered
+        assert "crisis" not in rendered
+    stored = seeded_db.scalars(select(SearchLog)).all()
+    assert stored == []
+
+
 # --- parser_used on searches ---------------------------------------------------------
 
 

@@ -69,6 +69,7 @@ Two database roles. The owner (`POSTGRES_USER`, `MIGRATION_DATABASE_URL`) runs m
 - Backend and frontend tests, Docker Compose, GitHub Actions CI
 - AWS deployment: **deferred** to avoid running costs. The containers, health checks, proxy headers and smoke test are ready for it (see section 9)
 - Methodology page and a disclaimer on every page
+- A plain-language privacy page, crisis helpline information when a query calls for it, and a layout checked at phone width
 
 **Out (post-MVP):**
 
@@ -108,6 +109,7 @@ backend/app/
     ├── llm_parser.py
     ├── rule_based_parser.py
     ├── prompts.py
+    ├── crisis.py           # keyword check for suicide / self-harm risk (crisis flag)
     └── factory.py          # picks the parser from AI_PROVIDER env var
 ```
 
@@ -118,13 +120,14 @@ The ranking engine is pure Python: no database, no FastAPI. That makes it the ea
 ```
 frontend/src/
 ├── main.tsx, App.tsx          # router setup
-├── pages/                     # SearchPage, ResultsPage, ProviderDetailPage, MethodologyPage, NotFoundPage
+├── pages/                     # SearchPage, ResultsPage, ProviderDetailPage, MethodologyPage, PrivacyPage,
+│                              # NotFoundPage
 ├── components/
-│   ├── layout/                # AppLayout, Disclaimer, ErrorBoundary
+│   ├── layout/                # AppLayout, Disclaimer, ErrorBoundary, DatasetBanner, CrisisBanner (+ providers)
 │   ├── search/                # NaturalLanguageSearch, CriteriaEditor, PriorityControl, exampleQueries
 │   ├── results/               # ProviderCard, ResultsToolbar, Pagination, ScoreBar, ScoreLegend, SearchSummary
 │   ├── provider/              # ScoreBreakdownTable
-│   └── common/                # LoadingState, ErrorState, EmptyState
+│   └── common/                # LoadingState, ErrorState, EmptyState, TableScroll
 ├── services/                  # apiClient (fetch wrapper + error parsing), aiApi, providerApi,
 │                              # rankingApi, referenceApi, searchApi
 ├── hooks/                     # useApiData (shared fetch/abort/state), useSearch, useProvider, useReferenceData
@@ -133,7 +136,9 @@ frontend/src/
 └── styles/                    # tokens.css (colors/spacing vars), global.css
 
 frontend/tests/                # Vitest + React Testing Library, one file per page or module
+frontend/e2e/                  # Playwright browser checks (375px layout, link crawl), API mocked
 frontend/scripts/screenshots.ts  # Playwright: README screenshots from the running Docker stack
+frontend/scripts/og-image.ts     # Playwright: the link-preview image (public/og-image.png)
 ```
 
 The pages, and what each one does:
@@ -372,6 +377,14 @@ Frontend shows editable criteria → user clicks Search → POST /search (struct
   succeeds, with `parser_used: "rule_based"` and the warning "AI parser unavailable; used
   keyword matching instead." With `AI_PROVIDER=none` (the default), or `anthropic` without
   a key (warned at startup), the app runs entirely without AI.
+- **Symptoms aren't conditions.** The prompt sets a condition only when the query names
+  one, never from symptoms: "chest pain" leaves it null. A symptom is not a diagnosis, and a
+  condition filter would narrow the results to specialists in that one condition.
+- **Crisis support.** `crisis` in the parse response is true when the query suggests
+  suicide or self-harm risk: a short keyword list (`ai/crisis.py`) checked in the route on
+  every parse, or an optional `crisis` flag in the LLM's answer schema (`LLMParsedQuery`);
+  either one is enough. The frontend shows the 988 Suicide & Crisis Lifeline above the
+  page for the rest of the visit. It never changes the criteria or blocks the search.
 - **Injection containment.**
   - The query is escaped and wrapped in `<query>` tags. The system prompt says it is data
     to interpret, not instructions.
@@ -382,7 +395,8 @@ Frontend shows editable criteria → user clicks Search → POST /search (struct
     enforces. The LLM has no path to data.
 - **Privacy.**
   - The query text is never logged, stored, or echoed in warnings. The parse log line has
-    only the parser used, the latency, the query length, and the warning count.
+    only the parser used, the latency, the query length, and the warning count; not the
+    crisis flag either.
   - LLM failures log only the exception type, because exception messages can quote the
     output.
   - `search_logs` records `parser_used`, never the text.
@@ -397,12 +411,12 @@ Frontend shows editable criteria → user clicks Search → POST /search (struct
     runs only with `pytest -m live`.
 
 **Measuring it:** `python -m scripts.eval_parser` scores both parsers field by field on
-22 labeled queries. It runs the LLM parser only when a key is configured. Latest run: the
-keyword parser got 18/22 queries fully right and Claude Haiku 4.5 got 20/22. The README
-has the per-field table. One of the LLM's misses is in the risky direction: it inferred a
-condition (coronary artery disease) from the symptom "chest pain". The user sees and can
-edit every parsed field before searching. Stopping that inference in the prompt is the
-first item on the improvements list.
+23 labeled queries. It runs the LLM parser only when a key is configured. On the current
+set the keyword parser gets 19/23 fully right; the README has the per-field table. The
+LLM needs a new run with the current prompt: the previous one (22 queries) got 20 right,
+but inferred a condition (coronary artery disease) from the symptom "chest pain". The
+prompt now forbids that, and the chest-pain queries check it. The user sees and can edit
+every parsed field before searching either way.
 
 **Provider-agnostic design:** `LLMQueryParser` depends on an `LLMClient` interface with a
 single method, `complete_json(system, user, schema) -> dict`. Switching providers means
@@ -431,10 +445,12 @@ fall back, so re-check `parser_used` after changing `AI_MODEL`.
 | 15 | README, docs, screenshots, interview prep | Explaining the system |
 | 16a | Real CMS data for New Jersey: ELT pipeline, staging schema, missing-data handling, `GET /dataset` | Public data, SQL transforms, data quality |
 | 16b | Frontend for the real dataset: labels, disclaimer, imputed / not-reported flags | |
+| 17a | Security fixes: proxy trust, database roles, pinned dependencies, split health checks | Least privilege, supply chain |
+| 17b | Polish and responsibility: phone layout, privacy page, crisis support, symptom rule, link checks | Accessibility, safety |
 
 Backend tests get written inside each stage, not saved for the end.
 
-**Status:** stages 1–13, 15 and 16a are done. Stage 14 (AWS) is deliberately deferred to avoid
+**Status:** stages 1–13, 15, 16a–b and 17a–b are done. Stage 14 (AWS) is deliberately deferred to avoid
 running costs; the plan below is ready to execute.
 
 **AWS plan (Stage 14, simplest credible setup):**
@@ -582,7 +598,7 @@ provideriq/
 │   │   │   ├── search_service.py  geo.py  explanation.py
 │   │   │   └── ranking/       normalization.py weights.py engine.py
 │   │   └── ai/                base.py vocabulary.py criteria.py rule_based_parser.py
-│   │                          llm_client.py llm_parser.py prompts.py factory.py
+│   │                          llm_client.py llm_parser.py prompts.py factory.py crisis.py
 │   ├── pipeline/              extract.py load.py transform.py data_quality.py sources.py
 │   │                          sql/00_functions.sql … 07_cities.sql   (section 10)
 │   ├── alembic/               env.py  versions/
@@ -600,11 +616,13 @@ provideriq/
 ├── frontend/
 │   ├── src/                   (structure from section 4)
 │   ├── tests/                 setup.ts utils.tsx fixtures.ts + *.test.ts(x)
-│   ├── scripts/               screenshots.ts (Playwright)
-│   ├── public/                favicon.svg
+│   ├── e2e/                   fixtures.ts mockApi.ts mobile.spec.ts links.spec.ts (Playwright)
+│   ├── scripts/               screenshots.ts og-image.ts (Playwright)
+│   ├── public/                favicon.svg og-image.png
 │   ├── index.html
 │   ├── vite.config.ts         # dev proxy + Vitest config
-│   ├── tsconfig*.json         # app, node, test projects
+│   ├── tsconfig*.json         # app, node, test, e2e projects
+│   ├── playwright.config.ts   # browser checks: vite preview + mocked API
 │   ├── eslint.config.js
 │   ├── .prettierrc.json
 │   ├── .nvmrc                 # Node 24

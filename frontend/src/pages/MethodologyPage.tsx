@@ -1,17 +1,18 @@
 import { Link } from 'react-router'
 import { ErrorState } from '../components/common/ErrorState'
 import { LoadingState } from '../components/common/LoadingState'
+import { TableScroll } from '../components/common/TableScroll'
 import { useDataset } from '../hooks/useDataset'
 import { useRankingWeights } from '../hooks/useReferenceData'
 import { COMPONENT_NAMES } from '../types/provider'
 import type { RankingWeightsResponse } from '../types/ranking'
 import { PRIORITIES } from '../types/search'
 import { formatWeight } from '../utils/format'
+import { GITHUB_URL } from '../utils/links'
 import type { Labels } from '../utils/labels'
 import styles from './MethodologyPage.module.css'
 
-const REPO_URL = 'https://github.com/acana68/ProviderIQ'
-const DATA_QUALITY_URL = `${REPO_URL}/blob/main/docs/data-quality.md`
+const DATA_QUALITY_URL = `${GITHUB_URL}/blob/main/docs/data-quality.md`
 
 type Section = readonly [id: string, title: string]
 
@@ -178,7 +179,7 @@ export function MethodologyPage() {
           multiplied by its weight and by 100. The points add up to the match score out of 100. A
           provider's score never depends on who else matched the search.
         </p>
-        <div className={styles.scroll}>
+        <TableScroll label="How each factor is scored" className={styles.scroll}>
           <table className={styles.table}>
             <caption className="visually-hidden">How each factor is scored</caption>
             <thead>
@@ -198,7 +199,7 @@ export function MethodologyPage() {
               ))}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
       </section>
 
       <section id="priorities" aria-labelledby="priorities-heading">
@@ -248,7 +249,7 @@ export function MethodologyPage() {
       <footer className={styles.footer}>
         <p>
           The code, including the ranking engine and its tests, is on{' '}
-          <a href={REPO_URL} target="_blank" rel="noreferrer">
+          <a href={GITHUB_URL} target="_blank" rel="noreferrer">
             GitHub
           </a>
           . <Link to="/">Start a search</Link>
@@ -429,7 +430,7 @@ function WeightTableBody({
 }) {
   return (
     <>
-      <div className={styles.scroll}>
+      <TableScroll label="Weight of each factor, by priority" className={styles.scroll}>
         <table className={`${styles.table} ${styles.weights}`}>
           <caption className="visually-hidden">Weight of each factor, by priority</caption>
           <thead>
@@ -455,7 +456,7 @@ function WeightTableBody({
             ))}
           </tbody>
         </table>
-      </div>
+      </TableScroll>
       <p>
         <strong>
           {labels.components.quality} never drops below {formatWeight(weights.min_quality_weight)}.

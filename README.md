@@ -7,9 +7,10 @@ be taken apart and explained.
 [![Frontend](https://github.com/acana68/ProviderIQ/actions/workflows/frontend.yml/badge.svg)](https://github.com/acana68/ProviderIQ/actions/workflows/frontend.yml)
 [![Docker](https://github.com/acana68/ProviderIQ/actions/workflows/docker.yml/badge.svg)](https://github.com/acana68/ProviderIQ/actions/workflows/docker.yml)
 
-> **Educational portfolio project. All provider data is synthetic: the providers are
-> generated, not real people. This is not a medical recommendation system and does not
-> provide medical advice.**
+> **Educational portfolio project. The default demo uses synthetic data: the providers are
+> generated, not real people. An optional mode uses real public CMS data about New Jersey
+> clinicians. This is not a medical recommendation system and does not provide medical
+> advice.**
 
 ## Screenshots
 
@@ -57,6 +58,10 @@ then rank results by criteria they don't show. "Best match" is a black box.
   datasets, built by a SQL ELT pipeline with a [data-quality report](docs/data-quality.md).
   Missing quality and experience are scored as the specialty median and flagged, never
   shown as standouts.
+- **Crisis support**: a query that suggests suicide or self-harm risk brings up the 988
+  Suicide & Crisis Lifeline above everything else; the search still works.
+- **A plain-language privacy page** (`/privacy`), link-preview tags and image, and a layout
+  checked at phone width (375px) on every page.
 
 ## Architecture
 
@@ -105,7 +110,7 @@ package imports repositories, models, or the database. More in
 | AI | Anthropic Python SDK, Claude Haiku 4.5 (`claude-haiku-4-5-20251001`), rule-based fallback parser |
 | Database | PostgreSQL 17 |
 | Frontend | React 19, TypeScript (strict), Vite, React Router, CSS Modules with design tokens, plain `fetch` |
-| Testing | pytest, Hypothesis, Vitest, React Testing Library, Playwright (screenshots) |
+| Testing | pytest, Hypothesis, Vitest, React Testing Library, Playwright (browser checks, screenshots) |
 | Quality | ruff (lint + format), ESLint, Prettier, `tsc --noEmit` |
 | Infrastructure | Docker Compose, nginx (unprivileged), GitHub Actions, Dependabot |
 
@@ -129,48 +134,59 @@ produces. Everything after that is ordinary, testable code.
   output, an extra field) falls back to the keyword parser. The response still succeeds,
   labelled `parser_used: "rule_based"`, and the UI shows "Keyword matching" instead of
   "Interpreted by AI".
+- **Symptoms aren't conditions.** The prompt sets a condition only when the user names one:
+  "chest pain" or "heartburn" leaves it empty. A symptom is not a diagnosis, and filtering
+  on one would quietly narrow the results to specialists in a single condition.
+- **Crisis support.** If a query suggests suicide or self-harm risk, the parse response has
+  `crisis: true`. A short keyword list checks every query, whichever parser answers, and
+  the LLM's schema has an optional flag for wording no list anticipates; either one is
+  enough. The page then shows the 988 Suicide & Crisis Lifeline above everything else, and
+  the search works as usual.
 - **Injection containment.** The query is escaped and wrapped in `<query>` tags, and the
   system prompt treats it as data. More importantly, there is nothing to steal: no data
   access, no executable tools, nothing secret in the prompt. The worst a successful
   injection can do is produce a different valid search, which the user then sees.
 - **Query text is never logged.** Parse logs record only the parser used, latency, query
-  length, and warning count. LLM failures log only the exception type. `search_logs` stores
-  no text, condition, or city.
+  length, and warning count: not the text, and not the crisis flag. LLM failures log only
+  the exception type. `search_logs` stores no text, condition, or city.
 - **Cost controls.** Haiku 4.5, temperature 0, a 512-token output cap, an 8-second timeout
   with no retries, a 500-character input limit, and a separate per-IP limit of 10 parses a
   minute. Tests use a fake client; the one real-API test only runs with `pytest -m live`.
 
 ### Parser accuracy
 
-`python -m scripts.eval_parser` scores both parsers field by field on 22 labeled queries.
-Latest run:
+`python -m scripts.eval_parser` scores both parsers field by field on 23 labeled queries,
+including two about chest pain and one about heartburn, where the right answer leaves the
+condition empty. Latest run:
 
 | Field | Keyword parser | LLM (Claude Haiku 4.5) |
 |---|---|---|
-| specialty | 20/22 (91%) | 21/22 (95%) |
-| condition | 22/22 (100%) | 21/22 (95%) |
-| location | 21/22 (95%) | 22/22 (100%) |
-| radius_miles | 22/22 (100%) | 22/22 (100%) |
-| min_quality_score | 22/22 (100%) | 22/22 (100%) |
-| min_years_experience | 22/22 (100%) | 22/22 (100%) |
-| accepting_new_patients | 22/22 (100%) | 22/22 (100%) |
-| priority | 20/22 (91%) | 22/22 (100%) |
-| **Queries fully correct** | **18/22** | **20/22** |
+| specialty | 21/23 (91%) | 21/23 (91%) |
+| condition | 22/23 (96%) | 23/23 (100%) |
+| location | 22/23 (96%) | 23/23 (100%) |
+| radius_miles | 23/23 (100%) | 23/23 (100%) |
+| min_quality_score | 23/23 (100%) | 23/23 (100%) |
+| min_years_experience | 23/23 (100%) | 23/23 (100%) |
+| accepting_new_patients | 23/23 (100%) | 23/23 (100%) |
+| priority | 21/23 (91%) | 23/23 (100%) |
+| **Queries fully correct** | **19/23** | **21/23** |
 
-The keyword parser misses slang and paraphrase: "the Big Apple", "won't break the bank",
-"GI doc", "shrink", "as close as possible".
+The keyword parser misses slang and paraphrase ("the Big Apple", "won't break the bank",
+"GI doc", "shrink", "as close as possible"), and its synonym list still turns "heartburn"
+into GERD.
 
-The LLM's two misses:
+The LLM gets every condition right: with the symptom rule in the prompt, it no longer
+infers a condition from a symptom. Its two misses are both specialties:
 
-- *"lung cancer specialist in Miami"*: it added the specialty oncology. The label leaves
-  the specialty open because both oncologists and pulmonologists treat lung cancer (the
-  directory has 58 and 67 of them). Guessing oncology quietly drops the pulmonologists.
-- *"my doctor says I should see a heart specialist in Atlanta about chest pain"*: it
-  **inferred the condition coronary artery disease from the symptom "chest pain"**. This is
-  the risky direction in healthcare: a symptom is not a diagnosis, and filtering on it
-  narrows the results to specialists in one condition. The mitigation today is the design:
-  the parsed condition appears in the editable form, and nothing is searched until the user
-  confirms. The prompt fix is the first item under [future improvements](#future-improvements).
+- *"lung cancer specialist in Miami"*: it added oncology. The label leaves the specialty
+  open because both oncologists and pulmonologists treat lung cancer, so guessing oncology
+  quietly drops the pulmonologists.
+- *"I've been having chest pain, need a doctor near Chicago"*: it added cardiology. It
+  no longer turns "chest pain" into a condition, but it still infers a specialty from the
+  symptom.
+
+Either way, parsed criteria appear in an editable form, and nothing is searched until the
+user confirms.
 
 ## Ranking methodology
 
@@ -227,13 +243,16 @@ erDiagram
     }
     PROVIDERS {
         int id PK
+        string npi UK "CMS only"
+        string data_source "synthetic or cms"
         int specialty_id FK
         string city
         string state
         float latitude
         float longitude
         int years_experience
-        float quality_score
+        float quality_score "NULL when not published"
+        bool quality_imputed "generated"
         float cost_index
         int patient_volume
         float complication_rate
@@ -262,10 +281,18 @@ erDiagram
         int result_count
         float latency_ms
     }
+    DATASET_METADATA {
+        int id PK "always 1"
+        string source "synthetic or cms_nj"
+        date as_of
+        string vintage
+        datetime seeded_at
+    }
 ```
 
 `cities` is the local geocoding table that user locations resolve against, so there is no
-external geocoding API. `CHECK` constraints enforce the value ranges (quality 0–100, rates
+external geocoding API. `dataset_metadata` records which dataset was seeded, which is what
+`GET /dataset` reports. `CHECK` constraints enforce the value ranges (quality 0–100, rates
 0–1, and so on) in the database as well as in Pydantic.
 
 | Index | Why |
@@ -326,7 +353,9 @@ codes such as `VALIDATION_ERROR`, `INVALID_SEARCH`, `LOCATION_NOT_FOUND`,
 - **Containers.** Both run as non-root users. The backend image has runtime dependencies only,
   and its code is read-only to the app user. Postgres and the backend's direct port are
   published on 127.0.0.1 only, and the database container gets only the `POSTGRES_*` settings.
-- **Privacy.** No query text, condition, or city is ever logged or stored.
+- **Privacy.** No query text, condition, or city is ever logged or stored, and nginx's
+  access log keeps no IP addresses or query strings. The [privacy page](frontend/src/pages/PrivacyPage.tsx)
+  (`/privacy`) says the same in plain language.
 - **Safe operations.** Reseeding (which deletes provider data) is refused when
   `ENVIRONMENT=prod`, and so are the OpenAPI docs. The public health checks don't reveal the
   version or environment.
@@ -344,8 +373,9 @@ vulnerability: [SECURITY.md](SECURITY.md).
 
 | Suite | Tests | Runtime |
 |---|---|---|
-| Backend (pytest) | **388** passing: 265 unit, 123 integration against a real Postgres test database | ~24 s |
-| Frontend (Vitest + React Testing Library) | **186** passing across 13 files | ~28 s |
+| Backend (pytest) | **569** passing: 359 unit, 210 integration against a real Postgres test database | ~42 s |
+| Frontend (Vitest + React Testing Library) | **226** passing across 16 files | ~10 s |
+| Browser (Playwright, mocked API) | **24** checks: every page at 375px for both datasets, and a link crawl | ~15 s |
 
 Two live tests that call the real Anthropic API are excluded by default and run only with
 `pytest -m live`.
@@ -365,15 +395,25 @@ What's covered beyond the usual endpoint and component tests:
   inverting the explanation-only peer percentiles changes no score or position, and a
   provider's detail page returns exactly its search score and explanation.
 - **AI safety tests**: injection attempts yield only valid criteria, and the query text never
-  reaches the logs.
+  reaches the logs. The crisis flag is tested through the keyword check alone, the LLM's
+  flag alone (with a fake client), and the fallback, and neither the query nor the flag is
+  logged.
+- **Database role tests**: the API's runtime role has exactly the privileges it needs, and
+  writes or DDL are refused.
+- **Browser checks** (Playwright, against the built app with the API mocked from fixtures):
+  no page scrolls sideways at 375px, for synthetic and CMS data, and a link crawl fails on
+  any broken internal link, missing `#anchor`, or broken GitHub link.
 
 **CI** (GitHub Actions, on every push to `main` and every pull request):
 
 - **Backend**: ruff lint and format check, then pytest against a Postgres 17 service
   container, with `AI_PROVIDER=none`.
-- **Frontend**: typecheck, lint, format check, tests, and build.
+- **Frontend**: typecheck, lint, format check, tests, build, then the Playwright browser
+  checks.
 - **Docker**: builds and starts the whole Compose stack, waits for it to be healthy, and
   runs the smoke test against it.
+- **Dependency audit**: `pip-audit` and `npm audit`, also weekly.
+- **Secret scan**: gitleaks over the whole Git history.
 
 ## Running it
 
@@ -381,7 +421,8 @@ What's covered beyond the usual endpoint and component tests:
 
 Needs Docker with Compose v2. From the repo root:
 
-    cp .env.example .env        # then set POSTGRES_PASSWORD (URL-safe: no @ : / ? #)
+    cp .env.example .env        # then set POSTGRES_PASSWORD and APP_DB_PASSWORD, and the
+                                # same passwords in the database URLs (URL-safe: no @ : / ? #)
     docker compose up --build
 
 Open **http://localhost:8080**. The first start runs migrations and loads the synthetic
@@ -445,6 +486,8 @@ Checks:
     npm run format:check
     npm test
     npm run build
+    npx playwright install chromium   # once
+    npm run test:e2e                  # browser checks: 375px layout, link crawl (no backend)
 
     # frontend/, with the Docker stack running (makes one real AI parse)
     npx playwright install chromium   # once
@@ -533,18 +576,21 @@ index to cut the candidates, then exact great-circle distance in Python drops th
 It runs on any Postgres, with no extension. PostGIS (GiST index, nearest-neighbour queries)
 is the upgrade at scale.
 
-**Ranking in Python.** The filtered candidates are scored in Python, not SQL. The entire
-dataset is 1,500 providers, so the largest possible candidate set is small, and the engine
-stays pure and property-testable. At millions of rows, scoring would move into the database
-or a search engine.
+**Ranking in Python.** The filtered candidates are scored in Python, not SQL, so the engine
+stays pure and property-testable. The price shows in the worst case, a search with no
+filters: measured in-process (`python -m scripts.bench_search`), p50 69 ms and p95 119 ms
+over the 1,500 synthetic providers, but p50 540 ms and p95 607 ms over the 9,071 CMS ones.
+A specialty filter brings the CMS case down to about 80 ms. Scoring in the database (or a
+search engine, at millions of rows) is the fix when that matters.
 
 **The URL is the single source of truth for search state.** Results survive refresh, links
 can be shared, and the back button works. Because the URL is user input, parsing is strict:
 anything malformed or out of range is dropped before reaching the API.
 
-**Synthetic data with deliberate correlations.** Real provider-quality data isn't freely
-available, and fake people avoid any privacy question. The generator (seeded, so
-byte-identical output) builds in realistic structure:
+**Synthetic data by default, with deliberate correlations.** Public data covers only part
+of the picture (Medicare patients, no outcome rates, gaps the CMS mode has to impute), and
+fake people raise no privacy question, so the default demo is synthetic. The generator
+(seeded, so byte-identical output) builds in realistic structure:
 
 - Quality tracks outcomes. Within a specialty, the average correlation of quality with
   complication rate is −0.81, and with readmission rate −0.79.
@@ -578,17 +624,17 @@ ECS Fargate behind an ALB is the next step when it needs to scale.
 
 ## Future improvements
 
-- **Stop the LLM inferring conditions from symptoms.** Tighten the prompt so the condition is
-  only set when the user names one, and add the chest-pain case to the eval set as a
-  regression check.
 - **Deploy to AWS** as planned above.
+- **Worst-case search speed** on the CMS data (see "Ranking in Python" above).
 - **Redis** for rate limiting and caching shared across instances.
 - **PostGIS** for radius search at scale.
 - **A search engine** (OpenSearch or Elasticsearch) if the dataset grows to millions of
   providers.
 - **Authentication**, which would also unlock an admin write API.
 - **Generated TypeScript types** from the OpenAPI spec instead of hand-written ones.
-- **End-to-end browser tests** with Playwright, which is already set up for screenshots.
+- **Browser tests against the running stack**, beyond today's checks with a mocked API.
+- **The keyword parser and symptoms**: its synonym list still maps a few symptoms
+  ("heartburn", "irregular heartbeat") to conditions, which the LLM prompt now forbids.
 - **More states** for the real CMS dataset: the pipeline is parameterized by state, but
   the city list and the ZIP prefix filter are New Jersey-specific.
 

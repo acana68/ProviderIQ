@@ -29,6 +29,7 @@ const LLM_RESULT: ParseQueryResponse = {
   },
   parser_used: 'llm',
   warnings: [],
+  crisis: false,
 }
 
 /** The /results URL the page navigated to, shown by a stand-in results page. */

@@ -3,6 +3,7 @@ import time
 
 from fastapi import APIRouter, Depends
 
+from app.ai.crisis import mentions_self_harm
 from app.api.deps import QueryParserDep, enforce_ai_rate_limit
 from app.schemas.ai import ParseQueryRequest, ParseQueryResponse
 from app.schemas.common import error_responses
@@ -24,7 +25,10 @@ def parse_query(body: ParseQueryRequest, parser: QueryParserDep) -> ParseQueryRe
     criteria for editing, then sends them to POST /search."""
     start = time.perf_counter()
     result = parser.parse(body.query)
-    # Never the query itself: people describe their own health in it.
+    # Either check is enough. Checked here, so it applies whichever parser answered,
+    # including the keyword fallback when the LLM fails.
+    crisis = result.crisis or mentions_self_harm(body.query)
+    # Never the query itself, nor the crisis flag: people describe their own health here.
     logger.info(
         "parse_query",
         extra={
@@ -35,5 +39,8 @@ def parse_query(body: ParseQueryRequest, parser: QueryParserDep) -> ParseQueryRe
         },
     )
     return ParseQueryResponse(
-        criteria=result.criteria, parser_used=result.parser_used, warnings=result.warnings
+        criteria=result.criteria,
+        parser_used=result.parser_used,
+        warnings=result.warnings,
+        crisis=crisis,
     )

@@ -570,7 +570,8 @@ Response:
     "priority": "quality"
   },
   "parser_used": "rule_based",
-  "warnings": []
+  "warnings": [],
+  "crisis": false
 }
 ```
 
@@ -583,6 +584,14 @@ Response:
 - **`warnings`** are human-readable notes to show next to the criteria: a fallback, a
   specialty inferred from the condition, or a value dropped because it wasn't in the
   directory. They never repeat the query or a rejected value.
+- **`crisis`**: `true` when the query suggests suicide or self-harm risk. A short keyword
+  list (`app/ai/crisis.py`) checks every query, whichever parser answered, and the LLM can
+  also set it; either one is enough. The frontend then shows crisis helpline information.
+  It changes nothing else: the criteria are parsed and searchable as usual. Neither the
+  query nor the flag is logged.
+- A **condition** is only set when the query names one. Symptoms ("chest pain",
+  "heartburn") leave it `null`: a symptom is not a diagnosis. (The keyword parser still
+  maps a few symptom words, such as "heartburn", to a condition.)
 
 For example, `"who treats heart failure? nearest one please"` gives:
 
@@ -602,7 +611,8 @@ For example, `"who treats heart failure? nearest one please"` gives:
   "warnings": [
     "Ignored the distance priority because no location was recognized.",
     "Inferred the specialty (Cardiology) from the condition."
-  ]
+  ],
+  "crisis": false
 }
 ```
 

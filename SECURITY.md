@@ -172,6 +172,12 @@ People describe their own health in the search box, so:
   state, priority, result count and latency.
 - The access log records method, path, status and duration: never the query string or
   client IP. Uvicorn's own access log (which includes query strings) is turned off.
+- nginx's access log is set to the same fields (`frontend/nginx.conf`): no client address,
+  query string (search criteria end up in `/results?...` URLs), referrer or user agent.
+  Its error log can still include a client address, e.g. for a request `limit_req` rejected.
+- The crisis flag (a query suggesting self-harm risk) is never logged or stored either.
+- `/privacy` in the app explains all of this in plain language, without claiming
+  compliance with any particular law.
 
 ### The CMS data
 
