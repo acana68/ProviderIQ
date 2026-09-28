@@ -22,7 +22,7 @@ DROP_REASONS = (
     "not an MD or DO",
     "credential not published",
     "missing name",
-    "no usable Medicare volume or spending",
+    "no usable Medicare volume",
     "ZIP code not located",
 )
 TOP_UNMAPPED = 15
@@ -41,6 +41,9 @@ def collect(connection: Connection) -> dict[str, Any]:
     s: dict[str, Any] = {}
     s["load_log"] = _rows(connection, "SELECT * FROM staging.load_log ORDER BY source")
     s["reference_year"] = _scalar(connection, "SELECT reference_year FROM staging.params")
+    s["min_spending_patients"] = _scalar(
+        connection, "SELECT min_spending_patients FROM staging.params"
+    )
     s["ndf_rows"] = _scalar(connection, "SELECT count(*) FROM staging.ndf_rows")
     s["ndf_npis"] = _scalar(connection, "SELECT count(DISTINCT npi) FROM staging.ndf_rows")
     s["mapped_npis"] = _scalar(connection, "SELECT count(*) FROM staging.ndf_selected")
@@ -115,9 +118,25 @@ def collect(connection: Connection) -> dict[str, Any]:
                percentile_cont(0.1) WITHIN GROUP (ORDER BY cost_index) AS cost_p10,
                percentile_cont(0.5) WITHIN GROUP (ORDER BY cost_index) AS cost_p50,
                percentile_cont(0.9) WITHIN GROUP (ORDER BY cost_index) AS cost_p90,
-               percentile_cont(0.5) WITHIN GROUP (ORDER BY allowed_per_beneficiary)
-                   AS allowed_median
+               percentile_cont(0.5) WITHIN GROUP (ORDER BY spending_per_patient)
+                   AS spending_median
            FROM staging.cms_providers GROUP BY specialty ORDER BY specialty""",
+    )
+    s["spending"] = _rows(
+        connection,
+        """SELECT
+               c.specialty,
+               count(*) AS n,
+               count(*) FILTER (WHERE c.spending_status = 'reported') AS reported,
+               count(*) FILTER (WHERE c.spending_status = 'suppressed') AS suppressed,
+               count(*) FILTER (WHERE c.spending_status = 'too_few_patients')
+                   AS too_few_patients,
+               count(*) FILTER (WHERE c.spending_status = 'not_usable') AS not_usable,
+               sum(u.drug_allowed_amount) / NULLIF(sum(u.allowed_amount), 0) AS drug_share
+           FROM staging.cms_providers AS c
+           JOIN staging.medicare_utilization AS u ON u.npi = c.npi
+           GROUP BY ROLLUP (c.specialty)
+           ORDER BY c.specialty NULLS LAST""",
     )
     s["cities"] = _rows(
         connection, "SELECT name, county_name, population FROM staging.cms_cities ORDER BY name"
@@ -249,8 +268,8 @@ def render(s: dict[str, Any], manifest: dict[str, Any]) -> str:
     )
     add("")
     add(
-        "Missing quality and experience are scored as the specialty median and flagged as "
-        "imputed in the API; complication and readmission rates aren't published per "
+        "Missing quality, experience and spending are scored as the specialty median and "
+        "flagged as imputed in the API; complication and readmission rates aren't published per "
         "clinician, so they are always null for this dataset.\n"
     )
     add(
@@ -266,20 +285,54 @@ def render(s: dict[str, Any], manifest: dict[str, Any]) -> str:
         "missing score (rule: `sql/03_mips_scores.sql`).\n"
     )
 
+    minimum = s["min_spending_patients"]
+    add("## Medicare spending per patient\n")
+    add(
+        "This dataset's `cost_index`: the Medicare allowed amount for medical (non-drug) "
+        "services per beneficiary, divided by the median for the specialty among the kept "
+        "NJ providers who have it (so the median is 1.0). Per patient rather than per "
+        "service because Medicare pays by fee schedule: the amount per service mostly "
+        "reflects which services are billed, not a price. Spending per patient measures "
+        "how much care a clinician uses for each patient, though it is still influenced by "
+        "how sick those patients are. Part B drugs (the file's `Drug_*` fields: codes on "
+        "the ASP drug list) are left out because they mostly reflect the condition "
+        "treated, such as chemotherapy, not the clinician's choices. The ranking scores "
+        "spending as a percentile within the specialty (see docs/ranking.md).\n"
+    )
+    add(
+        "Spending is **not reported** (null, scored as the specialty median and flagged, "
+        "never a reason to stand out) when CMS suppressed the medical amounts, or when "
+        f"fewer than {minimum} patients had medical services: over so few patients, one "
+        "unusually sick or healthy patient decides the average. The suppression here is "
+        "counter-suppression: the drug part covered 1-10 patients, so CMS also blanks the "
+        "medical part, which would otherwise give the drug part away "
+        "(rules: `sql/04_medicare_utilization.sql`, `sql/06_providers.sql`).\n"
+    )
+    add(
+        "| Specialty | Providers | Reported | Suppressed by CMS "
+        f"| Fewer than {minimum} patients | Other | Drug share of allowed amount |"
+    )
+    add("|---|---:|---:|---:|---:|---:|---:|")
+    for row in s["spending"]:
+        drug_share = None if row["drug_share"] is None else 100 * row["drug_share"]
+        add(
+            f"| {row['specialty'] or '**all**'} | {row['n']:,} "
+            f"| {row['reported']:,} ({_pct(row['reported'], row['n'])}) "
+            f"| {row['suppressed']:,} | {row['too_few_patients']:,} | {row['not_usable']:,} "
+            f"| {_num(drug_share)}% |"
+        )
+    add("")
+
     add("## Per specialty\n")
     add(
-        "The spending index is this dataset's `cost_index`: Medicare allowed amount per "
-        "beneficiary, divided by the median for the specialty among the kept NJ providers "
-        "(so the median is 1.0). Per patient rather than per service because Medicare pays "
-        "by fee schedule: the amount per service mostly reflects which services are billed, "
-        "not a price. Spending per patient measures how much care a clinician uses for each "
-        "patient, though it is still influenced by how sick those patients are. The ranking "
-        "clamps the index to 0.5-1.5 (see docs/ranking.md).\n"
+        "Spending columns cover only the providers whose spending is reported. The index "
+        "distribution is for reference: the ranking uses each provider's percentile within "
+        "the specialty, not the index itself.\n"
     )
     add(
         "| Specialty | Providers | With MIPS | Median quality | Median years "
         "| Median Medicare patients | Spending index p10 / p50 / p90 "
-        "| Median allowed / patient |"
+        "| Median spending / patient |"
     )
     add("|---|---:|---:|---:|---:|---:|---|---:|")
     for row in s["specialties"]:
@@ -289,7 +342,7 @@ def render(s: dict[str, Any], manifest: dict[str, Any]) -> str:
             f"| {_num(row['volume_median'], ',.0f')} "
             f"| {_num(row['cost_p10'], '.2f')} / {_num(row['cost_p50'], '.2f')} / "
             f"{_num(row['cost_p90'], '.2f')} "
-            f"| ${_num(row['allowed_median'], ',.2f')} |"
+            f"| ${_num(row['spending_median'], ',.2f')} |"
         )
     add("")
 

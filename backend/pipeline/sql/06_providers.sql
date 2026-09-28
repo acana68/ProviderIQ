@@ -32,7 +32,6 @@ resolved AS (
         s.ndf_credential,
         u.npi IS NOT NULL AS in_medicare,
         u.beneficiaries,
-        u.allowed_per_beneficiary,
         s.located
     FROM npis AS n
     LEFT JOIN staging.ndf_selected AS s ON s.npi = n.npi
@@ -48,10 +47,9 @@ SELECT
         WHEN credential IS NULL AND ndf_credential IS NOT NULL THEN 'not an MD or DO'
         WHEN credential IS NULL THEN 'credential not published'
         WHEN first_name IS NULL OR last_name IS NULL THEN 'missing name'
-        WHEN beneficiaries IS NULL
-            OR allowed_per_beneficiary IS NULL
-            OR allowed_per_beneficiary <= 0
-            THEN 'no usable Medicare volume or spending'
+        -- Spending isn't checked: a clinician without usable spending is kept, with
+        -- spending unreported (see cms_providers below).
+        WHEN beneficiaries IS NULL OR beneficiaries <= 0 THEN 'no usable Medicare volume'
         WHEN NOT located THEN 'ZIP code not located'
     END AS drop_reason
 FROM resolved;
@@ -64,10 +62,21 @@ FROM resolved;
 --                     still billing Medicare). Note it counts residency as experience.
 --   quality_score     the MIPS final score (1-100), or NULL without one. A score of 0
 --                     (nothing scorable submitted) is NULL too; see 03_mips_scores.sql.
---   cost_index        Medicare spending per patient: allowed amount per beneficiary /
---                     the median of that for the same specialty among the kept NJ
---                     providers. 1.0 = the specialty median. Per beneficiary, not per
---                     service; see 04_medicare_utilization.sql for why.
+--   spending_status   whether Medicare spending per patient is reported:
+--                       reported
+--                       suppressed        CMS didn't publish the medical (non-drug)
+--                                         amounts (Med_Sprsn_Ind; 04_medicare_utilization.sql)
+--                       too_few_patients  fewer than params.min_spending_patients
+--                                         patients with medical services
+--                       not_usable        amount or patient count missing, or amount <= 0
+--   spending_per_patient  medical (non-drug) Medicare allowed amount per beneficiary,
+--                     or NULL unless reported.
+--   cost_index        Medicare spending per patient: spending_per_patient / the median
+--                     of it for the same specialty among the kept NJ providers who have
+--                     it. 1.0 = the specialty median. NULL unless reported: the app
+--                     imputes it and never lets it make a provider stand out. Per
+--                     beneficiary, not per service, and without Part B drugs; see
+--                     04_medicare_utilization.sql for why.
 --   patient_volume    Medicare beneficiaries.
 --   latitude/longitude  the practice ZIP's centroid, not the street address.
 --
@@ -78,18 +87,39 @@ DROP TABLE IF EXISTS staging.cms_providers;
 CREATE TABLE staging.cms_providers AS
 WITH kept AS (
     SELECT
-        s.*, f.credential, u.beneficiaries, u.allowed_per_beneficiary, z.latitude, z.longitude
+        s.*,
+        f.credential,
+        u.beneficiaries,
+        z.latitude,
+        z.longitude,
+        CASE
+            WHEN u.medical_suppressed THEN 'suppressed'
+            WHEN u.medical_beneficiaries IS NULL OR u.medical_allowed_amount IS NULL
+                THEN 'not_usable'
+            WHEN u.medical_beneficiaries < p.min_spending_patients THEN 'too_few_patients'
+            WHEN u.medical_allowed_amount <= 0 THEN 'not_usable'
+            ELSE 'reported'
+        END AS spending_status,
+        u.medical_allowed_per_beneficiary
     FROM staging.npi_funnel AS f
     JOIN staging.ndf_selected AS s ON s.npi = f.npi
     JOIN staging.medicare_utilization AS u ON u.npi = f.npi
     JOIN staging.zip_centroids AS z ON z.zip5 = s.zip5
+    CROSS JOIN staging.params AS p
     WHERE f.drop_reason IS NULL
+),
+spending AS (
+    SELECT
+        *,
+        CASE WHEN spending_status = 'reported' THEN medical_allowed_per_beneficiary END
+            AS spending_per_patient
+    FROM kept
 ),
 medians AS (
     SELECT
         specialty,
-        percentile_cont(0.5) WITHIN GROUP (ORDER BY allowed_per_beneficiary) AS median_allowed
-    FROM kept
+        percentile_cont(0.5) WITHIN GROUP (ORDER BY spending_per_patient) AS median_spending
+    FROM spending
     GROUP BY specialty
 )
 SELECT
@@ -111,12 +141,17 @@ SELECT
     END AS years_experience,
     round(m.final_score, 2)::float8 AS quality_score,
     coalesce(m.zero_only, false) AS mips_zero_only,
-    k.allowed_per_beneficiary::float8 AS allowed_per_beneficiary,
+    k.spending_status,
+    k.spending_per_patient::float8 AS spending_per_patient,
     -- Rounded to 4 places, and never 0 (the providers table requires cost_index > 0).
-    greatest(round((k.allowed_per_beneficiary / md.median_allowed)::numeric, 4), 0.0001)::float8
-        AS cost_index,
+    -- NULL when spending isn't reported (the CASE is needed: greatest() ignores NULLs).
+    CASE
+        WHEN k.spending_per_patient IS NOT NULL THEN greatest(
+            round((k.spending_per_patient / md.median_spending)::numeric, 4), 0.0001
+        )::float8
+    END AS cost_index,
     k.beneficiaries AS patient_volume
-FROM kept AS k
+FROM spending AS k
 CROSS JOIN staging.params AS p
 JOIN medians AS md ON md.specialty = k.specialty
 LEFT JOIN staging.mips_scores AS m ON m.npi = k.npi;

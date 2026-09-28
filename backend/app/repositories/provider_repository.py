@@ -44,17 +44,18 @@ class PeerPercentiles:
     """Where a provider ranks among ALL providers in their specialty, each in [0, 1] with
     1 the best: the fraction of the other providers they beat on that measure.
 
-    Only `volume` feeds the score. The rest exist to explain it (see
-    services/explanation.py), so ranking never depends on them. A metric the provider
-    doesn't have is None: they have no rank, and their peers are ranked only among the
-    providers who have it.
+    `volume` feeds every score, and `cost` feeds the score of CMS providers (Medicare
+    spending per patient is scored as a percentile; see services/search_service.py). The
+    rest exist only to explain the score (see services/explanation.py), so ranking never
+    depends on them. A metric the provider doesn't have is None: they have no rank, and
+    their peers are ranked only among the providers who have it.
     """
 
     volume: float
     quality: float | None
     experience: float | None
     # Higher = cheaper.
-    cost: float
+    cost: float | None
 
 
 @dataclass(frozen=True)
@@ -65,6 +66,7 @@ class SpecialtyMedians:
 
     quality: float | None
     experience: float | None
+    cost: float | None
 
 
 @dataclass(frozen=True)
@@ -124,8 +126,7 @@ class ProviderRepository:
             select(
                 Provider,
                 *_percentile_columns(percentiles),
-                medians.c.quality,
-                medians.c.experience,
+                *_median_columns(medians),
             )
             .join(percentiles, percentiles.c.provider_id == Provider.id)
             .join(medians, medians.c.specialty_id == Provider.specialty_id)
@@ -133,11 +134,12 @@ class ProviderRepository:
             .where(*_search_conditions(filters))
             .order_by(Provider.id)
         )
+        split = len(fields(PeerPercentiles))
         return [
             SearchCandidate(
                 provider=provider,
-                percentiles=PeerPercentiles(*values[:-2]),
-                medians=SpecialtyMedians(*values[-2:]),
+                percentiles=PeerPercentiles(*values[:split]),
+                medians=SpecialtyMedians(*values[split:]),
             )
             for provider, *values in self.session.execute(stmt).all()
         ]
@@ -156,12 +158,10 @@ class ProviderRepository:
         """The same medians search_candidates() attaches, for one specialty."""
         medians = _specialty_medians()
         row = self.session.execute(
-            select(medians.c.quality, medians.c.experience).where(
-                medians.c.specialty_id == specialty_id
-            )
+            select(*_median_columns(medians)).where(medians.c.specialty_id == specialty_id)
         ).one_or_none()
         # Only a specialty with no providers has no row.
-        return SpecialtyMedians(None, None) if row is None else SpecialtyMedians(*row)
+        return SpecialtyMedians(None, None, None) if row is None else SpecialtyMedians(*row)
 
 
 def _peer_percentiles() -> Subquery:
@@ -200,8 +200,8 @@ def _peer_percentiles() -> Subquery:
 
 
 def _specialty_medians() -> Subquery:
-    """specialty_id -> the median quality_score and years_experience over ALL providers
-    in the specialty (percentile_cont skips NULLs), like the percentiles: filters can't
+    """specialty_id -> the median quality_score, years_experience and cost_index over ALL
+    providers in the specialty (percentile_cont skips NULLs), like the percentiles: filters can't
     change them. A specialty where nobody has the measure uses the whole dataset's."""
 
     def median(column: ColumnElement[Any], label: str) -> ColumnElement[Any]:
@@ -210,12 +210,14 @@ def _specialty_medians() -> Subquery:
     overall = select(
         median(Provider.quality_score, "quality"),
         median(Provider.years_experience, "experience"),
+        median(Provider.cost_index, "cost"),
     ).subquery("overall_medians")
     per_specialty = (
         select(
             Provider.specialty_id,
             median(Provider.quality_score, "quality"),
             median(Provider.years_experience, "experience"),
+            median(Provider.cost_index, "cost"),
         )
         .group_by(Provider.specialty_id)
         .subquery("per_specialty_medians")
@@ -227,7 +229,10 @@ def _specialty_medians() -> Subquery:
         return type_coerce(value, Double()).label(name)
 
     return (
-        select(per_specialty.c.specialty_id, with_fallback("quality"), with_fallback("experience"))
+        select(
+            per_specialty.c.specialty_id,
+            *(with_fallback(field.name) for field in fields(SpecialtyMedians)),
+        )
         .join(overall, true())
         .subquery("specialty_medians")
     )
@@ -236,6 +241,11 @@ def _specialty_medians() -> Subquery:
 def _percentile_columns(percentiles: Subquery) -> list[ColumnElement[float]]:
     """In PeerPercentiles field order."""
     return [percentiles.c[field.name] for field in fields(PeerPercentiles)]
+
+
+def _median_columns(medians: Subquery) -> list[ColumnElement[float]]:
+    """In SpecialtyMedians field order."""
+    return [medians.c[field.name] for field in fields(SpecialtyMedians)]
 
 
 def _search_conditions(filters: SearchFilters) -> list[ColumnElement[bool]]:

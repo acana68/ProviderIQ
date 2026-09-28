@@ -203,7 +203,7 @@ so paging is stable.
       "quality_score": 73.7,
       "cost_index": 0.89,
       "accepting_new_patients": true,
-      "metric_flags": { "quality_score": "reported", "years_experience": "reported", "complication_rate": "reported", "readmission_rate": "reported" }
+      "metric_flags": { "quality_score": "reported", "years_experience": "reported", "cost_index": "reported", "complication_rate": "reported", "readmission_rate": "reported" }
     },
     {
       "id": 1332,
@@ -218,7 +218,7 @@ so paging is stable.
       "quality_score": 68.5,
       "cost_index": 0.88,
       "accepting_new_patients": true,
-      "metric_flags": { "quality_score": "reported", "years_experience": "reported", "complication_rate": "reported", "readmission_rate": "reported" }
+      "metric_flags": { "quality_score": "reported", "years_experience": "reported", "cost_index": "reported", "complication_rate": "reported", "readmission_rate": "reported" }
     }
   ],
   "page": 1,
@@ -230,22 +230,24 @@ so paging is stable.
 
 `cost_index` is relative to the regional average: `1.0` is average and lower is cheaper.
 In the CMS dataset it means something else: **Medicare spending per patient** (allowed
-amount per beneficiary), where `1.0` is the median for the provider's specialty in New
-Jersey. Label it with `GET /dataset`'s `metric_labels`, not as cost.
+amount for medical, non-drug services per beneficiary), where `1.0` is the median for the
+provider's specialty in New Jersey. It is `null` when CMS suppressed the amounts or the
+clinician had fewer than 30 patients (see `metric_flags`). Label it with `GET /dataset`'s
+`metric_labels`, not as cost.
 
 `npi` is the provider's National Provider Identifier (CMS data only; `null` for synthetic
 providers), and `data_source` is `synthetic` or `cms`.
 
 ### Missing metrics
 
-Real data has gaps, so `years_experience`, `quality_score`, `complication_rate`,
-`readmission_rate` and `accepting_new_patients` can be `null`. A missing value is never
+Real data has gaps, so `years_experience`, `quality_score`, `cost_index`,
+`complication_rate`, `readmission_rate` and `accepting_new_patients` can be `null`. A missing value is never
 turned into a number in these fields. `metric_flags` says what each one means:
 
 | Flag | Meaning |
 |---|---|
 | `reported` | The value is in the response |
-| `imputed` | Not published. Scores use the median of the provider's specialty instead, and the score component says `"imputed": true` (quality and experience only) |
+| `imputed` | Not published. Scores use the median of the provider's specialty instead, and the score component says `"imputed": true` (quality, experience and cost index) |
 | `not_reported` | Not published, and not part of any score (complication and readmission rates) |
 
 A CMS provider with no MIPS score:
@@ -257,7 +259,7 @@ A CMS provider with no MIPS score:
   "quality_score": null,
   "years_experience": 22,
   "accepting_new_patients": null,
-  "metric_flags": { "quality_score": "imputed", "years_experience": "reported", "complication_rate": "not_reported", "readmission_rate": "not_reported" }
+  "metric_flags": { "quality_score": "imputed", "years_experience": "reported", "cost_index": "reported", "complication_rate": "not_reported", "readmission_rate": "not_reported" }
 }
 ```
 
@@ -283,7 +285,7 @@ Missing → `404`, invalid → `422`.
   "quality_score": 73.7,
   "cost_index": 0.89,
   "accepting_new_patients": true,
-  "metric_flags": { "quality_score": "reported", "years_experience": "reported", "complication_rate": "reported", "readmission_rate": "reported" },
+  "metric_flags": { "quality_score": "reported", "years_experience": "reported", "cost_index": "reported", "complication_rate": "reported", "readmission_rate": "reported" },
   "zip_code": "10046",
   "latitude": 40.617991,
   "longitude": -74.157242,
@@ -418,7 +420,7 @@ Response (first item only):
         "quality_score": 79.8,
         "cost_index": 0.91,
         "accepting_new_patients": true,
-        "metric_flags": { "quality_score": "reported", "years_experience": "reported", "complication_rate": "reported", "readmission_rate": "reported" }
+        "metric_flags": { "quality_score": "reported", "years_experience": "reported", "cost_index": "reported", "complication_rate": "reported", "readmission_rate": "reported" }
       },
       "distance_miles": 14.4,
       "score": {

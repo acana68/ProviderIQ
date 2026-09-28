@@ -281,7 +281,7 @@ There's no "AI unavailable" error, because that case falls back instead of faili
 |---|---|---|
 | Quality | `q = quality_score / 100` | Already on a fixed 0–100 scale. |
 | Experience | `e = min(1, ln(1+years) / ln(31))` | Diminishing returns: 2→10 years matters more than 20→28. 5y → 0.52, 10y → 0.70, 20y → 0.89, 30y+ → 1.0 |
-| Cost efficiency | `c = clamp(1.5 − cost_index, 0, 1)` | Maps an index range of 0.5–1.5 onto 1–0, so average cost (1.0) scores 0.5. |
+| Cost efficiency | `c = clamp(1.5 − cost_index, 0, 1)` | Maps an index range of 0.5–1.5 onto 1–0, so average cost (1.0) scores 0.5. Synthetic data only: CMS spending per patient is scored as a within-specialty percentile ([ranking.md](ranking.md#cms-spending-is-scored-as-a-percentile)). |
 | Volume | `v = percent_rank within specialty` | Primary care sees far more patients than oncology, so raw counts can't be compared across specialties. Computed with a SQL window function over the whole specialty, not the filtered results. |
 | Distance | `d = 1 − distance / radius` | Everything returned is inside the radius, so this falls in [0, 1] with a linear falloff. |
 
@@ -501,7 +501,7 @@ python -m scripts.seed_db --source cms_nj   data/cms/ ──▶ providers, citie
 | Credential | The NDF's if it is MD or DO; if blank, the Medicare file's ("M.D." → MD). Anything else is dropped: the schema only holds physicians |
 | years_experience | Reference year − medical school graduation year; NULL if missing, in the future, or more than 60 years back. It counts residency too |
 | patient_volume | Medicare beneficiaries seen in 2024 |
-| cost_index | **Medicare spending per patient**: allowed amount per Medicare beneficiary ÷ the median of that for the specialty among the kept NJ providers, so each specialty's median is exactly 1.0. Per patient, not per service: Medicare pays by fee schedule, so the amount per service mostly reflects which services are billed, not a price (`04_medicare_utilization.sql`). Displayed as "Medicare spending per patient", never "cost" |
+| cost_index | **Medicare spending per patient**: allowed amount for medical (non-drug) services per beneficiary (`Med_Mdcr_Alowd_Amt / Med_Tot_Benes`) ÷ the median of that for the specialty among the kept NJ providers who have it, so each specialty's median is exactly 1.0. Per patient, not per service: Medicare pays by fee schedule, so the amount per service mostly reflects which services are billed, not a price. Without Part B drugs, which mostly reflect the condition treated (`04_medicare_utilization.sql`). NULL (imputed) when CMS suppressed the medical amounts or fewer than 30 patients had medical services (`MIN_SPENDING_PATIENTS`). Scored as a percentile within the specialty. Displayed as "Medicare spending per patient", never "cost" |
 | quality_score | The MIPS final score (1–100). A clinician with several scores (individual, group, APM) gets the highest, as CMS does within a TIN. NULL without one, and NULL for a final score of 0, which means nothing that could be scored was submitted (CMS 2024 Traditional MIPS Scoring Guide; `03_mips_scores.sql`) |
 | Location | The Census centroid of the practice ZIP |
 | Not published | complication_rate, readmission_rate, accepting_new_patients, subspecialty, conditions: NULL / none |
@@ -540,11 +540,12 @@ condition on CMS data returns `422 CONDITIONS_UNAVAILABLE`.
 - **Spending per patient isn't price, and isn't risk-adjusted.** It measures how much
   Medicare care a clinician bills for each patient they see, which also depends on how
   sick those patients are and what the practice does (a procedural cardiologist vs. a
-  consult-only one). It is spread widely: about a third of providers fall outside the
-  0.5–1.5 range the ranking uses, and are clamped. It includes Part B drugs, which
-  dominate oncology (median index 1.0, 90th percentile about 9.6; about 1.9 without drugs).
-  An earlier version used allowed amount per service, which mostly measured the mix of
-  services billed.
+  consult-only one). It is spread widely, so the ranking scores it as a percentile within
+  the specialty: the fixed 0.5–1.5 scale used for synthetic data pinned a third of
+  providers at 0 or 1. Part B drugs are left out (with them, oncology's 90th percentile
+  was 9.6 times the median; without, 1.9), and about a fifth of providers have no usable
+  figure (suppressed by CMS, or under 30 patients). An earlier version used allowed amount
+  per service, which mostly measured the mix of services billed.
 - **MIPS is a payment program score.** Its final score blends quality measures,
   improvement activities, interoperability and cost, and clinicians in advanced APMs or
   under the low-volume threshold don't get one. So coverage is partial and uneven by

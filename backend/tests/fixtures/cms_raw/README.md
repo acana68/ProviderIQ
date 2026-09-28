@@ -23,9 +23,13 @@ runs the whole pipeline on these files.
 | 9000000016 | Enrolled as sleep medicine (unmapped) and pulmonary disease, so pulmonology. Graduation year in the future: NULL. Medicare credential `D.O., PH.D.`, so DO. |
 | 9111111111 | MIPS row for an NPI outside the NJ extract: filtered out while loading. |
 
-Medicare allowed amount per beneficiary: cardiology 20, 26.67, 60 and 8.33 (median
-23.33); primary care 10 and 8.75 (median 9.375); dermatology and pulmonology one provider
-each (index 1.0).
+Medicare spending per patient, from the medical (non-drug) `Med_*` fields: cardiology 18,
+26.67 and 15 (median 18). 9000000011 has 9,000 of drug spending on top, which would make it
+the most expensive; without drugs it's the cheapest. 9000000012's medical amounts are
+counter-suppressed (`#`, with the drug part `*`), so its spending isn't reported. Primary
+care 10 and 8.75 (median 9.375). Dermatology's 9000000008 has 25 patients, fewer than the
+30 needed, so its spending isn't reported. Pulmonology's 9000000016 has exactly 30, so it
+is (alone in its specialty: index 1.0).
 
 Census: Testville (90,000) and Sampleton (45,000) pass the 40,000 threshold. Washington
 in Beta County is its county's largest municipality; another Washington exists in Alpha

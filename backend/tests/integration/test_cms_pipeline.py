@@ -9,7 +9,13 @@ from sqlalchemy import Connection, text
 from sqlalchemy.orm import Session
 
 from pipeline import data_quality
-from pipeline.transform import CITIES_FILE, PROVIDERS_FILE, TransformResult, run
+from pipeline.transform import (
+    CITIES_FILE,
+    MIN_SPENDING_PATIENTS,
+    PROVIDERS_FILE,
+    TransformResult,
+    run,
+)
 from scripts.seed_db import CMS_PROVIDER_COLUMNS
 
 FIXTURE_DIR = Path(__file__).resolve().parents[1] / "fixtures" / "cms_raw"
@@ -119,23 +125,47 @@ def test_coordinates_are_the_zip_centroid(providers: dict[str, dict[str, str]]) 
     assert (row["latitude"], row["longitude"]) == ("40.810000", "-74.190000")
 
 
-def test_cost_index_is_spending_per_patient_over_the_specialty_median(
+def test_cost_index_is_non_drug_spending_per_patient_over_the_specialty_median(
     providers: dict[str, dict[str, str]],
 ) -> None:
-    # Allowed amount per beneficiary, cardiology: 10000/500 = 20, 8000/300 = 26.67,
-    # 12000/200 = 60, 7500/900 = 8.33; median 23.33. (Per service it would be 100, 80,
-    # 120, 150: a different order.) Primary care: 10 and 8.75; median 9.375.
-    # Alone in the specialty: exactly 1.
+    # Medical (non-drug) allowed amount per medical beneficiary, cardiology: 9000/500 =
+    # 18, 8000/300 = 26.67, 3000/200 = 15; median 18. With drugs, 9000000011 would be the
+    # most expensive (12000/200 = 60), not the cheapest. Primary care: 10 and 8.75;
+    # median 9.375. Alone in the specialty: exactly 1 (9000000016, exactly 30 patients).
     assert _column(providers, "cost_index") == {
-        "9000000001": "0.8571",
-        "9000000002": "1.1429",
-        "9000000011": "2.5714",
-        "9000000012": "0.3571",
+        "9000000001": "1.0000",
+        "9000000002": "1.4815",
+        "9000000011": "0.8333",
+        "9000000012": "",  # medical amounts suppressed
         "9000000003": "1.0667",
         "9000000004": "0.9333",
-        "9000000008": "1.0000",
+        "9000000008": "",  # 25 patients: fewer than MIN_SPENDING_PATIENTS
         "9000000016": "1.0000",
     }
+
+
+def test_spending_is_reported_only_when_published_for_enough_patients(
+    connection: Connection, result: TransformResult
+) -> None:
+    rows = connection.execute(
+        text(
+            "SELECT npi, spending_status FROM staging.cms_providers "
+            "WHERE spending_status <> 'reported'"
+        )
+    ).all()
+
+    assert MIN_SPENDING_PATIENTS == 30
+    assert dict(rows) == {"9000000012": "suppressed", "9000000008": "too_few_patients"}
+
+
+def test_a_provider_without_usable_spending_is_kept(
+    connection: Connection, result: TransformResult
+) -> None:
+    drop_reasons = connection.execute(
+        text("SELECT drop_reason FROM staging.npi_funnel WHERE npi IN ('9000000008', '9000000012')")
+    ).scalars()
+
+    assert list(drop_reasons) == [None, None]
 
 
 def test_volume_is_medicare_beneficiaries(providers: dict[str, dict[str, str]]) -> None:
@@ -243,6 +273,14 @@ def test_data_quality_report(connection: Connection, result: TransformResult) ->
         "in_both": 5,
     }
     assert report["kept"]["quality_zero"] == 1
+    total = report["spending"][-1]
+    assert total["specialty"] is None  # the ROLLUP row
+    assert (total["n"], total["reported"], total["suppressed"], total["too_few_patients"]) == (
+        8,
+        6,
+        1,
+        1,
+    )
     assert report["unmapped"] == [
         {"cms_specialty": "NURSE PRACTITIONER", "n": 1},
         {"cms_specialty": "PHYSICAL THERAPIST IN PRIVATE PRACTICE", "n": 1},
@@ -250,3 +288,5 @@ def test_data_quality_report(connection: Connection, result: TransformResult) ->
     assert "| **Providers kept** | **8** |" in markdown
     assert "| specialty not mapped | 2 |" in markdown
     assert "| ZIP code not located | 1 |" in markdown
+    assert "| no usable Medicare volume | 0 |" in markdown
+    assert "fewer than 30 patients had medical services" in markdown

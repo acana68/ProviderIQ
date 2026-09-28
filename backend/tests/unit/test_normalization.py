@@ -5,6 +5,7 @@ import pytest
 
 from app.services.ranking.normalization import (
     normalize_cost,
+    normalize_cost_percentile,
     normalize_distance,
     normalize_experience,
     normalize_quality,
@@ -33,6 +34,11 @@ def test_experience(years: float, expected: float) -> None:
 )
 def test_cost(cost_index: float, expected: float) -> None:
     assert normalize_cost(cost_index) == pytest.approx(expected)
+
+
+@pytest.mark.parametrize(("percentile", "expected"), [(0, 0.0), (0.7, 0.7), (1, 1.0), (1.2, 1.0)])
+def test_cost_percentile(percentile: float, expected: float) -> None:
+    assert normalize_cost_percentile(percentile) == pytest.approx(expected)
 
 
 @pytest.mark.parametrize(("percentile", "expected"), [(0, 0.0), (0.7, 0.7), (1, 1.0), (1.2, 1.0)])

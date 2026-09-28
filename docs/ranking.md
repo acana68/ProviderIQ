@@ -22,9 +22,35 @@ error instead of being scored.
 |---|---|---|---|
 | Quality | `quality_score / 100` | 88 → 0.88 | The score is already a rating on a fixed 0–100 scale, and a 10-point gap means the same anywhere on it. Linear, no reshaping. |
 | Experience | `min(1, ln(1 + years) / ln(31))` | 0 → 0, 2 → 0.32, 5 → 0.52, 10 → 0.70, 20 → 0.89, 30+ → 1 | Diminishing returns: going from 2 to 10 years matters far more than going from 20 to 28. The `+1` keeps 0 years at exactly 0, and the cap at 30 years stops very long careers from outscoring everything else. |
-| Cost | `clamp(1.5 − cost_index, 0, 1)` | 0.5 → 1, 0.9 → 0.6, 1.0 → 0.5, 1.5 → 0 | `cost_index` is 1.0 for the regional average, and real providers sit roughly between 0.5 and 1.5. That range maps linearly onto 1 → 0, so an average provider lands exactly in the middle. Anything beyond the range is clamped. |
+| Cost (synthetic) | `clamp(1.5 − cost_index, 0, 1)` | 0.5 → 1, 0.9 → 0.6, 1.0 → 0.5, 1.5 → 0 | `cost_index` is 1.0 for the regional average, and synthetic providers sit between 0.55 and 1.6. That range maps linearly onto 1 → 0, so an average provider lands exactly in the middle. Anything beyond the range is clamped. |
+| Cost (CMS: Medicare spending per patient) | `cost_percentile` (clamped): the share of the specialty that spends more | cheapest in the specialty → 1, median → 0.5, highest → 0 | Real spending is far too skewed for the fixed scale; see [below](#cms-spending-is-scored-as-a-percentile). Computed over the whole NJ specialty, like volume. |
 | Volume | `volume_percentile` (clamped) | 0.7 → 0.7 | Uses the provider's percentile within their own specialty, not their raw patient count. Primary care sees thousands of patients a year and oncology hundreds, so raw counts can't be compared across specialties. |
 | Distance | `clamp(1 − distance / radius, 0, 1)` | 0 → 1, 6 of 20 mi → 0.7, at the radius → 0 | A linear falloff relative to the user's own radius, so "close" is judged against this search: 5 miles is far in a 6-mile search but near in a 50-mile one. |
+
+### CMS spending is scored as a percentile
+
+For the CMS dataset, the cost component is **Medicare spending per patient** (defined
+[below](#wording)). Its `cost_index` (spending ÷ the NJ specialty median) is still
+returned and explained, but it isn't put through the fixed `1.5 − cost_index` scale.
+Instead the score is the provider's percentile within their specialty: the share of the
+other NJ providers in the specialty who spend more per patient. Like volume, it is
+computed over **all** providers in the specialty (`percent_rank` in
+`provider_repository.py`), never the search results, so a provider scores the same
+whatever else matched.
+
+Why: real spending is heavily skewed. In most specialties the 90th percentile is 1.5 to 3
+times the median, while the 10th percentile is 0.4 to 0.8 times it. The fixed 0.5–1.5
+scale was built for synthetic data, and on real data it pinned **32% of providers at a
+score of exactly 0 or 1** (psychiatry 51%, oncology 57%). A pinned provider can't be told
+apart from anyone else past the edge, and a clinician spending three times the median
+scored the same as one spending 1.5 times it. A percentile spreads every specialty evenly
+over 0–1 (no provider sits at 0 or 1 except the single lowest and highest spender), and
+one extreme outlier can't stretch the scale for everyone else.
+
+What changes as a result: spending is ranked, not measured. Being 10% below the median is
+worth more in a specialty where spending is tightly bunched than in one where it varies
+widely. That's the intended reading: "spends less than most peers". Synthetic data keeps
+the fixed scale, since its index is a genuine price-like ratio with a known range.
 
 ## 2. Weight profiles
 
@@ -95,8 +121,22 @@ isn't ranked as one.
 ### Missing values (real data)
 
 The synthetic data has every metric for every provider. The real CMS data doesn't: most
-New Jersey clinicians have no MIPS score (quality), and a few have no usable graduation
-year (experience). See [data-quality.md](data-quality.md) for the rates.
+New Jersey clinicians have no MIPS score (quality), about one in five has no usable
+Medicare spending per patient, and a few have no usable graduation year (experience).
+See [data-quality.md](data-quality.md) for the rates.
+
+**Medicare spending per patient is not reported** (null, then imputed) in two cases
+(`pipeline/sql/06_providers.sql`):
+
+- **CMS suppressed the medical amounts** (`Med_Sprsn_Ind`). In NJ this is always
+  counter-suppression: the clinician gave Part B drugs to 1–10 patients, CMS suppressed
+  the drug part, and it also blanks the medical part, which would otherwise reveal the
+  drug part as total − medical. 1,410 of the 9,071 providers (16%), mostly busy
+  clinicians who gave a few patients an injection.
+- **Fewer than 30 patients had medical services** (`MIN_SPENDING_PATIENTS` in
+  `pipeline/transform.py`). Over a handful of patients, one unusually sick or healthy
+  patient decides the average, so the number says little about the clinician. 292
+  providers, 122 of them psychiatrists (their median is 60 Medicare patients).
 
 **A MIPS final score of 0 counts as missing.** Source: CMS, *2024 Traditional MIPS
 Scoring Guide* (qpp.cms.gov). The final score is the weighted sum of the category scores.
@@ -109,10 +149,11 @@ activities 0. It says the clinician didn't take part, not that their care is the
 possible, so it's imputed like any other missing score (`pipeline/sql/03_mips_scores.sql`).
 The CMS data dictionary doesn't define a final score of 0.
 
-**A missing quality or experience is scored as the median of the provider's specialty,**
-and flagged as imputed (`services/imputation.py`). The median is computed over all
-providers in the specialty that have the value, like the peer percentiles, so filters
-don't change it.
+**A missing quality, experience or spending is scored as the median of the provider's
+specialty,** and flagged as imputed (`services/imputation.py`). The median is computed
+over all providers in the specialty that have the value, like the peer percentiles, so
+filters don't change it. Spending is scored as a percentile, so an imputed spending
+scores the median's percentile, 0.5.
 
 Why not drop the component and renormalize, as with distance? Because that rewards
 missing data. A clinician with no quality score would be ranked on their other factors
@@ -127,7 +168,10 @@ What it means elsewhere:
 - The API keeps the field itself `null` and marks it `imputed` in `metric_flags`. The
   score component carries `"imputed": true`, with the median as its `raw` value.
 - An explanation never says a provider "stands out" on an imputed value. It says
-  "quality score not reported" or "experience not reported" instead.
+  "quality score not reported", "experience not reported" or "Medicare spending per
+  patient not reported" instead.
+- Sorting by `cost` lists providers with unreported spending last, like quality and
+  experience.
 - `min_quality_score` and `min_years_experience` only match reported values.
 - The ranking engine never sees a missing value: the service fills it in and passes the
   flags along with the numbers, so the engine stays pure.
@@ -217,11 +261,14 @@ are now spread evenly:
 "No standout" is common by design. With four roughly independent factors, a provider has
 about a 0.8⁴ ≈ 41% chance of ranking below the 80th percentile on all of them.
 
-**These percentiles never touch the score.** The engine's input (`ProviderMetrics`) has no
-field for them. Volume's percentile reaches the score as before, and is the same value
-the explanation uses. The quality, experience and cost percentiles are attached only
-after ranking, for the explanations of the page being returned. A test inverts them and
-checks that every score and every position stays identical.
+**These percentiles don't touch the score, with two exceptions.** Volume's percentile is
+part of every score, and for CMS data the cost percentile is the spending score (see
+[section 1](#cms-spending-is-scored-as-a-percentile)). Both are the same values the
+explanation uses. Otherwise the engine's input (`ProviderMetrics`) has no field for them:
+the quality and experience percentiles, and the cost percentile for synthetic data, are
+attached only after ranking, for the explanations of the page being returned. A test
+inverts them on synthetic data and checks that every score and every position stays
+identical.
 
 Like the volume percentile, the peer percentiles are computed over **all** providers in
 the specialty, never the filtered search results. A provider is described the same way
@@ -248,9 +295,19 @@ first: Medicare pays by fee schedule, so the same service is paid about the same
 provides it. The amount per service mostly reflects which services a clinician bills
 (many cheap tests vs. mostly visits or procedures), not a price. Spending per patient
 measures how much care a clinician uses for each patient they see. It is still influenced
-by how sick those patients are, since it isn't risk-adjusted, and it includes Part B
-drugs, which dominate oncology. The index is spending per beneficiary divided by the NJ
-median for the specialty, and is normalized like any cost index.
+by how sick those patients are, since it isn't risk-adjusted.
+
+**Part B drugs are left out.** The Medicare by-Provider file splits every total into
+drug and medical parts: `Drug_Mdcr_Alowd_Amt` covers HCPCS codes on the Medicare Part B
+Drug Average Sales Price (ASP) list (drugs given in the office: chemotherapy, biologic
+infusions, injections), and `Med_Mdcr_Alowd_Amt` / `Med_Tot_Benes` cover "medical
+(non-ASP) services", everything else. Source: CMS, *Medicare Physician & Other
+Practitioners – by Provider* data dictionary (data.cms.gov). Drug spending mostly
+reflects the condition treated, such as a chemotherapy regimen or a biologic for MS,
+not how much care the clinician chooses to use. It was 78% of oncology's allowed amount
+and 25% of neurology's, and it put oncology's 90th percentile at 9.6 times the median;
+without drugs it is 1.9. So the index is `Med_Mdcr_Alowd_Amt / Med_Tot_Benes`, divided
+by the NJ median for the specialty, and scored as a percentile.
 
 Percentages are rounded down, so "cheaper than 85%" is never an overstatement. The peer
 group is named per specialty ("cardiologists", "primary care doctors"). An unknown

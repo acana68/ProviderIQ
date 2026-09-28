@@ -162,6 +162,7 @@ def test_provider_detail_flags_missing_metrics(client: TestClient, cms_db: Sessi
     assert body["metric_flags"] == {
         "quality_score": "imputed",
         "years_experience": "reported",
+        "cost_index": "reported",
         "complication_rate": "not_reported",
         "readmission_rate": "not_reported",
     }
@@ -222,6 +223,47 @@ def test_sort_by_quality_lists_imputed_scores_last(client: TestClient, cms_db: S
     npis = [item["provider"]["npi"] for item in body["items"]]
     assert npis[:2] == ["9000000001", "9000000012"]
     assert set(npis[2:]) == {"9000000002", "9000000011"}
+
+
+def _cost(item: dict[str, Any]) -> dict[str, Any]:
+    return next(c for c in item["score"]["components"] if c["name"] == "cost")
+
+
+def test_spending_is_scored_as_a_percentile_within_the_specialty(
+    client: TestClient, cms_db: Session
+) -> None:
+    items = _by_npi(_search(client, specialty="cardiology", priority="cost"))
+
+    # Reported cardiology spending indexes: 1.4815, 1.0 and 0.8333. The share of the
+    # others that spend more, not the fixed 0.5-1.5 scale (which would give 0.018, 0.5
+    # and 0.667).
+    assert {npi: _cost(items[npi])["normalized"] for npi in items} == {
+        "9000000002": 0.0,
+        "9000000001": 0.5,
+        "9000000011": 1.0,
+        "9000000012": 0.5,  # imputed: the median's percentile
+    }
+    assert _cost(items["9000000011"])["raw"] == 0.833
+
+
+def test_unreported_spending_is_imputed_and_never_a_standout(
+    client: TestClient, cms_db: Session
+) -> None:
+    item = _by_npi(_search(client, specialty="cardiology", priority="cost"))["9000000012"]
+
+    assert item["provider"]["cost_index"] is None
+    assert item["provider"]["metric_flags"]["cost_index"] == "imputed"
+    # The median of the reported indexes, flagged.
+    assert _cost(item) == {**_cost(item), "raw": 1.0, "imputed": True}
+    assert "Medicare spending per patient not reported" in item["explanation"]
+    assert "Stands out for lower Medicare spending" not in item["explanation"]
+
+
+def test_sort_by_cost_lists_unreported_spending_last(client: TestClient, cms_db: Session) -> None:
+    body = _search(client, specialty="cardiology", sort="cost")
+
+    npis = [item["provider"]["npi"] for item in body["items"]]
+    assert npis == ["9000000011", "9000000001", "9000000002", "9000000012"]
 
 
 def test_search_near_a_cms_city(client: TestClient, cms_db: Session) -> None:

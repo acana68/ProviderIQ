@@ -1,4 +1,5 @@
 import math
+from dataclasses import replace
 
 import pytest
 
@@ -175,3 +176,30 @@ def test_effective_weights(priority: Priority) -> None:
     assert "distance" not in without_location
     assert math.fsum(without_location.values()) == pytest.approx(1.0)
     assert without_location["quality"] == pytest.approx(profile.quality / (1 - profile.distance))
+
+
+def test_a_cost_percentile_replaces_the_fixed_cost_scale() -> None:
+    """Real (CMS) spending: scored as the share of the specialty that spends more."""
+    fixed = score_provider(DOCUMENTED, get_weights(Priority.COST), radius_miles=20)
+    real = score_provider(
+        replace(DOCUMENTED, cost_index=3.2, cost_percentile=0.85),
+        get_weights(Priority.COST),
+        radius_miles=20,
+    )
+
+    fixed_cost, real_cost = fixed.component("cost"), real.component("cost")
+    assert fixed_cost is not None and real_cost is not None
+    assert fixed_cost.normalized == pytest.approx(0.6)  # 1.5 - 0.9
+    # 3.2 is off the fixed scale (it would score 0); the percentile still ranks it.
+    assert (real_cost.raw, real_cost.normalized) == (3.2, pytest.approx(0.85))
+
+
+def test_an_imputed_cost_is_flagged_and_sorted_last() -> None:
+    reported = replace(DOCUMENTED, provider_id=1, cost_index=1.4)
+    imputed = replace(DOCUMENTED, provider_id=2, cost_index=1.0, cost_imputed=True)
+
+    ranked = rank([imputed, reported], Priority.BALANCED, radius_miles=20, sort=SortOption.COST)
+
+    assert _ids(ranked) == [1, 2]
+    cost = ranked[1][1].component("cost")
+    assert cost is not None and cost.imputed

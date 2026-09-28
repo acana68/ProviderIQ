@@ -254,3 +254,14 @@ def test_cms_wording_calls_the_index_medicare_spending_per_patient() -> None:
     # CMS spending isn't a price: never "cost", "cheaper" or "price".
     for text in (low_spender, typical, high_spender, busy):
         assert not {"cost", "cheaper", "price"} & set(text.lower().replace(",", " ").split())
+
+
+def test_unreported_spending_is_never_a_standout() -> None:
+    metrics = replace(PLAIN, cost_imputed=True)
+    # The imputed index has no percentile; even a high one passed in is ignored.
+    peers = replace(AVERAGE_PEERS, cost=0.99, wording=CMS_WORDING)
+
+    assert _explain(metrics, peers) == (
+        "No single standout factor. 3 years of experience, 12.0 miles away, "
+        "Medicare spending per patient not reported."
+    )

@@ -16,6 +16,7 @@ from typing import Literal
 
 from app.services.ranking.normalization import (
     normalize_cost,
+    normalize_cost_percentile,
     normalize_distance,
     normalize_experience,
     normalize_quality,
@@ -49,6 +50,11 @@ class ProviderMetrics:
     # in the breakdown and put these providers last when sorting by that metric.
     quality_imputed: bool = False
     experience_imputed: bool = False
+    cost_imputed: bool = False
+    # Set for real (CMS) data: the share of the specialty with higher spending per
+    # patient, in [0, 1]. The cost component is then this percentile instead of the fixed
+    # cost_index scale (see normalize_cost_percentile). cost_index is still the raw value.
+    cost_percentile: float | None = None
 
 
 @dataclass(frozen=True)
@@ -106,7 +112,12 @@ def score_provider(
     values: dict[ComponentName, tuple[float, float]] = {
         "quality": (metrics.quality_score, normalize_quality(metrics.quality_score)),
         "experience": (metrics.years_experience, normalize_experience(metrics.years_experience)),
-        "cost": (metrics.cost_index, normalize_cost(metrics.cost_index)),
+        "cost": (
+            metrics.cost_index,
+            normalize_cost(metrics.cost_index)
+            if metrics.cost_percentile is None
+            else normalize_cost_percentile(metrics.cost_percentile),
+        ),
         "volume": (metrics.volume_percentile, normalize_volume(metrics.volume_percentile)),
     }
     if metrics.distance_miles is not None:
@@ -118,7 +129,11 @@ def score_provider(
         )
 
     applied = effective_weights(weights, include_distance="distance" in values)
-    imputed = {"quality": metrics.quality_imputed, "experience": metrics.experience_imputed}
+    imputed = {
+        "quality": metrics.quality_imputed,
+        "experience": metrics.experience_imputed,
+        "cost": metrics.cost_imputed,
+    }
     components = tuple(
         ComponentScore(
             name=name,
@@ -144,8 +159,8 @@ def rank(
     `priority` decides how scores are computed; `sort` only picks the ordering column.
     Every sort falls back to the same tie-breaks (overall desc, quality desc, id asc), so
     the order is fully determined by the input values, never by input order. Sorting by
-    quality or experience lists providers with an imputed value after all the ones with
-    a real value: a stand-in median can't be ranked as if it were a measurement.
+    quality, experience or cost lists providers with an imputed value after all the ones
+    with a real value: a stand-in median can't be ranked as if it were a measurement.
     """
     weights = get_weights(priority)
     scored = [(m, score_provider(m, weights, radius_miles)) for m in candidates]
@@ -176,5 +191,5 @@ _SORT_KEYS: dict[SortOption, Callable[[Ranked], tuple[object, ...]]] = {
         *_tie_break(item),
     ),
     SortOption.DISTANCE: _by_distance,
-    SortOption.COST: lambda item: (item[0].cost_index, *_tie_break(item)),
+    SortOption.COST: lambda item: (item[0].cost_imputed, item[0].cost_index, *_tie_break(item)),
 }

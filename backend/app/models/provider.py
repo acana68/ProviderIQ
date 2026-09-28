@@ -83,8 +83,9 @@ class Provider(TimestampMixin, Base):
     # score is missing and every score of this provider uses an imputed value instead.
     quality_imputed: Mapped[bool] = mapped_column(Computed("quality_score IS NULL", persisted=True))
     # Lower is better. Synthetic: cost, 1.0 = regional average. CMS: Medicare spending per
-    # patient, 1.0 = the NJ specialty median.
-    cost_index: Mapped[float]
+    # patient, 1.0 = the NJ specialty median; NULL when not reported (suppressed, or too
+    # few patients). Scored as the specialty median when NULL.
+    cost_index: Mapped[float | None]
     # Annual patients (CMS: Medicare beneficiaries only).
     patient_volume: Mapped[int]
     complication_rate: Mapped[float | None]

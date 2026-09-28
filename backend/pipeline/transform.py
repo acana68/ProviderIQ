@@ -29,6 +29,10 @@ from pipeline.sources import CMS_DIR, MANIFEST_PATH, RAW_DIR, STATE
 
 SQL_DIR = Path(__file__).resolve().parent / "sql"
 PROVIDERS_FILE = "providers_nj.csv"
+# Medicare spending per patient is left unreported (NULL: imputed in the app, and never
+# a reason to stand out) for a clinician with fewer Medicare patients than this: over a
+# handful of patients, one very sick or very healthy patient decides the average.
+MIN_SPENDING_PATIENTS = 30
 CITIES_FILE = "cities_nj.csv"
 
 # Output column -> formatter. None is written as an empty field.
@@ -70,11 +74,14 @@ def run_sql(connection: Connection, *, reference_year: int, state: str = STATE) 
     staging.params, so the files are plain SQL that can also be run by hand."""
     connection.execute(text("DROP TABLE IF EXISTS staging.params"))
     connection.execute(
-        text("CREATE TABLE staging.params (reference_year int NOT NULL, state text NOT NULL)")
+        text(
+            "CREATE TABLE staging.params (reference_year int NOT NULL, state text NOT NULL, "
+            "min_spending_patients int NOT NULL)"
+        )
     )
     connection.execute(
-        text("INSERT INTO staging.params VALUES (:year, :state)"),
-        {"year": reference_year, "state": state},
+        text("INSERT INTO staging.params VALUES (:year, :state, :min_spending_patients)"),
+        {"year": reference_year, "state": state, "min_spending_patients": MIN_SPENDING_PATIENTS},
     )
     # Straight to psycopg without parameters: it sends each file as one simple query, so
     # a file can hold several statements (and a literal % needs no escaping).

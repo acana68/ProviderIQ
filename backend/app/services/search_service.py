@@ -40,7 +40,7 @@ from app.services.explanation import (
     peer_noun,
 )
 from app.services.geo import bounding_box, haversine_miles
-from app.services.imputation import impute
+from app.services.imputation import MEDIAN_PERCENTILE, impute
 from app.services.ranking.engine import (
     ProviderMetrics,
     SortOption,
@@ -258,22 +258,35 @@ def _metrics(
     medians: SpecialtyMedians,
     distance: float | None,
 ) -> ProviderMetrics:
-    """The engine's input. Of the peer percentiles, only volume's is part of the score.
+    """The engine's input. Of the peer percentiles, volume's is part of every score, and
+    cost's is part of the score of CMS providers.
 
-    A missing quality or experience is scored as the specialty median and flagged; see
-    services/imputation.py for why. The engine itself never sees a missing value.
+    CMS spending per patient is scored as a percentile within the specialty, not on the
+    fixed cost_index scale: it's too skewed for that scale (docs/ranking.md). Synthetic
+    cost keeps the fixed scale.
+
+    A missing quality, experience or spending is scored as the specialty median and
+    flagged; see services/imputation.py for why. An imputed spending is scored as the
+    median's percentile. The engine itself never sees a missing value.
     """
     quality = impute(provider.quality_score, medians.quality)
     experience = impute(provider.years_experience, medians.experience)
+    cost = impute(provider.cost_index, medians.cost)
+    cost_percentile = None
+    if provider.data_source == "cms":
+        # The percentile is None exactly when the spending is missing.
+        cost_percentile = MEDIAN_PERCENTILE if percentiles.cost is None else percentiles.cost
     return ProviderMetrics(
         provider_id=provider.id,
         quality_score=quality.value,
         years_experience=experience.value,
-        cost_index=provider.cost_index,
+        cost_index=cost.value,
         volume_percentile=percentiles.volume,
         distance_miles=distance,
         quality_imputed=quality.imputed,
         experience_imputed=experience.imputed,
+        cost_imputed=cost.imputed,
+        cost_percentile=cost_percentile,
     )
 
 

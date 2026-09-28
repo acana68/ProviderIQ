@@ -48,6 +48,19 @@ def normalize_cost(cost_index: float) -> float:
     return _clamp01(1.5 - cost_index)
 
 
+def normalize_cost_percentile(percentile: float) -> float:
+    """The share of the provider's specialty that spends more per patient, clamped to [0, 1].
+
+    Used instead of normalize_cost() for real (CMS) data, where the index is Medicare
+    spending per patient: heavily skewed (p90 of 1.5-3 times the median in most
+    specialties), so the fixed 0.5-1.5 scale pinned about a third of providers at 0 or 1.
+    A percentile spreads every specialty evenly over [0, 1] and ignores how extreme an
+    outlier is. Like volume, it is computed over the whole specialty elsewhere.
+    """
+    _check_non_negative("cost percentile", percentile)
+    return _clamp01(percentile)
+
+
 def normalize_volume(percentile: float) -> float:
     """The provider's patient-volume percentile within their specialty, clamped to [0, 1].
 

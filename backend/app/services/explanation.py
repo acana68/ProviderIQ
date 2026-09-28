@@ -48,6 +48,8 @@ class Wording:
     cost_baseline: str
     # The fact when the index rounds to the baseline.
     typical_cost: str
+    # The fact when the index is imputed.
+    cost_not_reported: str
 
 
 SYNTHETIC_WORDING = Wording(
@@ -56,6 +58,7 @@ SYNTHETIC_WORDING = Wording(
     cost_fact="cost {vs_baseline}",
     cost_baseline="average",
     typical_cost="average cost",
+    cost_not_reported="cost not reported",
 )
 # CMS volume counts Medicare patients only. Its cost_index is Medicare spending per
 # patient relative to the NJ specialty median: not a price, so never called "cost".
@@ -67,6 +70,7 @@ CMS_WORDING = Wording(
     cost_fact="Medicare spending per patient {vs_baseline}",
     cost_baseline="the specialty median",
     typical_cost="Medicare spending per patient near the specialty median",
+    cost_not_reported="Medicare spending per patient not reported",
 )
 
 
@@ -82,7 +86,7 @@ class PeerComparison:
     quality: float | None
     experience: float | None
     # Higher = cheaper.
-    cost: float
+    cost: float | None
     volume: float
     # Plural noun for the peer group, e.g. "cardiologists" (see peer_noun()).
     peers: str
@@ -119,7 +123,9 @@ def explain(breakdown: ScoreBreakdown, metrics: ProviderMetrics, peers: PeerComp
         facts.append(_years_text(metrics.years_experience) + " of experience")
     if metrics.distance_miles is not None and standout != "distance":
         facts.append(_miles_text(metrics.distance_miles))
-    if standout != "cost":
+    if metrics.cost_imputed:
+        facts.append(peers.wording.cost_not_reported)
+    elif standout != "cost":
         cost = _cost_percent_text(metrics.cost_index, peers.wording)
         facts.append(
             peers.wording.typical_cost
@@ -138,7 +144,7 @@ def _standout(
     candidates: list[tuple[ComponentName, float | None]] = [
         ("quality", None if metrics.quality_imputed else peers.quality),
         ("experience", None if metrics.experience_imputed else peers.experience),
-        ("cost", peers.cost),
+        ("cost", None if metrics.cost_imputed else peers.cost),
         ("volume", peers.volume),
     ]
     distance = breakdown.component("distance")
@@ -166,6 +172,7 @@ def _lead(standout: ComponentName, metrics: ProviderMetrics, peers: PeerComparis
                 f"more experienced than {_percent(peers.experience)} of {peers.peers})."
             )
         case "cost":
+            assert peers.cost is not None
             # Cheap relative to peers is almost always below average too, but say
             # "about average" rather than print nothing if the index rounds to 0%.
             vs_baseline = (

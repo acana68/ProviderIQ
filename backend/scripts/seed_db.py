@@ -360,7 +360,7 @@ def _provider_values(line: int, row: dict[str, str]) -> dict[str, Any]:
 
 
 def _cms_provider_values(line: int, row: dict[str, str]) -> dict[str, Any]:
-    """Empty quality or experience means not published: stored as NULL, never 0."""
+    """Empty quality, experience or cost index means not published: stored as NULL, never 0."""
     try:
         return {
             "npi": row["npi"],
@@ -376,7 +376,9 @@ def _cms_provider_values(line: int, row: dict[str, str]) -> dict[str, Any]:
             "longitude": float(row["longitude"]),
             "years_experience": int(row["years_experience"]) if row["years_experience"] else None,
             "quality_score": float(row["quality_score"]) if row["quality_score"] else None,
-            "cost_index": float(row["cost_index"]),
+            # Empty: Medicare spending per patient not reported (suppressed, or too few
+            # patients; see pipeline/sql/06_providers.sql).
+            "cost_index": float(row["cost_index"]) if row["cost_index"] else None,
             "patient_volume": int(row["patient_volume"]),
             # Not published per clinician by CMS, and unknown.
             "complication_rate": None,
