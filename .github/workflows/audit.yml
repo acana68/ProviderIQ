@@ -1,0 +1,58 @@
+name: Dependency audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly (Monday 06:00 UTC): new advisories appear without any change here.
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: pip-audit (backend)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements-audit.txt
+
+      - name: Install pip-audit
+        run: pip install -r requirements-audit.txt
+
+      - name: Audit the requirements
+        # Resolves the pinned requirements and everything they pull in, in a temporary
+        # environment, and checks each against the PyPI advisory database (OSV). Fails on
+        # any known vulnerability: those advisories carry no reliable severity to filter
+        # on. An accepted one can be skipped with --ignore-vuln <ID> and a comment why.
+        run: pip-audit -r requirements.txt -r requirements-dev.txt --progress-spinner off
+
+  frontend:
+    name: npm audit (frontend)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: frontend/.nvmrc
+
+      - name: Audit the lockfile
+        # Reads package-lock.json only (no install). Fails on high or critical advisories,
+        # in runtime and dev dependencies alike: dev tooling runs in CI and builds the app.
+        run: npm audit --audit-level=high

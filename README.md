@@ -322,7 +322,12 @@ codes such as `VALIDATION_ERROR`, `INVALID_SEARCH`, `LOCATION_NOT_FOUND`,
 - **Privacy.** No query text, condition, or city is ever logged or stored.
 - **Safe operations.** Reseeding (which deletes provider data) is refused when
   `ENVIRONMENT=prod`. Dependabot proposes weekly dependency updates.
+- **Supply chain.** CI scans the whole Git history for secrets (gitleaks) and audits the
+  dependencies for known vulnerabilities (`pip-audit`, `npm audit`) on every push and weekly.
 - **LLM containment**: see [How AI is used](#how-ai-is-used).
+
+Everything in place, what's out of scope, known limitations, and how to report a
+vulnerability: [SECURITY.md](SECURITY.md).
 
 ## Testing
 
