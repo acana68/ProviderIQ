@@ -14,7 +14,7 @@ x-nginx-ip: &nginx-ip 172.29.53.10
 services:
   db:
     # 17.11. Tag and digest: the digest is what's pulled; Dependabot updates both.
-    image: postgres:17@sha256:d74eeac9a635390a49bc21bd49fccd973de707e2a53a76ac49b552b8712ec46f
+    image: postgres:17@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
     container_name: provideriq-db
     # Only what Postgres reads, not the whole .env (no API key, no app settings). These
     # only take effect when the data volume is first initialised; after changing them,
