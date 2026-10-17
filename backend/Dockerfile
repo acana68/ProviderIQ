@@ -8,7 +8,7 @@
 # Dependabot, which updates both. python:3.12-slim at this digest is Python 3.12.14.
 
 # --- Build stage: install the runtime requirements into a virtualenv --------------------
-FROM python:3.12-slim@sha256:f77ac9e44ae96ef2c90b8053ea08c31f8be030f824196b0ae4db6d462c84e51f AS builder
+FROM python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS builder
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1
@@ -22,7 +22,7 @@ RUN pip install -r /tmp/requirements.txt
 
 # --- Final stage -------------------------------------------------------------------------
 # Python 3.12.14: the same digest as the build stage.
-FROM python:3.12-slim@sha256:f77ac9e44ae96ef2c90b8053ea08c31f8be030f824196b0ae4db6d462c84e51f
+FROM python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
